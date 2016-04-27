@@ -7,7 +7,7 @@
  * @param {Object} opt
  * @param {String} opt.endpoint - Endpoint api url
  * @param {String} opt.apiVersion - SDK version
- * @param {String} opt.HMAC (optional) - HMAC key for authentication
+ * @param {String} opt.auth (optional) - auth key for authentication
  *
  * @constructor new IronSourceAtom(options = {}) => Object
  */
@@ -16,7 +16,7 @@ function IronSourceAtom(opt) {
     this.options = {
         endpoint: !!opt.endpoint && opt.endpoint.toString() || "https://track.atom-data.io/",
         apiVersion: opt.apiVersion.match(/^V\d+&/g) ? opt.apiVersion : 'V2',
-        HMAC: opt.HMAC || ""
+        auth: opt.auth || ""
     };
 }
 
@@ -25,7 +25,7 @@ function IronSourceAtom(opt) {
  * Put a single event to an Atom Stream.
  *
  * @param {Object} params
- * @param {String} params.streamName - stream name (cluster + table + schema)
+ * @param {String} params.table - target db table (cluster + table + schema)
  * @param {String} params.data - client data
  * @param {String} params.method (optional) - request method (default = "POST")
  * @param {Function} callback - callback client function
@@ -35,7 +35,7 @@ IronSourceAtom.prototype.putEvent = function(params, callback) {
     if (!params.data) return;
 
     params.apiVersion = this.options.apiVersion;
-    params.HMAC = this.options.HMAC;
+    params.auth = this.options.auth;
     
     var req = new Request(this.options.endpoint, params);
 
@@ -50,7 +50,7 @@ IronSourceAtom.prototype.putEvent = function(params, callback) {
  * Put a bulk of events to Atom.
  *
  * @param {Object} params
- * @param {String} params.streamName - stream name (cluster + table + schema)
+ * @param {String} params.table - target db table (cluster + table + schema)
  * @param {Array} params.data - client data
  * @param {String} params.method (optional) - request method (default = "POST")
  * @param {Function} callback - callback client function
@@ -63,7 +63,7 @@ IronSourceAtom.prototype.putEvents = function(params, callback) {
     }
     
     params.apiVersion = this.options.apiVersion;
-    params.HMAC = this.options.HMAC;
+    params.auth = this.options.auth;
 
     var req = new Request(this.options.endpoint + '/bulk', params);
 
@@ -114,9 +114,9 @@ Request.prototype.post = function(callback) {
     var xhr = this.xhr;
     var data = JSON.stringify({
         data: this.params.data,
-        streamName: this.params.streamName,
+        table: this.params.table,
         apiVersion: this.params.apiVersion,
-        HMAC: this.params.HMAC
+        auth: this.params.auth
     });
 
     xhr.open("POST", this.endpoint, true);
@@ -151,10 +151,10 @@ Request.prototype.get = function(callback) {
     var xhr = this.xhr;
     var base64Data;
     var data = JSON.stringify({
-        streamName: this.params.streamName,
+        table: this.params.table,
         data: this.params.data,
         apiVersion: this.params.apiVersion,
-        HMAC: this.params.HMAC
+        auth: this.params.auth
     });
 
     try{
@@ -232,7 +232,38 @@ Response.prototype.err = function() {
  *
  * This class is the main entry point into this client API.
  *
- * @param conf
+ * @param {Object} config
+ * @param {Number} config.flushInterval - timer for send data in seconds
+ * @param {Number} config.bulkLen - number of records in each bulk request
+ * @param {Number} config.bulkSize - the Maximum bulk size in bytes. The maximum should be 1MB
+ * @param {Number} config.httpMethod - POST/GET
  * @constructor
  */
-function Tracker(conf) {}
+function Tracker(config) {
+    this.flushInterval = config.flushInterval || 10;
+    this.bulkLen = config.bulkLen || 1000;
+    this.bulkSize = config.bulkSize || 1;
+    this.httpMethod = config.httpMethod || "POST";
+}
+
+Tracker.prototype.track = function(stream, data) {
+    var self = this;
+    this.accumulated = [];
+    this.timer = setTimeout(function() {
+        if (self.accumulated.length) {
+            //sendData
+        }
+    }, this.flushInterval * 1000);
+
+    // Todo add sizeof lib for check size of accumulated data
+    if(this.accumulated.length >= this.bulkLen) {
+        this.flush();
+    }
+    
+};
+
+Tracker.prototype.flush = function() {
+    clearTimeout(this.timer);
+    // sendData
+    this.accumulated = [];
+};
