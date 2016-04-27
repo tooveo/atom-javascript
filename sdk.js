@@ -124,11 +124,15 @@ Request.prototype.post = function(callback) {
 
     xhr.onreadystatechange = function() {
         if (xhr.readyState === XMLHttpRequest.DONE) {
-            var res = new Response(false, xhr.response, xhr.status);
-            if (xhr.status == 200)
+            var res;
+            if (xhr.status == 200) {
+                res = new Response(false, xhr.response, xhr.status);
                 !!callback && callback(res.data());
-            else
+            }
+            else {
+                res = new Response(true, xhr.response, xhr.status);
                 !!callback && callback(res.err());
+            }
         }
     };
 
@@ -164,12 +168,15 @@ Request.prototype.get = function(callback) {
 
     xhr.onreadystatechange = function() {
         if (xhr.readyState === XMLHttpRequest.DONE) {
-            var res = new Response(false, xhr.response, xhr.status);
-
-            if (xhr.status == 200)
+            var res;
+            if (xhr.status == 200) {
+                res = new Response(false, xhr.response, xhr.status);
                 !!callback && callback(res.data());
-            else
+            }
+            else {
+                res = new Response(true, xhr.response, xhr.status);
                 !!callback && callback(res.err());
+            }
         }
     };
 
