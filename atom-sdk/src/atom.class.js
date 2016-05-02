@@ -1,5 +1,9 @@
 'use strict';
 
+var END_POINT = "https://track.atom-data.io/";
+var API_VERSION = "V1";
+
+
 /**
  *
  * Constructs an Atom service object.
@@ -13,11 +17,11 @@
  */
 
 function IronSourceAtom(opt) {
-    this.options = {
-        endpoint: !!opt.endpoint && opt.endpoint.toString() || "https://track.atom-data.io/",
-        apiVersion: !!opt.apiVersion && opt.apiVersion.match(/^V\d+&/g) ? opt.apiVersion : 'V2',
-        auth: opt.auth || ""
-    };
+  this.options = {
+    endpoint: !!opt.endpoint && opt.endpoint.toString() || END_POINT,
+    apiVersion: !!opt.apiVersion && opt.apiVersion.match(/^V\d+&/g) ? opt.apiVersion : API_VERSION,
+    auth: opt.auth || ""
+  };
 }
 
 /**
@@ -31,17 +35,17 @@ function IronSourceAtom(opt) {
  * @param {Function} callback - callback client function
  */
 
-IronSourceAtom.prototype.putEvent = function(params, callback) {
-    if (!params.data) return;
+IronSourceAtom.prototype.putEvent = function (params, callback) {
+  if (!params.data) return;
 
-    params.apiVersion = this.options.apiVersion;
-    params.auth = this.options.auth;
+  params.apiVersion = this.options.apiVersion;
+  params.auth = this.options.auth;
 
-    var req = new Request(this.options.endpoint, params);
+  var req = new Request(this.options.endpoint, params);
 
-    (!!params.method && params.method.toUpperCase() === "GET") ?
-        req.get(callback) :
-        req.post(callback);
+  (!!params.method && params.method.toUpperCase() === "GET") ?
+    req.get(callback) :
+    req.post(callback);
 };
 
 
@@ -56,19 +60,19 @@ IronSourceAtom.prototype.putEvent = function(params, callback) {
  * @param {Function} callback - callback client function
  */
 
-IronSourceAtom.prototype.putEvents = function(params, callback) {
-    if (!params.data || !(params.data instanceof Array)) {
-        console.error('Empty data or data not array');
-        return;
-    }
+IronSourceAtom.prototype.putEvents = function (params, callback) {
+  if (!params.data || !(params.data instanceof Array)) {
+    console.error('Empty data or data not array');
+    return;
+  }
 
-    params.apiVersion = this.options.apiVersion;
-    params.auth = this.options.auth;
+  params.apiVersion = this.options.apiVersion;
+  params.auth = this.options.auth;
 
-    var req = new Request(this.options.endpoint + '/bulk', params);
+  var req = new Request(this.options.endpoint + '/bulk', params);
 
-    (!!params.method && params.method.toUpperCase() === "GET") ?
-        req.get(callback) : req.post(callback);
+  (!!params.method && params.method.toUpperCase() === "GET") ?
+    req.get(callback) : req.post(callback);
 };
 
 /**
@@ -78,12 +82,12 @@ IronSourceAtom.prototype.putEvents = function(params, callback) {
  * @param {Function} callback - client callback function
  */
 
-IronSourceAtom.prototype.health = function(callback) {
-    var req = new Request(this.options.endpoint, null);
+IronSourceAtom.prototype.health = function (callback) {
+  var req = new Request(this.options.endpoint, null);
 
-    req.get(callback);
+  req.get(callback);
 };
 
 module.exports = {
-    IronSourceAtom: IronSourceAtom
+  IronSourceAtom: IronSourceAtom
 };

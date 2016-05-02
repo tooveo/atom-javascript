@@ -1,4 +1,3 @@
-
 /**
  *
  * Object with response data
@@ -9,9 +8,9 @@
  * @constructor
  */
 function Response(error, response, status) {
-    this.error = error;
-    this.response = response;
-    this.status = status;
+  this.error = error;
+  this.response = response;
+  this.status = status;
 }
 
 /**
@@ -21,11 +20,11 @@ function Response(error, response, status) {
  * @returns {Object} - return response data or null if response failed
  */
 
-Response.prototype.data = function() {
-    return this.error ? null : {
-        data: JSON.parse(this.response),
-        status: this.status
-    }
+Response.prototype.data = function () {
+  return this.error ? null : {
+    data: JSON.parse(this.response),
+    status: this.status
+  }
 };
 
 /**
@@ -35,9 +34,9 @@ Response.prototype.data = function() {
  * @returns {Object} -return response  "error" or null if no errors
  */
 
-Response.prototype.err = function() {
-    return this.error ? {
-        data: JSON.stringify(this.response),
-        status: this.status
-    } : null;
+Response.prototype.err = function () {
+  return this.error ? {
+    data: JSON.stringify(this.response),
+    status: this.status
+  } : null;
 };
