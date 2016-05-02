@@ -1,9 +1,5 @@
 'use strict';
 
-var END_POINT = "https://track.atom-data.io/";
-var API_VERSION = "V1";
-
-
 /**
  *
  * Constructs an Atom service object.
@@ -17,6 +13,8 @@ var API_VERSION = "V1";
  */
 
 function IronSourceAtom(opt) {
+  var END_POINT = "https://track.atom-data.io/";
+  var API_VERSION = "V1";
   this.options = {
     endpoint: !!opt.endpoint && opt.endpoint.toString() || END_POINT,
     apiVersion: !!opt.apiVersion && opt.apiVersion.match(/^V\d+&/g) ? opt.apiVersion : API_VERSION,
