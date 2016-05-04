@@ -96,4 +96,3 @@ Request.prototype.get = function (callback) {
 
   xhr.send();
 };
-

@@ -13,11 +13,12 @@
  */
 
 function IronSourceAtom(opt) {
+  opt = opt || {};
   var END_POINT = "https://track.atom-data.io/";
   var API_VERSION = "V1";
   this.options = {
     endpoint: !!opt.endpoint && opt.endpoint.toString() || END_POINT,
-    apiVersion: !!opt.apiVersion && opt.apiVersion.match(/^V\d+&/g) ? opt.apiVersion : API_VERSION,
+    apiVersion: !!opt.apiVersion && opt.apiVersion.match(/^V\d+(.\d)?$/g) ? opt.apiVersion : API_VERSION,
     auth: !!opt.auth ? opt.auth : ""
   };
 }
@@ -41,9 +42,8 @@ IronSourceAtom.prototype.putEvent = function (params, callback) {
 
   var req = new Request(this.options.endpoint, params);
 
-  (!!params.method && params.method.toUpperCase() === "GET") ?
-    req.get(callback) :
-    req.post(callback);
+  return (!!params.method && params.method.toUpperCase() === "GET") ?
+    req.get(callback) : req.post(callback);
 };
 
 
@@ -69,7 +69,7 @@ IronSourceAtom.prototype.putEvents = function (params, callback) {
 
   var req = new Request(this.options.endpoint + '/bulk', params);
 
-  (!!params.method && params.method.toUpperCase() === "GET") ?
+  return (!!params.method && params.method.toUpperCase() === "GET") ?
     req.get(callback) : req.post(callback);
 };
 
@@ -83,7 +83,7 @@ IronSourceAtom.prototype.putEvents = function (params, callback) {
 IronSourceAtom.prototype.health = function (callback) {
   var req = new Request(this.options.endpoint, null);
 
-  req.get(callback);
+  return req.get(callback);
 };
 
 module.exports = {
