@@ -2,7 +2,7 @@
  *
  * Object with response data
  *
- * @param {Boolean} err - (true) if response have errors
+ * @param {Boolean} error - (true) if response have errors
  * @param {String} response - response after request
  * @param {String} status - response status code
  * @constructor

@@ -18,7 +18,7 @@ function IronSourceAtom(opt) {
   this.options = {
     endpoint: !!opt.endpoint && opt.endpoint.toString() || END_POINT,
     apiVersion: !!opt.apiVersion && opt.apiVersion.match(/^V\d+&/g) ? opt.apiVersion : API_VERSION,
-    auth: opt.auth || ""
+    auth: !!opt.auth ? opt.auth : ""
   };
 }
 

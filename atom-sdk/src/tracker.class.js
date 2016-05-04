@@ -4,21 +4,27 @@
  *
  * This class is the main entry point into this client API.
  *
- * @param {Object} obj - IronSourceAtom object
  * @param {Object} config
  * @param {Number} config.flushInterval - timer for send data in seconds
  * @param {Number} config.bulkLen - number of records in each bulk request
  * @param {Number} config.bulkSize - the Maximum bulk size in bytes. The maximum should be 1MB
  * @param {Number} config.httpMethod - POST/GET
+ *
+ * Optional for ISAtom main object
+ * @param {String} config.endpoint - Endpoint api url
+ * @param {String} config.apiVersion - SDK version
+ * @param {String} config.auth (optional) - auth key for authentication
+ *
  * @constructor
  */
-function Tracker(obj, config) {
+function Tracker(config) {
   this.flushInterval = !!config.flushInterval ? config.flushInterval : 10;
   this.bulkLen = !!config.bulkLen ? config.bulkLen : 1000;
   this.bulkSize = !!config.bulkSize ? config.bulkSize : 1;
   this.httpMethod = !!config.httpMethod ? config.httpMethod : "POST";
   this.accumulated = [];
-  this.obj = obj;
+
+  this.atom = new IronSourceAtom(config);
 }
 
 Tracker.prototype.track = function (stream, data) {
@@ -51,8 +57,8 @@ Tracker.prototype.flush = function () {
       data: self.accumulated,
       method: self.httpMethod
     };
-    self.accumulated.length == 1 ? self.obj.putEvent(dataToSend) :
-      self.obj.putEvents(dataToSend)
+    self.accumulated.length == 1 ? self.atom.putEvent(dataToSend) :
+      self.atom.putEvents(dataToSend)
   }
 
   this.accumulated = [];
