@@ -35,7 +35,8 @@ function IronSourceAtom(opt) {
  */
 
 IronSourceAtom.prototype.putEvent = function (params, callback) {
-  if (!params.data) return;
+  params = params || {};
+  if (!params.data || !params.table) throw new Error('Data and table is required');
 
   params.apiVersion = this.options.apiVersion;
   params.auth = this.options.auth;
@@ -59,9 +60,9 @@ IronSourceAtom.prototype.putEvent = function (params, callback) {
  */
 
 IronSourceAtom.prototype.putEvents = function (params, callback) {
-  if (!params.data || !(params.data instanceof Array)) {
-    console.error('Empty data or data not array');
-    return;
+  params = params || {};
+  if (!params.data || !(params.data instanceof Array) || !params.table) {
+    throw new Error('Data (must be array) and table is required');
   }
 
   params.apiVersion = this.options.apiVersion;

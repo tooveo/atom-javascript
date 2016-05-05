@@ -4,7 +4,7 @@
   "description": "",
   "main": "dist/sdk.js",
   "scripts": {
-    "test": "mocha atom-sdk/test/test.spec.js"
+    "test": "mocha atom-sdk/test/*.spec.js"
   },
   "repository": {
     "type": "git",

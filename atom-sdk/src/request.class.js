@@ -25,6 +25,9 @@ function Request(endpoint, params) {
  */
 
 Request.prototype.post = function (callback) {
+  if (!this.params.table || !this.params.data) {
+    throw new Error ("Table and data required fields for send event");
+  }
   var xhr = this.xhr;
   var data = JSON.stringify({
     data: this.params.data,
@@ -62,6 +65,9 @@ Request.prototype.post = function (callback) {
 
 
 Request.prototype.get = function (callback) {
+  if (!this.params.table || !this.params.data) {
+    throw new Error ("Table and data required fields for send event");
+  }
   var xhr = this.xhr;
   var base64Data;
   var data = JSON.stringify({

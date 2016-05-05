@@ -6,9 +6,6 @@ var sinon = require('sinon');
 var mock = require("./mock/is.mock");
 
 describe('Atom class test', function() {
-  before(function(){
-    // Request = mock.RequestMock;
-  });
   
   it('should generate new IronSourceAtom object with default values', function() {
     var atom = new ISAtom();
@@ -45,6 +42,13 @@ describe('Atom class test', function() {
       data: "data"
     });
   });
+  
+  it('should throw error for putEvent if no required params', function(){
+    var atom = new ISAtom();
+    expect(function(){
+      atom.putEvent();
+    }).to.throw('Data and table is required');
+  });
 
   it('should generate right data for GET request', function() {
     var atom = new mock.ISAtomMock();
@@ -56,9 +60,5 @@ describe('Atom class test', function() {
 
     expect(atom.putEvent(param)).to.be.equal('eyJ0YWJsZSI6InRhYmxlIiwiZGF0YSI6ImRhdGEiLCJhcGlWZXJzaW9uIjoiVjEiLCJhdXRoIjoiYXV0aC1rZXkifQ==');
   });
-  
-});
-
-describe('Tracker class test', function() {
   
 });
