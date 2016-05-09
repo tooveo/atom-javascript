@@ -14,6 +14,7 @@ function Request(endpoint, params) {
     contentType: "application/json;charset=UTF-8"
   };
 
+  this.timer = 1000;
   this.xhr = (XMLHttpRequest) ? new XMLHttpRequest() : new ActiveXObject("Microsoft.XMLHTTP");
 }
 
@@ -35,7 +36,8 @@ Request.prototype.post = function (callback) {
     apiVersion: this.params.apiVersion,
     auth: this.params.auth
   });
-
+  var self = this;
+  
   xhr.open("POST", this.endpoint, true);
   xhr.setRequestHeader("Content-type", this.headers.contentType);
 
@@ -45,6 +47,17 @@ Request.prototype.post = function (callback) {
       if (xhr.status == 200) {
         res = new Response(false, xhr.response, xhr.status);
         !!callback && callback(res.data());
+      }
+      else if (xhr.status >= 500) {
+        if (self.timer >= 2 * 60 * 1000) {
+          throw new Error ("Server not response more then 2min");
+        } else {
+          setTimeout(function(){
+            console.log(self.timer);
+            self.timer = self.timer * 2;
+            self.post(callback);
+          }, self.timer);
+        }
       }
       else {
         res = new Response(true, xhr.response, xhr.status);
@@ -76,6 +89,7 @@ Request.prototype.get = function (callback) {
     apiVersion: this.params.apiVersion,
     auth: this.params.auth
   });
+  var self = this;
 
   try {
     base64Data = btoa(data);
@@ -89,9 +103,21 @@ Request.prototype.get = function (callback) {
   xhr.onreadystatechange = function () {
     if (xhr.readyState === XMLHttpRequest.DONE) {
       var res;
+      
       if (xhr.status == 200) {
         res = new Response(false, xhr.response, xhr.status);
         !!callback && callback(res.data());
+      }
+      else if (xhr.status >= 500) {
+        if (self.timer >= 2 * 60 * 1000) {
+          throw new Error ("Server not response more then 2min");
+        }
+        else {
+          setTimeout(function () {
+            self.timer = self.timer * 2;
+            self.get(callback);
+          }, self.timer);
+        }
       }
       else {
         res = new Response(true, xhr.response, xhr.status);

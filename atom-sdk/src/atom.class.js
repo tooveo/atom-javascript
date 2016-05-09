@@ -87,7 +87,9 @@ IronSourceAtom.prototype.health = function (callback) {
   return req.get(callback);
 };
 
-module.exports = {
-  IronSourceAtom: IronSourceAtom,
-  Request: Request
-};
+if (typeof module !== 'undefined' && module.exports) {
+  module.exports = {
+    IronSourceAtom: IronSourceAtom,
+    Request: Request
+  };
+}

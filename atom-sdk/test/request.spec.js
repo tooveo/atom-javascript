@@ -13,26 +13,28 @@ function setupServer(sinon, before, after) {
       autoRespond: true
     });
 
-    server.respondWith('/endpoint', [
+    server.respondWith(/endpoint(\?data=.*)?/, [
       200,
       {
         'Content-Type': 'application/json'
       },
       '{"success": "true"}'
     ]);
-    server.respondWith(/endpoint\?data=.*/, [
-      200,
-      {
-        'Content-Type': 'application/json'
-      },
-      '{"success": "true"}'
-    ]);
-    server.respondWith('/err', [
+    
+    server.respondWith(/err(\?data=.*)?/, [
       401,
       {
         'Content-Type': 'application/json'
       },
       '{"error": "No permission for this table"}'
+    ]);
+    
+    server.respondWith(/server-err(\?data=.*)?/, [
+      500,
+      {
+        'Content-Type': 'application/json'
+      },
+      '{"error": "Server error"}'
     ])
   });
 
@@ -69,6 +71,7 @@ describe('Testing Request class and methods', function() {
   });
 
   it('should send GET request', function(done) {
+    
       var req = new Request('/endpoint', params);
     
       req.get(function(res) {
@@ -83,7 +86,8 @@ describe('Testing Request class and methods', function() {
     var req = new Request('/err', params);
 
     req.post(function(res) {
-      expect(res.status).to.be.not.eql(200);
+      expect(JSON.parse(res.err).error).to.be.not.eql(null);
+      expect(res.status).to.be.eql(401);
       done();
     });
   });
@@ -92,7 +96,8 @@ describe('Testing Request class and methods', function() {
     var req = new Request('/err', params);
 
     req.get(function(res) {
-      expect(res.status).to.be.not.eql(200);
+      expect(JSON.parse(res.err).error).to.be.not.eql(null);
+      expect(res.status).to.be.eql(401);
       done();
     });
   });

@@ -20,7 +20,7 @@
 function Tracker(config) {
   this.flushInterval = !!config.flushInterval ? config.flushInterval : 10;
   this.bulkLen = !!config.bulkLen ? config.bulkLen : 1000;
-  this.bulkSize = !!config.bulkSize ? config.bulkSize : 1;
+  this.bulkSize = !!config.bulkSize ? config.bulkSize : 64;
   this.httpMethod = !!config.httpMethod ? config.httpMethod : "POST";
   this.accumulated = [];
 
@@ -41,7 +41,7 @@ Tracker.prototype.track = function (stream, data) {
 
   this.accumulated.push(data);
 
-  if (this.accumulated.length == this.bulkLen || sizeof(this.accumulated) == this.bulkSize * 1024 * 1024) {
+  if (this.accumulated.length == this.bulkLen || sizeof(this.accumulated) == this.bulkSize * 1024 ) {
     this.flush();
   }
 };
@@ -57,8 +57,8 @@ Tracker.prototype.flush = function () {
       data: self.accumulated,
       method: self.httpMethod
     };
-    self.accumulated.length == 1 ? self.atom.putEvent(dataToSend) :
-      self.atom.putEvents(dataToSend)
+    self.accumulated.length == 1 ? self.atom.putEvent(dataToSend, callback) :
+      self.atom.putEvents(dataToSend, callback)
   }
 
   this.accumulated = [];

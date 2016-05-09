@@ -1,17 +1,16 @@
 {
-  "name": "atom-sdk-ja",
+  "name": "atom-sdk-js",
   "version": "1.0.0",
-  "description": "",
+  "description": "IronSource Atom JS SDK",
   "main": "dist/sdk.js",
   "scripts": {
-    "test": "mocha atom-sdk/test/*.spec.js"
+    "test": "mocha atom-sdk/test/atom.spec.js &&  mocha atom-sdk/test/request.spec.js"
   },
   "repository": {
     "type": "git",
     "url": "https://evhen.popenko@stash.ironsrc.com/scm/atomsdk/javascript.git"
   },
-  "author": "",
-  "license": "ISC",
+  "license": "MIT",
   "devDependencies": {
     "btoa": "^1.1.2",
     "chai": "^3.5.0",

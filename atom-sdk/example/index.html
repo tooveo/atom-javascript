@@ -5,19 +5,16 @@
     <title>Example page for IronSource Atom JS SDK</title>
 </head>
 <body>
-    <h2>Track one event</h2>
-    <button id="track-event">Click</button>
+    <h2>Test putEvent method</h2>
+    <button id="track-event">Send</button>
     <hr>
 
-    <h2>Tracking events</h2>
-    <h3 id="events-count"></h3>
-    <button id="track-events">Click</button>
-    <hr>
-
-    <h2>Tracking iterated events and send request every 10sec</h2>
-    <h3 id="events-queue"></h3>
-    <button id="start">Start</button>
-    <button id="stop">Stop</button>
+    <h2>Test putEvents method</h2>
+    <h3 id="events-count">0</h3>
+    <input id="input-data" type="text" name="input-data">
+    <button id="add-data">Add</button>
+    <button id="track-events">Send</button>
+    <pre id="bulk"></pre>
 
     <script src="../../dist/sdk.js"></script>
     <script src="index.js"></script>

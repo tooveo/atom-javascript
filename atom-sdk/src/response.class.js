@@ -22,6 +22,7 @@ function Response(error, response, status) {
 
 Response.prototype.data = function () {
   return this.error ? null : {
+    err: null,
     data: JSON.parse(this.response),
     status: this.status
   }
@@ -36,7 +37,8 @@ Response.prototype.data = function () {
 
 Response.prototype.err = function () {
   return this.error ? {
-    data: JSON.stringify(this.response),
+    err: this.response,
+    data: null,
     status: this.status
   } : null;
 };
