@@ -61,8 +61,8 @@ IronSourceAtom.prototype.putEvent = function (params, callback) {
 
 IronSourceAtom.prototype.putEvents = function (params, callback) {
   params = params || {};
-  if (!params.data || !(params.data instanceof Array) || !params.table) {
-    throw new Error('Data (must be array) and table is required');
+  if (!params.data || !(params.data instanceof Array) || !params.table || !params.data.length) {
+    throw new Error('Data (must be not empty array) and table is required');
   }
 
   params.apiVersion = this.options.apiVersion;

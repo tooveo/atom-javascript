@@ -11,6 +11,7 @@ function ISAtomMock(opt) {
   
   this.putEvents = this.putEvent = function(params, callback) {
     var req = new RequestMock(this.options.endpoint, params);
+    
     params.apiVersion = this.options.apiVersion;
     params.auth = this.options.auth;
     

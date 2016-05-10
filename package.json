@@ -21,11 +21,8 @@
     "jsdom": "^8.5.0",
     "karma": "^0.13.22",
     "karma-chrome-launcher": "^1.0.1",
-    "karma-firefox-launcher": "^1.0.0",
-    "karma-ie-launcher": "^1.0.0",
     "karma-mocha": "^1.0.1",
     "karma-requirejs": "^1.0.0",
-    "karma-safari-launcher": "^1.0.0",
     "karma-sinon": "^1.0.5",
     "mocha": "^2.4.5",
     "sinon": "^1.17.3"

@@ -20,14 +20,15 @@
   var data = [];
   
   // Add putEvent(params, callback) params {object}, callback {function}
-  btn1.addEventListener('click',
+  btn1.addEventListener('click', function(){
     atom.putEvent({ data: "some data",
-                    table: "yourStreamName",
-                    method: "GET"
-                  },
-                  function(res){
-                    console.log(res);
-                  }));
+        table: "yourStreamName",
+        method: "GET"
+      },
+      function(res){
+        console.log(res);
+      }); 
+  });
 
   // Add putEvent(params, callback) params {object}, callback {function}
   btn2.addEventListener('click', function() {

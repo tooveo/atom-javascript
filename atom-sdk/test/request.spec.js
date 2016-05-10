@@ -8,6 +8,7 @@ function getXMLHttpRequest() {
 
 function setupServer(sinon, before, after) {
   var server;
+  
   before(function() {
     server = sinon.fakeServer.create({
       autoRespond: true
@@ -54,6 +55,7 @@ global.btoa = btoa;
 
 describe('Testing Request class and methods', function() {
   setupServer(sinon, before, after);
+  
   var params = {
     table: "tableName",
     data: "analyticsData"
@@ -71,8 +73,7 @@ describe('Testing Request class and methods', function() {
   });
 
   it('should send GET request', function(done) {
-    
-      var req = new Request('/endpoint', params);
+    var req = new Request('/endpoint', params);
     
       req.get(function(res) {
         expect(res.data).to.be.eql({
@@ -101,9 +102,28 @@ describe('Testing Request class and methods', function() {
       done();
     });
   });
+  
+  it('should throw error after 2min resend request to server with 500+ status', function(done){
+    var req = new Request('/server-err', params);
+    var resp;
+    var clock = sinon.useFakeTimers();
+    
+    (function() {
+      req.post(function (res) {
+        resp = res;
+      });
+      clock.tick(12010);
+      expect(resp).to.be.undefined;
+      clock.tick(1201000);
+      expect(resp.status).to.be.eql(500);
+      done();      
+    })();
+    clock.restore();
+  });
 
   describe('should return throw error if params don`t have table or data attr', function() {
     var req = new Request('/endpoint', {});
+    
     it('err for POST method', function() {
       expect(function(){
         req.post();

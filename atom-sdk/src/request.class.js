@@ -44,16 +44,16 @@ Request.prototype.post = function (callback) {
   xhr.onreadystatechange = function () {
     if (xhr.readyState === XMLHttpRequest.DONE) {
       var res;
-      if (xhr.status == 200) {
+      if (xhr.status >= 200 && xhr.status < 300) {
         res = new Response(false, xhr.response, xhr.status);
         !!callback && callback(res.data());
       }
       else if (xhr.status >= 500) {
         if (self.timer >= 2 * 60 * 1000) {
-          throw new Error ("Server not response more then 2min");
+          res = new Response(true, xhr.response, xhr.status);
+          !!callback && callback(res.err());
         } else {
           setTimeout(function(){
-            console.log(self.timer);
             self.timer = self.timer * 2;
             self.post(callback);
           }, self.timer);
@@ -104,13 +104,14 @@ Request.prototype.get = function (callback) {
     if (xhr.readyState === XMLHttpRequest.DONE) {
       var res;
       
-      if (xhr.status == 200) {
+      if (xhr.status >= 200 && xhr.status < 300) {
         res = new Response(false, xhr.response, xhr.status);
         !!callback && callback(res.data());
       }
       else if (xhr.status >= 500) {
         if (self.timer >= 2 * 60 * 1000) {
-          throw new Error ("Server not response more then 2min");
+          res = new Response(true, xhr.response, xhr.status);
+          !!callback && callback(res.err());
         }
         else {
           setTimeout(function () {

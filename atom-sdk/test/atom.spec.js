@@ -45,6 +45,7 @@ describe('Atom class test', function() {
   
   it('should throw error for putEvent if no required params', function(){
     var atom = new ISAtom();
+    
     expect(function(){
       atom.putEvent();
     }).to.throw('Data and table is required');
@@ -52,6 +53,7 @@ describe('Atom class test', function() {
 
   it('should generate right data for GET request', function() {
     var atom = new mock.ISAtomMock();
+    
     var param = {
       table: 'table',
       data: 'data',
