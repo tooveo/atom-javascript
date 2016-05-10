@@ -41,7 +41,8 @@ Send single event to IS server
 `params`:
   * `table` {String} **Required** - **“cluster.schema.table_name”** table name to send data.
   * `data` {String} **Required** - String with any data and any structure.
-  * `method` {String} **Optional** - POST or GET http method to transfer data. Default "POST"
+  * `method` {String} **Optional** - POST or GET http method to transfer data. Default "POST".
+
 `callback` {Function} - custom function for work with result.
 ```js
 var options = {
@@ -68,7 +69,8 @@ Send multiple events to IS server
 `params`:
   * `table` {String} **Required** - **“cluster.schema.table_name”** table name to send data.
   * `data` {Array} **Required** - Array of strings, the string can be any data of any structure.
-  * `method` {String} **Optional** - POST or GET http method to transfer data. Default "POST"
+  * `method` {String} **Optional** - POST or GET http method to transfer data. Default "POST".
+
 `callback` {Function} - custom function for work with result.
 ```js
 var options = {
