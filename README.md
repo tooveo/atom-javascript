@@ -29,9 +29,9 @@ var atom = new ISAtom(options);
 ```
 ### Main IronSource class
 ISAtom(options) object with required `options`:
-  *`endpoint` {String} — The endpoint URI to send requests to. The default endpoint is: **“https://track.atom-data.io/”** .  The endpoint should be a string.
-  *`apiVersion` {String} —  a String in `V{Number}` format. If nothing is specified it will default to the first version.
-  *`auth` {String} - optional HMAC for authentication.
+  * `endpoint` {String} — The endpoint URI to send requests to. The default endpoint is: **“https://track.atom-data.io/”** .  The endpoint should be a string.
+  * `apiVersion` {String} —  a String in `V{Number}` format. If nothing is specified it will default to the first version.
+  * `auth` {String} - optional HMAC for authentication.
 
 **Example: var atom = new ISAtom(options);**
 
@@ -39,9 +39,9 @@ ISAtom(options) object with required `options`:
 #### putEvent(params, callback)
 Send single event to IS server
 `params`:
-  *`table` {String} **Required** - **“cluster.schema.table_name”** table name to send data.
-  *`data` {String} **Required** - String with any data and any structure.
-  *`method` {String} **Optional** - POST or GET http method to transfer data. Default "POST"
+  * `table` {String} **Required** - **“cluster.schema.table_name”** table name to send data.
+  * `data` {String} **Required** - String with any data and any structure.
+  * `method` {String} **Optional** - POST or GET http method to transfer data. Default "POST"
 `callback` {Function} - custom function for work with result.
 ```js
 var options = {
@@ -66,9 +66,9 @@ atom.putEvent(params, callback);
 #### putEvents(params, callback)
 Send multiple events to IS server
 `params`:
-  *`table` {String} **Required** - **“cluster.schema.table_name”** table name to send data.
-  *`data` {Array} **Required** - Array of strings, the string can be any data of any structure.
-  *`method` {String} **Optional** - POST or GET http method to transfer data. Default "POST"
+  * `table` {String} **Required** - **“cluster.schema.table_name”** table name to send data.
+  * `data` {Array} **Required** - Array of strings, the string can be any data of any structure.
+  * `method` {String} **Optional** - POST or GET http method to transfer data. Default "POST"
 `callback` {Function} - custom function for work with result.
 ```js
 var options = {
