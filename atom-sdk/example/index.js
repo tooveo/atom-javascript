@@ -7,23 +7,72 @@
     auth: "YOUR_API_KEY"
   };
 
-  var atom    = new IronSourceAtom(options);
+  var atom = new IronSourceAtom(options);
 
-  var btn1  = document.getElementById('track-event'),
-      btn2  = document.getElementById('track-events'),
-      addData = document.getElementById('add-data');
-      
+  var sendEventBtn  = document.getElementById('track-event'),
+      sendEventsBtn  = document.getElementById('track-events'),
+      addData = document.getElementById('add-data'),
+      updateOptions = document.getElementById('update-options'),
+      resetOptions = document.getElementById('reset-options');
+
   var count = document.getElementById('events-count'),
+      optionsDisplay = document.getElementById('options-display'),
       dataInput = document.getElementById('input-data'),
+      authInput = document.getElementById('auth'),
+      endpointInput = document.getElementById('endpoint'),
       codeDisplay = document.getElementById('bulk');
   
   var data = [];
+
+  updateOptionsDisplay();
+
+  authInput.addEventListener('blur', function() {
+    options.auth = this.value;
+  });
+
+  endpointInput.addEventListener('blur', function() {
+    if (this.value != "") {
+      options.endpoint = this.value;
+    }
+  });
+
+  updateOptions.addEventListener('click', function() {
+    setTimeout(function() {
+      atom = new IronSourceAtom(options);
+
+      updateOptionsDisplay();
+
+      // health method for check is server alive
+      atom.health(function(res){
+        console.log('Is server alive? - ', !!res && res.status < 500 && res.status != 404);
+      });
+    }, 50);
+  });
+  resetOptions.addEventListener('click', function() {
+    setTimeout(function() {
+      options = {
+        endpoint: "https://track.atom-data.io/",
+        apiVersion: "V1",
+        auth: "YOUR_API_KEY"
+      };
+
+      atom = new IronSourceAtom(options);
+
+      updateOptionsDisplay();
+
+      // health method for check is server alive
+      atom.health(function(res){
+        console.log('Is server alive? - ', !!res && res.status < 500 && res.status != 404);
+      });
+    }, 50);
+  });
+
   
   // Add putEvent(params, callback) params {object}, callback {function}
-  btn1.addEventListener('click', function(){
-    atom.putEvent({ data: "some data",
+  sendEventBtn.addEventListener('click', function(){
+    atom.putEvent({ data: "{\"name\": \"iron\", \"last_name\": \"Source\"}",
         table: "yourStreamName",
-        method: "GET"
+        method: "GET" // optional, default POST
       },
       function(res){
         console.log(res);
@@ -31,7 +80,7 @@
   });
 
   // Add putEvent(params, callback) params {object}, callback {function}
-  btn2.addEventListener('click', function() {
+  sendEventsBtn.addEventListener('click', function() {
     atom.putEvents({ data: data,
       table: "yourStreamName",
       method: "POST"
@@ -49,5 +98,12 @@
     count.innerHTML = data.length;
     codeDisplay.innerHTML = data.join('\n');
   });
+
+
+  function updateOptionsDisplay() {
+    optionsDisplay.innerHTML = '{ <br>' +
+      '  endpoint: "' + options.endpoint + '",<br>' +
+      '  auth: "' + options.auth +'"<br>}';
+  }
 
 })();

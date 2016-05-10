@@ -10,6 +10,9 @@
     "type": "git",
     "url": "https://evhen.popenko@stash.ironsrc.com/scm/atomsdk/javascript.git"
   },
+  "apidoc": {
+    "title": "apiDoc for IronSource Atom JS SDK"
+  },
   "license": "MIT",
   "devDependencies": {
     "btoa": "^1.1.2",

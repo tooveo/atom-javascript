@@ -3,7 +3,7 @@
 /**
  *
  * Constructs an Atom service object.
- *
+ * 
  * @param {Object} opt
  * @param {String} opt.endpoint - Endpoint api url
  * @param {String} opt.apiVersion - SDK version
@@ -26,7 +26,42 @@ function IronSourceAtom(opt) {
 /**
  *
  * Put a single event to an Atom Stream.
+ * @api {get/post} https://track.atom-data.io/ putEvent Send single data to Atom server
+ * @apiGroup Atom
+ * @apiParam {String} stream Stream name for saving data in db table
+ * @apiParam {String} data Data for saving 
+ * @apiParam {String} method POST or GET method for do request
+ * 
+ * @apiSuccess {Null} err Server response error 
+ * @apiSuccess {Object} data Server response data
+ * @apiSuccess {String} status Server response status
+ * 
+ * @apiError {Object} err Server response error
+ * @apiError {Null} data Server response data
+ * @apiError {String} status Server response status
+ * 
+ * @apiErrorExample Error-Response:
+ *  HTTP 401 Permission Denied
+ *  {
+ *    "err": {"Target Stream": "Permission denied",
+ *    "data": null,
+ *    "status": 401    
+ *  }
+ * 
+ * @apiSuccessExample Response:
+ * HTTP 200 OK
+ * {
+ *    "err": null,
+ *    "data": "success"
+ *    "status": 200
+ * }
  *
+ * @apiParamExample {json} Request-Example:
+ * {
+ *    "stream": "streamName",
+ *    "data":  "{\"name\": \"iron\", \"last_name\": \"Source\"}"
+ * }
+ * 
  * @param {Object} params
  * @param {String} params.table - target db table (cluster + table + schema)
  * @param {String} params.data - client data
@@ -51,6 +86,43 @@ IronSourceAtom.prototype.putEvent = function (params, callback) {
 /**
  *
  * Put a bulk of events to Atom.
+ *
+ * @api {get/post} https://track.atom-data.io/bulk putEvents Send multiple events data to Atom server
+ * @apiGroup Atom
+ * @apiParam {String} stream Stream name for saving data in db table
+ * @apiParam {Array} data Multiple event data for saving
+ * @apiParam {String} method POST or GET method for do request
+ *
+ * @apiSuccess {Null} err Server response error
+ * @apiSuccess {Object} data Server response data
+ * @apiSuccess {String} status Server response status
+ *
+ * @apiError {Object} err Server response error
+ * @apiError {Null} data Server response data
+ * @apiError {String} status Server response status
+ *
+ * @apiErrorExample Error-Response:
+ *  HTTP 401 Permission Denied
+ *  {
+ *    "err": {"Target Stream": "Permission denied",
+ *    "data": null,
+ *    "status": 401
+ *  }
+ *
+ * @apiSuccessExample Response:
+ * HTTP 200 OK
+ * {
+ *    "err": null,
+ *    "data": "success"
+ *    "status": 200
+ * }
+ * @apiParamExample {json} Request-Example:
+ * {
+ *    "stream": "streamName",
+ *    "data":  ["{\"name\": \"iron\", \"last_name\": \"Source\"}",
+ *            "{\"name\": \"iron2\", \"last_name\": \"Source2\"}"]
+ *
+ * }
  *
  * @param {Object} params
  * @param {String} params.table - target db table (cluster + table + schema)
@@ -82,8 +154,8 @@ IronSourceAtom.prototype.putEvents = function (params, callback) {
  */
 
 IronSourceAtom.prototype.health = function (callback) {
-  var req = new Request(this.options.endpoint, null);
-
+  var req = new Request(this.options.endpoint, {table: 'health_check', data: "null"});
+  
   return req.get(callback);
 };
 
@@ -337,7 +409,7 @@ Response.prototype.err = function () {
  */
 function Tracker(config) {
   this.flushInterval = !!config.flushInterval ? config.flushInterval : 10;
-  this.bulkLen = !!config.bulkLen ? config.bulkLen : 1000;
+  this.bulkLen = !!config.bulkLen ? config.bulkLen : 10000;
   this.bulkSize = !!config.bulkSize ? config.bulkSize : 64;
   this.httpMethod = !!config.httpMethod ? config.httpMethod : "POST";
   this.accumulated = [];

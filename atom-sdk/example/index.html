@@ -3,18 +3,69 @@
 <head>
     <meta charset="UTF-8">
     <title>Example page for IronSource Atom JS SDK</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
 </head>
 <body>
-    <h2>Test putEvent method</h2>
-    <button id="track-event">Send</button>
-    <hr>
+    <div class="container">
+        <header class="page-header">
+            <h1 class="text-center">Example for IronSource Atom JS SDK</h1>
+        </header>
+        <section class="row">
+            <div class="form-group col-md-4">
+                <label for="endpoint">Endpoint url</label>
+                <input id="endpoint" class="form-control" type="text" placeholder="https://track.atom-data.io/">
+            </div>
+            <div class="form-group col-md-4">
+                <label for="auth">Authorization key</label>
+                <input id="auth" class="form-control" type="text" placeholder="Auth key">
+            </div>
 
-    <h2>Test putEvents method</h2>
-    <h3 id="events-count">0</h3>
-    <input id="input-data" type="text" name="input-data">
-    <button id="add-data">Add</button>
-    <button id="track-events">Send</button>
-    <pre id="bulk"></pre>
+                <div class="col-md-3">
+                    <label>Update options</label>
+                    <p>
+                        <button id="update-options" class="btn btn-primary">Update</button>
+                        <button id="reset-options" class="btn btn-danger">Reset</button>
+                    </p>
+                </div>
+                <div class="col-md-6">
+                    <pre id="options-display"></pre>
+                </div>
+
+        </section>
+        <section class="row">
+            <div class="col-md-4">
+                <h2>Test putEvent method</h2>
+                <button id="track-event" class="btn btn-primary">Send</button>
+            </div>
+        </section>
+        <section class="row">
+            <div class="col-md-9">
+                <h2>Test putEvents method</h2>
+
+                <div class="row">
+                    <div class="col-md-4">
+                        <input id="input-data" class="form-control" type="text">
+                    </div>
+                    <div class="col-md-4">
+                        <span id="events-count" class="badge" style="margin: 7px 0 7px -15px;">0</span>
+                    </div>
+                </div>
+                <div class="row" style="margin: 15px -15px;">
+                    <div class="col-md-8">
+                        <button id="add-data" class="btn btn-success">Add</button>
+                        <button id="track-events" class="btn btn-primary">Send</button>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+        <section class="row">
+            <div class="col-md-12">
+                <pre id="bulk"></pre>
+            </div>
+        </section>
+    </div>
+
 
     <script src="../../dist/sdk.js"></script>
     <script src="index.js"></script>

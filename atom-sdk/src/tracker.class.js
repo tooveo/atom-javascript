@@ -19,7 +19,7 @@
  */
 function Tracker(config) {
   this.flushInterval = !!config.flushInterval ? config.flushInterval : 10;
-  this.bulkLen = !!config.bulkLen ? config.bulkLen : 1000;
+  this.bulkLen = !!config.bulkLen ? config.bulkLen : 10000;
   this.bulkSize = !!config.bulkSize ? config.bulkSize : 64;
   this.httpMethod = !!config.httpMethod ? config.httpMethod : "POST";
   this.accumulated = [];
