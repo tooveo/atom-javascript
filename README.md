@@ -1,15 +1,11 @@
 # ironSource.atom SDK for JS [![License][license-image]][license-url]
 
-- [Get started](https://atom.ironsrc.com/#/signup)
-- [Using the SDK](#using-the-sdk)
-  - [Tracking events](#tracking-event)
-
 ### Using the SDK
 
 #### Tracking events
 __Installation__
 ```sh
-$ npm i github.com/ironSource/atom-js
+$ npm i --save github.com/ironSource/atom-js
 ```
 #### Add script file
 ```html
