@@ -20,8 +20,8 @@ describe('Atom class test', function() {
   it('should generate new IronSourceAtom object with custom values', function() {
     var opt = {
       endpoint: "/some-url",
-      apiVersion: "V1.1",
-      auth: "aM<dy2gchHsad07*hdACY"
+      auth: "aM<dy2gchHsad07*hdACY",
+      apiVersion: 'V1'
     };
     var atom = new ISAtom(opt);
     
@@ -47,8 +47,8 @@ describe('Atom class test', function() {
     var atom = new ISAtom();
     
     expect(function(){
-      atom.putEvent();
-    }).to.throw('Data and table is required');
+      atom.putEvent({table: "test"});
+    }).to.throw('Data is required');
   });
 
   it('should generate right data for GET request', function() {

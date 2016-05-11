@@ -10,28 +10,31 @@
         <header class="page-header">
             <h1 class="text-center">Example for IronSource Atom JS SDK</h1>
         </header>
+
         <section class="row">
             <div class="form-group col-md-4">
-                <label for="endpoint">Endpoint url</label>
-                <input id="endpoint" class="form-control" type="text" placeholder="https://track.atom-data.io/">
+                <label for="stream">Stream Name</label>
+                <input id="stream" class="form-control" type="text" placeholder="Enter StreamName">
             </div>
             <div class="form-group col-md-4">
-                <label for="auth">Authorization key</label>
-                <input id="auth" class="form-control" type="text" placeholder="Auth key">
+                <label>HTTP send method</label><br>
+                <input class="method" type="radio" name="method" value="POST" checked> POST<br>
+                <input class="method" type="radio" name="method" value="GET"> GET
+            </div>
+        </section>
+
+        <section class="row">
+            <div class="col-md-6">
+                <h4>Options</h4>
+                <pre id="options-display"></pre>
             </div>
 
-                <div class="col-md-3">
-                    <label>Update options</label>
-                    <p>
-                        <button id="update-options" class="btn btn-primary">Update</button>
-                        <button id="reset-options" class="btn btn-danger">Reset</button>
-                    </p>
-                </div>
-                <div class="col-md-6">
-                    <pre id="options-display"></pre>
-                </div>
-
+            <div class="col-md-6">
+                <h4>Response</h4>
+                <pre id="response-display"></pre>
+            </div>
         </section>
+
         <section class="row">
             <div class="col-md-4">
                 <h2>Test putEvent method</h2>
@@ -61,7 +64,7 @@
         </section>
         <section class="row">
             <div class="col-md-12">
-                <pre id="bulk"></pre>
+                <pre id="bulk">[]</pre>
             </div>
         </section>
     </div>
