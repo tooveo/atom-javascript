@@ -36,9 +36,17 @@ Response.prototype.data = function () {
  */
 
 Response.prototype.err = function () {
-  return this.error ? {
-    err: this.response,
-    data: null,
-    status: this.status
-  } : null;
+  try {
+    return this.error ? {
+      err: JSON.parse(this.response),
+      data: null,
+      status: this.status
+    } : null;
+  } catch (e) {
+    return this.error ? {
+      err: this.response,
+      data: null,
+      status: this.status
+    } : null;  
+  }  
 };

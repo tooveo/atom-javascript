@@ -3,7 +3,6 @@
 (function(){
   var options = {
     endpoint: "https://track.atom-data.io/",
-    apiVersion: "V1",
     auth: "YOUR_API_KEY"
   };
 

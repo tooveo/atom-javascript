@@ -18,7 +18,6 @@ $ npm i --save github.com/ironSource/atom-js
 // ...
 var options = {
   endpoint: "https://track.atom-data.io/",
-  apiVersion: "V1",
   auth: "YOUR_API_KEY"
 }
 var atom = new IronSourceAtom(options);
@@ -26,7 +25,6 @@ var atom = new IronSourceAtom(options);
 ### Main IronSource class
 ISAtom(options) object with **options**:
   * **endpoint** {String} — The endpoint URI to send requests to. The default endpoint is: **“https://track.atom-data.io/”** .
-  * **apiVersion** {String} —  a String in `V{Number}` format. If nothing is specified it will default to the first version.
   * **auth** {String} - optional HMAC for authentication.
 
 **Example: var atom = new IronSourceAtom(options);**

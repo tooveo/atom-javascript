@@ -6,7 +6,6 @@
  * 
  * @param {Object} opt
  * @param {String} opt.endpoint - Endpoint api url
- * @param {String} opt.apiVersion - SDK version
  * @param {String} opt.auth (optional) - auth key for authentication
  *
  * @constructor new IronSourceAtom(options = {}) => Object
@@ -18,7 +17,7 @@ function IronSourceAtom(opt) {
   var API_VERSION = "V1";
   this.options = {
     endpoint: !!opt.endpoint && opt.endpoint.toString() || END_POINT,
-    apiVersion: !!opt.apiVersion && opt.apiVersion.match(/^V\d+(.\d)?$/g) ? opt.apiVersion : API_VERSION,
+    apiVersion: API_VERSION,
     auth: !!opt.auth ? opt.auth : ""
   };
 }
@@ -162,6 +161,7 @@ IronSourceAtom.prototype.health = function (callback) {
 if (typeof module !== 'undefined' && module.exports) {
   module.exports = {
     IronSourceAtom: IronSourceAtom,
-    Request: Request
+    Request: Request,
+    Response: Response
   };
 }

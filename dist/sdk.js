@@ -18,7 +18,7 @@ function IronSourceAtom(opt) {
   var API_VERSION = "V1";
   this.options = {
     endpoint: !!opt.endpoint && opt.endpoint.toString() || END_POINT,
-    apiVersion: !!opt.apiVersion && opt.apiVersion.match(/^V\d+(.\d)?$/g) ? opt.apiVersion : API_VERSION,
+    apiVersion: API_VERSION,
     auth: !!opt.auth ? opt.auth : ""
   };
 }
@@ -162,7 +162,8 @@ IronSourceAtom.prototype.health = function (callback) {
 if (typeof module !== 'undefined' && module.exports) {
   module.exports = {
     IronSourceAtom: IronSourceAtom,
-    Request: Request
+    Request: Request,
+    Response: Response
   };
 }
 
@@ -381,11 +382,19 @@ Response.prototype.data = function () {
  */
 
 Response.prototype.err = function () {
-  return this.error ? {
-    err: this.response,
-    data: null,
-    status: this.status
-  } : null;
+  try {
+    return this.error ? {
+      err: JSON.parse(this.response),
+      data: null,
+      status: this.status
+    } : null;
+  } catch (e) {
+    return this.error ? {
+      err: this.response,
+      data: null,
+      status: this.status
+    } : null;  
+  }  
 };
 
 'use strict';
