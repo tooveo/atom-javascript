@@ -56,8 +56,7 @@
       displayRequest(
         { data: "{name: iron, last_name: Source}",
           table: stream,
-          method: httpMethod,
-          auth: options.auth
+          method: httpMethod
         });
 
     } catch (e) {
@@ -83,8 +82,7 @@
       displayRequest(
       { data: data,
         table: stream,
-        method: httpMethod,
-        auth: options.auth
+        method: httpMethod
       });
 
     } catch (e) {
