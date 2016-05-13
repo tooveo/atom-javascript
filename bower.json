@@ -1,0 +1,23 @@
+{
+  "name": "atom-sdk-js",
+  "description": "IronSource Atom JS SDK",
+  "main": "dist/sdk.js",
+  "license": "MIT",
+  "keywords": [
+    "IronSource",
+    "Atom",
+    "JS",
+    "SDK",
+    "traking",
+    "sdk",
+    "IS",
+    "Atom"
+  ],
+  "homepage": "",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components"
+  ]
+}

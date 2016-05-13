@@ -20,6 +20,7 @@
     "gulp": "^3.9.1",
     "gulp-concat": "^2.6.0",
     "gulp-rename": "^1.2.2",
+    "gulp-self-execute": "^1.0.3",
     "gulp-uglify": "^1.5.3",
     "jsdom": "^8.5.0",
     "karma": "^0.13.22",
@@ -28,6 +29,7 @@
     "karma-requirejs": "^1.0.0",
     "karma-sinon": "^1.0.5",
     "mocha": "^2.4.5",
+    "requirejs": "^2.2.0",
     "sinon": "^1.17.3"
   }
 }
