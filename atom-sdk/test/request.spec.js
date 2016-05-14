@@ -1,10 +1,10 @@
 'use strict';
 
-function getXMLHttpRequest() {
-  return global.XMLHttpRequest || require('jsdom').jsdom('', {
-      url: 'http://localhost'
-    }).defaultView.XMLHttpRequest;
-}
+// function getXMLHttpRequest() {
+//   return global.XMLHttpRequest || require('jsdom').jsdom('', {
+//       url: 'http://localhost'
+//     }).defaultView.XMLHttpRequest;
+// }
 
 function setupServer(sinon, before, after) {
   var server;
@@ -43,7 +43,7 @@ function setupServer(sinon, before, after) {
     server.restore();
   });
 }
-global.XMLHttpRequest = getXMLHttpRequest();
+// global.XMLHttpRequest = getXMLHttpRequest();
 
 var Request = require('../../dist/sdk').Request;
 var expect = require('chai').expect;
@@ -87,7 +87,7 @@ describe('Testing Request class and methods', function() {
     var req = new Request('/err', params);
 
     req.post(function(res) {
-      expect(JSON.parse(res.err).error).to.be.not.eql(null);
+      expect(res.err.error).to.be.not.eql(null);
       expect(res.status).to.be.eql(401);
       done();
     });
@@ -97,7 +97,7 @@ describe('Testing Request class and methods', function() {
     var req = new Request('/err', params);
 
     req.get(function(res) {
-      expect(JSON.parse(res.err).error).to.be.not.eql(null);
+      expect(res.err.error).to.be.not.eql(null);
       expect(res.status).to.be.eql(401);
       done();
     });

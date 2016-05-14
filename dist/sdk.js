@@ -1,3 +1,5 @@
+(function(undefined) {
+
 'use strict';
 
 /**
@@ -6,7 +8,6 @@
  * 
  * @param {Object} opt
  * @param {String} opt.endpoint - Endpoint api url
- * @param {String} opt.apiVersion - SDK version
  * @param {String} opt.auth (optional) - auth key for authentication
  *
  * @constructor new IronSourceAtom(options = {}) => Object
@@ -71,7 +72,8 @@ function IronSourceAtom(opt) {
 
 IronSourceAtom.prototype.putEvent = function (params, callback) {
   params = params || {};
-  if (!params.data || !params.table) throw new Error('Data and table is required');
+  if (!params.table) throw new Error('Stream is required');
+  if (!params.data) throw new Error('Data is required');
 
   params.apiVersion = this.options.apiVersion;
   params.auth = this.options.auth;
@@ -133,8 +135,11 @@ IronSourceAtom.prototype.putEvent = function (params, callback) {
 
 IronSourceAtom.prototype.putEvents = function (params, callback) {
   params = params || {};
-  if (!params.data || !(params.data instanceof Array) || !params.table || !params.data.length) {
-    throw new Error('Data (must be not empty array) and table is required');
+  if (!params.data || !(params.data instanceof Array) || !params.data.length) {
+    throw new Error('Data (must be not empty array) is required');
+  }
+  if (!params.table) {
+    throw new Error('Table is required');
   }
 
   params.apiVersion = this.options.apiVersion;
@@ -254,6 +259,8 @@ Request.prototype.post = function (callback) {
   
   xhr.open("POST", this.endpoint, true);
   xhr.setRequestHeader("Content-type", this.headers.contentType);
+  xhr.setRequestHeader("x-ironsource-atom-sdk-type", "js");
+  xhr.setRequestHeader("x-ironsource-atom-sdk-version", "1.0");
 
   xhr.onreadystatechange = function () {
     if (xhr.readyState === XMLHttpRequest.DONE) {
@@ -313,6 +320,8 @@ Request.prototype.get = function (callback) {
 
   xhr.open("GET", this.endpoint + '?data=' + base64Data, true);
   xhr.setRequestHeader("Content-type", this.headers.contentType);
+  xhr.setRequestHeader("x-ironsource-atom-sdk-type", "js");
+  xhr.setRequestHeader("x-ironsource-atom-sdk-version", "1.0");
 
   xhr.onreadystatechange = function () {
     if (xhr.readyState === XMLHttpRequest.DONE) {
@@ -464,3 +473,5 @@ Tracker.prototype.flush = function () {
   this.timer = null;
   self.track();
 };
+
+}());

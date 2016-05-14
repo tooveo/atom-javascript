@@ -70,7 +70,8 @@ function IronSourceAtom(opt) {
 
 IronSourceAtom.prototype.putEvent = function (params, callback) {
   params = params || {};
-  if (!params.data || !params.table) throw new Error('Data and table is required');
+  if (!params.table) throw new Error('Stream is required');
+  if (!params.data) throw new Error('Data is required');
 
   params.apiVersion = this.options.apiVersion;
   params.auth = this.options.auth;
@@ -132,8 +133,11 @@ IronSourceAtom.prototype.putEvent = function (params, callback) {
 
 IronSourceAtom.prototype.putEvents = function (params, callback) {
   params = params || {};
-  if (!params.data || !(params.data instanceof Array) || !params.table || !params.data.length) {
-    throw new Error('Data (must be not empty array) and table is required');
+  if (!params.data || !(params.data instanceof Array) || !params.data.length) {
+    throw new Error('Data (must be not empty array) is required');
+  }
+  if (!params.table) {
+    throw new Error('Table is required');
   }
 
   params.apiVersion = this.options.apiVersion;

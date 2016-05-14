@@ -4,7 +4,7 @@
   "description": "IronSource Atom JS SDK",
   "main": "dist/sdk.js",
   "scripts": {
-    "test": "mocha atom-sdk/test/atom.spec.js &&  mocha atom-sdk/test/request.spec.js"
+    "test": "mocha"
   },
   "repository": {
     "type": "git",
@@ -23,13 +23,22 @@
     "gulp-self-execute": "^1.0.3",
     "gulp-uglify": "^1.5.3",
     "jsdom": "^8.5.0",
-    "karma": "^0.13.22",
-    "karma-chrome-launcher": "^1.0.1",
-    "karma-mocha": "^1.0.1",
-    "karma-requirejs": "^1.0.0",
-    "karma-sinon": "^1.0.5",
     "mocha": "^2.4.5",
     "requirejs": "^2.2.0",
     "sinon": "^1.17.3"
+  },
+  "testling": {
+    "harness": "mocha",
+    "files": "atom-sdk/test/*spec.js",
+    "browsers": [
+      "ie/6..latest",
+      "chrome/22..latest",
+      "firefox/16..latest",
+      "safari/latest",
+      "opera/11.0..latest",
+      "iphone/6",
+      "ipad/6",
+      "android-browser/latest"
+    ]
   }
 }
