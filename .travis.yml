@@ -25,7 +25,7 @@ addons:
   sauce_connect:
       username: "jacckson"
       access_key:
-        secure: "YGqLwJDTCbKi+NdLSjkffDELmmXTWtVdOHmBqPjlRHfcEuSXb0qELbsqpmQQFsYjyyPeoP5iM2XdsIOrxh+xenavUawrjrXvEoax0s6VTMqsCHLT76xTangwJmQQjShJzy8iljuDaz2kzQOZGIBlfeaFU0QygK/IrW3c+iFRdjOu7bzhcIq/hDgeU0gppi2W1GHCbnYsHp1xDrJ/Yy2jsTvYDiPxEyl9l4A6CtlcwKLk94+FYGURlpumy05xKNkYDi+k0asGnvm8H6KdpJA0KV4q4ZRoe2Q4GQsL3WEKxQi2myHbnhoBBplu4bMYW0R7iQACwK5XDSVs2VMGGweJjUabui/AfnZWKivfso9/v9cYPxgRWkY1CTv66YrgL6VI9EwKYGSFh1Ny2YiqO05QR8rEUUy3hB6CxO1TEROJD8D/7N3+EucQfSAgmYHgOrvTZSOgSNbUfiyWK+ie2Q1NNFfl0KKxDjmgHZdeLTDsG0Q+T7fkfZWMWJYmQh5eerdvEwBz+6zmmEI4mb0U+Phau6fNfkdk3Q8Kkw+y4nc/FQhoL5mP0HL9Bc+D9NOGV0SGEOPgNbYPLHzBt/F8hV8h2Dk2p1yqt8W4j+jQCPLu1I+yNRcfkEpptLuTnphU0rt7oS1gvkOCEgnTSW/bygVG2SGS8I1l2ZmLll+I7j46HNI="
+        secure: "396941bc-56c5-4f7d-9cf4-d29cea6e6704"
 after_script:
   - make test-coveralls
   - cat ./coverage/lcov.info | ./node_modules/.bin/coveralls --verbose
