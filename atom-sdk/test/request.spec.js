@@ -1,11 +1,5 @@
 'use strict';
 
-// function getXMLHttpRequest() {
-//   return global.XMLHttpRequest || require('jsdom').jsdom('', {
-//       url: 'http://localhost'
-//     }).defaultView.XMLHttpRequest;
-// }
-
 function setupServer(sinon, before, after) {
   var server;
   
@@ -43,7 +37,7 @@ function setupServer(sinon, before, after) {
     server.restore();
   });
 }
-// global.XMLHttpRequest = getXMLHttpRequest();
+global.XMLHttpRequest = require('xmlhttprequest').XMLHttpRequest;
 
 var Request = require('../../dist/sdk').Request;
 var expect = require('chai').expect;

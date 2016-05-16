@@ -13,8 +13,11 @@
     "IS",
     "Atom"
   ],
-  "homepage": "",
-  "private": true,
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/ironSource/atom-javascript"
+  },
+  "private": false,
   "ignore": [
     "**/.*",
     "node_modules",
