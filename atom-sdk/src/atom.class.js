@@ -22,6 +22,8 @@ function IronSourceAtom(opt) {
   };
 }
 
+window.IronSourceAtom = IronSourceAtom; 
+
 /**
  *
  * Put a single event to an Atom Stream.

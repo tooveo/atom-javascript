@@ -1,4 +1,4 @@
-(function(undefined) {
+(function(window, document, undefined) {
 
 'use strict';
 
@@ -23,6 +23,8 @@ function IronSourceAtom(opt) {
     auth: !!opt.auth ? opt.auth : ""
   };
 }
+
+window.IronSourceAtom = IronSourceAtom; 
 
 /**
  *
@@ -360,4 +362,4 @@ Response.prototype.err = function () {
   }  
 };
 
-}());
+}(window, document));

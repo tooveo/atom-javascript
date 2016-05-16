@@ -1,10 +1,10 @@
 langulage: node_js
 script:
-  - npm test
+  - testling
 node_js:
 - '4.4.4'
 before_install:
-  - npm i -g mocha
+  - npm i -g mocha testling
   - npm i
 env:
   matrix:

@@ -9,7 +9,7 @@ var selfExecute = require('gulp-self-execute');
 gulp.task('js', function () {
   return gulp.src('atom-sdk/src/*.js')
     .pipe(concat('sdk.js'))    
-    .pipe(selfExecute({}))
+    .pipe(selfExecute())
     .pipe(gulp.dest('dist/'))
     .pipe(rename('sdk.min.js'))
     .pipe(minify())
