@@ -87,7 +87,7 @@ describe('Testing Request class and methods', function() {
     var req = new Request('/err', params);
 
     req.post(function(res) {
-      expect(JSON.parse(res.err).error).to.be.not.eql(null);
+      expect(res.err.error).to.be.not.eql(null);
       expect(res.status).to.be.eql(401);
       done();
     });
@@ -97,7 +97,7 @@ describe('Testing Request class and methods', function() {
     var req = new Request('/err', params);
 
     req.get(function(res) {
-      expect(JSON.parse(res.err).error).to.be.not.eql(null);
+      expect(res.err.error).to.be.not.eql(null);
       expect(res.status).to.be.eql(401);
       done();
     });

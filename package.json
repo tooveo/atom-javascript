@@ -4,7 +4,7 @@
   "description": "IronSource Atom JS SDK",
   "main": "dist/sdk.js",
   "scripts": {
-    "test": "mocha atom-sdk/test/atom.spec.js &&  mocha atom-sdk/test/request.spec.js"
+    "test": "mocha atom-sdk/test/atom.spec.js && mocha atom-sdk/test/request.spec.js && mocha atom-sdk/test/response.spec.js"
   },
   "repository": {
     "type": "git",
