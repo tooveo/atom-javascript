@@ -1,16 +1,24 @@
-# ironSource.atom SDK for JS [![License][license-image]][license-url]
+# ironSource.atom SDK for JS
+[![License][license-image]][license-url]
+[![Coverage Status][coveralls-image]][coveralls-url]
+[![Build status][travis-image]][travis-url]
+## Browsers support
+
+| [<img src="https://raw.githubusercontent.com/godban/browsers-support-badges/master/src/images/edge.png" alt="IE / Edge" width="16px" height="16px" />](http://godban.github.io/browsers-support-badges/)</br>IE / Edge | [<img src="https://raw.githubusercontent.com/godban/browsers-support-badges/master/src/images/firefox.png" alt="Firefox" width="16px" height="16px" />](http://godban.github.io/browsers-support-badges/)</br>Firefox | [<img src="https://raw.githubusercontent.com/godban/browsers-support-badges/master/src/images/chrome.png" alt="Chrome" width="16px" height="16px" />](http://godban.github.io/browsers-support-badges/)</br>Chrome | [<img src="https://raw.githubusercontent.com/godban/browsers-support-badges/master/src/images/safari.png" alt="Safari" width="16px" height="16px" />](http://godban.github.io/browsers-support-badges/)</br>Safari | [<img src="https://raw.githubusercontent.com/godban/browsers-support-badges/master/src/images/opera.png" alt="Opera" width="16px" height="16px" />](http://godban.github.io/browsers-support-badges/)</br>Opera | [<img src="https://raw.githubusercontent.com/godban/browsers-support-badges/master/src/images/safari-ios.png" alt="iOS Safari" width="16px" height="16px" />](http://godban.github.io/browsers-support-badges/)</br>iOS Safari | [<img src="https://raw.githubusercontent.com/godban/browsers-support-badges/master/src/images/chrome-android.png" alt="Chrome for Android" width="16px" height="16px" />](http://godban.github.io/browsers-support-badges/)</br>Chrome for Android |
+| --------- | --------- | --------- | --------- | --------- | --------- | --------- |
+| IE7, IE8, IE9, IE10, IE11, Edge| last 2 versions| last 2 versions| last 2 versions| last 2 versions| last 2 versions| last 2 versions
 
 ### Using the SDK
 
 #### Tracking events
 __Installation__
 ```sh
-$ npm i --save github.com/ironSource/atom-js
+$ bower install --save atom-sdk-js
 ```
 #### Add script file
 ```html
 // ...
-<script src="node_modules/is-atom/dist/sdk.min.js"></script>
+<script src="bower_components/atom-sdk-js/dist/sdk.min.js"></script>
 ```
 
 #### Now you can start tracking events:
@@ -93,3 +101,7 @@ MIT
 
 [license-image]: https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square
 [license-url]: LICENSE
+[travis-image]: https://img.shields.io/travis/ironSource/atom-javascript.svg
+[travis-url]: https://travis-ci.org/JironSource/atom-javascript.svg?branch=master
+[coveralls-image]: https://coveralls.io/repos/github/ironSource/atom-javascript/badge.svg?branch=master
+[coveralls-url]: https://coveralls.io/github/ironSource/atom-javascript?branch=master
