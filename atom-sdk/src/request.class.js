@@ -95,9 +95,7 @@ Request.prototype.get = function (callback) {
 
   try {
     base64Data = btoa(data);
-  } catch (e) {
-    console.log('error=' + e);
-  }
+  } catch (e) {}
 
   xhr.open("GET", this.endpoint + '?data=' + base64Data, true);
   xhr.setRequestHeader("Content-type", this.headers.contentType);

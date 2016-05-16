@@ -133,11 +133,12 @@ IronSourceAtom.prototype.putEvent = function (params, callback) {
 
 IronSourceAtom.prototype.putEvents = function (params, callback) {
   params = params || {};
+  if (!params.table) {
+    throw new Error('Stream is required');
+  }
+  
   if (!params.data || !(params.data instanceof Array) || !params.data.length) {
     throw new Error('Data (must be not empty array) is required');
-  }
-  if (!params.table) {
-    throw new Error('Table is required');
   }
 
   params.apiVersion = this.options.apiVersion;
