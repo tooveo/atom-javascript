@@ -1,5 +1,6 @@
-# ironSource.atom SDK for JS
+# ironSource.atom SDK for JavaScript
 [![License][license-image]][license-url]
+[![Docs][docs-image]][docs-url]
 [![Coverage Status][coveralls-image]][coveralls-url]
 [![Build status][travis-image]][travis-url]
 ## Browsers support
@@ -10,6 +11,7 @@
 
 ### Using the SDK
 
+Read the full [documentation](https://ironsource.github.io/atom-javascript/)
 #### Tracking events
 __Installation__
 ```sh
@@ -105,3 +107,5 @@ MIT
 [travis-url]: https://travis-ci.org/JironSource/atom-javascript.svg?branch=master
 [coveralls-image]: https://coveralls.io/repos/github/ironSource/atom-javascript/badge.svg?branch=master
 [coveralls-url]: https://coveralls.io/github/ironSource/atom-javascript?branch=master
+[docs-image]: https://img.shields.io/badge/docs-latest-blue.svg
+[docs-url]: https://ironsource.github.io/atom-javascript/
