@@ -1,0 +1,1 @@
+define({  "title": "ApiDoc for IronSource Atom JS SDK",  "name": "IronSource Atom JS SDK",  "version": "1.0.0",  "description": "ApiDoc for IronSource Atom JS SDK",  "sampleUrl": false,  "apidoc": "0.2.0",  "generator": {    "name": "apidoc",    "time": "2016-05-10T14:55:11.888Z",    "url": "http://apidocjs.com",    "version": "0.16.1"  }});
