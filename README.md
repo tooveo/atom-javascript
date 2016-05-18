@@ -9,94 +9,58 @@
 | --------- | --------- | --------- | --------- | --------- | --------- | --------- |
 | IE7, IE8, IE9, IE10, IE11, Edge| last 2 versions| last 2 versions| last 2 versions| last 2 versions| last 2 versions| last 2 versions
 
-### Using the SDK
+atom-javascript is the official [ironSource.atom](http://www.ironsrc.com/data-flow-management) SDK for the JavaScript programming language.
 
-Read the full [documentation](https://ironsource.github.io/atom-javascript/)
-#### Tracking events
-__Installation__
+- [Signup](https://atom.ironsrc.com/#/signup)
+- [Documentation](https://ironsource.github.io/atom-javascript/)
+- [Installation](#Installation)
+- [Sending an event](#Using-the-API-layer-to-send-events)
+
+#### Installation
 ```sh
 $ bower install --save atom-sdk-js
 ```
-#### Add script file
+##### Add script file
 ```html
 // ...
 <script src="bower_components/atom-sdk-js/dist/sdk.min.js"></script>
 ```
 
-#### Now you can start tracking events:
+#### Using-the-API-layer-to-send-events
+
+Here's an example of sending an event:
 ```js
-// ...
 var options = {
   endpoint: "https://track.atom-data.io/",
   auth: "YOUR_API_KEY"
 }
-var atom = new IronSourceAtom(options);
-```
-### Main IronSource class
-ISAtom(options) object with **options**:
-  * **endpoint** {String} — The endpoint URI to send requests to. The default endpoint is: **“https://track.atom-data.io/”** .
-  * **auth** {String} - optional HMAC for authentication.
 
-**Example: var atom = new IronSourceAtom(options);**
-
-### IronSource Atom tracking methods
-#### putEvent(params, callback)
-Send single event to IS server
-**params**:
-  * **stream** {String} *Required* - **“cluster.schema.table_name”** stream name to send data.
-  * **data** {String} *Required* - String with any data and any structure.
-  * **method** {String} *Optional* - POST or GET http method to transfer data. Default "POST".
-
-**callback** {Function} - custom function for work with result.
-```js
-var options = {
-  // ...
-};
 var atom = new IronSourceAtom(options);
 
-// Put single event
 var params = {
-  stream: "STREAM_NAME",
-  data: "{\"name\": \"iron\", \"last_name\": \"Beast\"}",
+  stream: "STREAM_NAME", //your target stream name
+  data: JSON.stringify({name: "iron", last_name: "Source"}), //String with any data and any structure.
   method: "GET" // optional, default "POST"
 }
+
 var callback = function(res) {
   // res = {err, data, statusCode}
   // ...
 }
 
 atom.putEvent(params, callback);
-```
 
-#### putEvents(params, callback)
-Send multiple events to IS server
-**params**:
-  * **stream** {String} *Required* - **“cluster.schema.table_name”** stream name to send data.
-  * **data** {Array} *Required* - Array of strings, the string can be any data of any structure.
-  * **method** {String} *Optional* - POST or GET http method to transfer data. Default "POST".
+// or
 
-**callback** {Function} - custom function for work with result.
-```js
-var options = {
-  // ...
-};
-var atom = new IronSourceAtom(options);
-
-// Put single event
 var params = {
-  stream: "STREAM_NAME",
-  data: ["{\"name\": \"iron\", \"last_name\": \"Beast\"}",
-         "{\"name\": \"iron2\", \"last_name\": \"Beast2\"}"],
+  stream: "STREAM_NAME", // your target stream name
+  data: [{name: "iron", last_name: "Beast"},
+         {name: "iron2", last_name: "Beast2"}], // Array with any data and any structure.
   method: "GET" // optional, default "POST"
 }
-var callback = function(res) {
-  // res = {err, data, statusCode}
-  // ...
-}
 
-atom.putEvents(params, callback);
+atom.putEvents(params, callback); // for send bulk of events
 ```
-
 
 ### License
 MIT
