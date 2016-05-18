@@ -62,9 +62,17 @@ var params = {
 atom.putEvents(params, callback); // for send bulk of events
 ```
 
+### Example
+
+You can use our [example][example-url] for sending data to Atom:
+
+![alt text][example]
+
 ### License
 MIT
 
+[example-url]: https://github.com/ironSource/atom-javascript/blob/master/atom-sdk/example/index.html
+[example]: https://cloud.githubusercontent.com/assets/7361100/15369750/abf65a62-1d3c-11e6-90c3-c25dd331c5c6.png "example"
 [license-image]: https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square
 [license-url]: LICENSE
 [travis-image]: https://travis-ci.org/ironSource/atom-javascript.svg?branch=master
