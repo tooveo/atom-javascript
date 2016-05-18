@@ -12,9 +12,6 @@
     "type": "git",
     "url": "https://github.com/ironSource/atom-javascript.git"
   },
-  "apidoc": {
-    "title": "apiDoc for IronSource Atom JS SDK"
-  },
   "license": "MIT",
   "devDependencies": {
     "browserify-istanbul": "^2.0.0",
