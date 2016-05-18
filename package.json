@@ -4,7 +4,9 @@
   "description": "IronSource Atom JS SDK",
   "main": "dist/sdk.js",
   "scripts": {
-    "test": "mocha"
+    "test": "karma start",
+    "travis": "",
+    "coverage": "cat ./coverage/lcov.info | ./node_modules/.bin/coveralls --verbose"
   },
   "repository": {
     "type": "git",
@@ -15,6 +17,7 @@
   },
   "license": "MIT",
   "devDependencies": {
+    "browserify-istanbul": "^2.0.0",
     "btoa": "^1.1.2",
     "chai": "^3.5.0",
     "coveralls": "^2.11.9",
@@ -25,24 +28,23 @@
     "gulp-uglify": "^1.5.3",
     "istanbul": "^0.4.3",
     "jsdom": "^8.5.0",
+    "karma": "^0.13.22",
+    "karma-browserify": "^5.0.5",
+    "karma-chai": "^0.1.0",
+    "karma-chrome-launcher": "^1.0.1",
+    "karma-coverage": "^1.0.0",
+    "karma-mocha": "^1.0.1",
+    "karma-mocha-reporter": "^2.0.3",
+    "karma-phantomjs-launcher": "^1.0.0",
+    "karma-sauce-launcher": "^1.0.0",
+    "karma-sinon-chai": "^1.2.0",
+    "lolex": "^1.4.0",
     "mocha": "^2.4.5",
     "mocha-lcov-reporter": "^1.2.0",
+    "phantomjs": "^2.1.7",
     "sinon": "^1.17.3",
-    "tape": "^4.5.1",
+    "sinon-chai": "^2.8.0",
+    "watchify": "^3.7.0",
     "xmlhttprequest": "^1.8.0"
-  },
-  "testling": {
-    "harness": "mocha",
-    "files": "atom-sdk/test/*spec.js",
-    "browsers": [
-      "ie/6..latest",
-      "chrome/22..latest",
-      "firefox/16..latest",
-      "safari/latest",
-      "opera/11.0..latest",
-      "iphone/6",
-      "ipad/6",
-      "android-browser/latest"
-    ]
   }
 }
