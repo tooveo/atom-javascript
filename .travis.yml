@@ -1,27 +1,9 @@
-language: node_js
+langulage: node_js
 script:
-  - npm test
+- npm test
 node_js:
-  - '4.4.4'
+- 4.4.4
 before_install:
-  - npm i
-env:
-  global:
-  - secure: "2iZOAfc7y0msjz9OCskPC1saMfRIpNgwh8tLeUfJoAJunP9d5nMKVu0CyeG98IIlb4cyMDFMoElzW0VRxY/NG4GW7xqeT2YW+CmAuZyMq3FRom422IgkhrWgWouNe7ARlGASzJwtR/xcRtRw2yXjFJwDAEpHbu3+BnqQ3dgGbuoekfVtB5/dejYIbHOFs/tTTTF28qCdqQdJahluwaCpuoqRu0JJBDL7wj/PtA8b3Q63OHqHw3axjxs+9GJu0j1nnx5x0RIEgKkrRjFwkjUaJRGkKesClvU8dGW31SwWpIyaShbAQX7lycMIquCr2zPBzm0pF9dJb4sLQcghMHSDqzYB1pXJ73GkCZUAvAaSm9RKj5b6NJmlIWGyJSejtxPfasUsdSNftO8DmgT8UCcl/kSAl7taF4TT1uUrHA3s5xGsxqJ8lkL7ARZd1k+P/bQw/hNWXgskByW5RZRrJqoRmw/Q+6OnvdCMyPRHzIGv4dHCCy36MB3oTnx1qaDAEGe13daBa8NP3uFKWEulVeEXzN20BQ6EF7zSySQ6Rj+FhusP5Cs1oiGld+YaT0rZLaqAW038e/Q+Ae40M5cNalplK+Sn0eHovA/HaUX38tzYAhX89NtjwjizRWz4+tzKiVfojAkKtZ4Y57uIywh4sYR3cyHXK5mOD6I+Mc7h1c9oKgY="
-  - secure: "yJ4vSzy6Vn1gs7vreD43yZu3NCw7r53PEd82qcLyGRz15F1hqXyzb+Qx/lAcwDDkXnaf96dJvGZYixEW/M0yuOrgc9lb3ehtE7VBfq4qU9qNqvT+H773gAQgdleN9Kw4AYMlP0gj5MtWYC/o0T3TMSHcexCvzPjVMGcRE+br+wIAZGWU5+i86Iy9Hz+ZRy257nySNu29ZOt3A1NNIOyGLXAjY3vIKQF/kakdrE1VFp2z2BUXju8IBp5fHGrNj5TnPlnt6t+hDbbnyFNRGsavk4rLdByWV2lxN8ayP2ga1iHrg3YUhZzd4lkcOJKH5EkTY5cxlEPxFIS60apQSM4oEpzavlvmz8snPrBxy5OboAeCSsWiilhPj/YAJFIttgu8AXKwGvvHZKDjEZ5PpNbTeQ6hSAO4c31BVlDu7TKEoxJ7PDk64xfzPzF90vF+CR/LoBMvNO/10R4jMfI7Lmonm17D5lrxdsb80AJgbk8RYREcrX6AWILpg+XVtR6BxKVCURM09hkl7pGKnnywDVAuGZVJPFbJtZy54zJWavkZXENiwkZXukM5OkPAbvhovzUh1DfSCsuqGE2wFPCAxV9eVOsXKf2KKhLVRqphIIKzdraMQXltq/4dyZMupwUVI+hrG/9+6QJAjYIpG95E8BdQc9c1UyQeCLFU3OPL0Y57Pec="
-  matrix:
-      - BROWSER=chrome
-      - BROWSER=firefox
-      - BROWSER=safari
-      - BROWSER=ie:11
-      - BROWSER=ie:10
-      - BROWSER=ie:9
-      - BROWSER=ie:8
-      - BROWSER=iphone:9
-      - BROWSER=iphone:8
-      - BROWSER=iphone:7
-      - BROWSER=iphone:6
-      - BROWSER=android:5
-      - BROWSER=android:6
+- npm i
 after_script:
-  - npm run coverage
+- cat ./coverage/lcov.info | ./node_modules/.bin/coveralls --verbose

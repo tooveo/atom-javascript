@@ -4,10 +4,7 @@
 [![Coverage Status][coveralls-image]][coveralls-url]
 [![Build status][travis-image]][travis-url]
 ## Browsers support
-
-| [<img src="https://raw.githubusercontent.com/godban/browsers-support-badges/master/src/images/edge.png" alt="IE / Edge" width="16px" height="16px" />](http://godban.github.io/browsers-support-badges/)</br>IE / Edge | [<img src="https://raw.githubusercontent.com/godban/browsers-support-badges/master/src/images/firefox.png" alt="Firefox" width="16px" height="16px" />](http://godban.github.io/browsers-support-badges/)</br>Firefox | [<img src="https://raw.githubusercontent.com/godban/browsers-support-badges/master/src/images/chrome.png" alt="Chrome" width="16px" height="16px" />](http://godban.github.io/browsers-support-badges/)</br>Chrome | [<img src="https://raw.githubusercontent.com/godban/browsers-support-badges/master/src/images/safari.png" alt="Safari" width="16px" height="16px" />](http://godban.github.io/browsers-support-badges/)</br>Safari | [<img src="https://raw.githubusercontent.com/godban/browsers-support-badges/master/src/images/opera.png" alt="Opera" width="16px" height="16px" />](http://godban.github.io/browsers-support-badges/)</br>Opera | [<img src="https://raw.githubusercontent.com/godban/browsers-support-badges/master/src/images/safari-ios.png" alt="iOS Safari" width="16px" height="16px" />](http://godban.github.io/browsers-support-badges/)</br>iOS Safari | [<img src="https://raw.githubusercontent.com/godban/browsers-support-badges/master/src/images/chrome-android.png" alt="Chrome for Android" width="16px" height="16px" />](http://godban.github.io/browsers-support-badges/)</br>Chrome for Android |
-| --------- | --------- | --------- | --------- | --------- | --------- | --------- |
-| IE7, IE8, IE9, IE10, IE11, Edge| last 2 versions| last 2 versions| last 2 versions| last 2 versions| last 2 versions| last 2 versions
+[![Sauce Test Status][sauce-image]][sauce-url]
 
 atom-javascript is the official [ironSource.atom](http://www.ironsrc.com/data-flow-management) SDK for the JavaScript programming language.
 
@@ -26,7 +23,7 @@ $ bower install --save atom-sdk-js
 <script src="bower_components/atom-sdk-js/dist/sdk.min.js"></script>
 ```
 
-#### Using-the-API-layer-to-send-events
+#### Using the API layer to send events
 
 Here's an example of sending an event:
 ```js
@@ -81,3 +78,5 @@ MIT
 [coveralls-url]: https://coveralls.io/github/ironSource/atom-javascript?branch=master
 [docs-image]: https://img.shields.io/badge/docs-latest-blue.svg
 [docs-url]: https://ironsource.github.io/atom-javascript/
+[sauce-image]: https://cloud.githubusercontent.com/assets/19283325/15394111/8b41c372-1dd9-11e6-86b4-3ea218c0f1a4.png
+[sauce-url]: https://saucelabs.com/u/jacckson
