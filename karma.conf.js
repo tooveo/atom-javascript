@@ -17,11 +17,11 @@ module.exports = function(config) {
       platform: 'OS X 10.9',
       version: '7'
     },
-    'SL_IOS8': {
+    'SL_IOS9': {
       base: 'SauceLabs',
       browserName: 'iphone',
-      platform: 'OS X 10.10',
-      version: '8.4'
+      platform: 'OS X 10.9',
+      version: '9'
     },
     'SL_IE10': {
       base: 'SauceLabs',
@@ -29,11 +29,11 @@ module.exports = function(config) {
       platform: 'Windows 2012',
       version: '10'
     },
-    'SL_ANDROID4.1': {
+    'SL_ANDROID5.1': {
       base: 'SauceLabs',
       browserName: 'android',
       platform: 'Linux',
-      version: '4.1'
+      version: '5.1'
     }
   };
 
@@ -82,19 +82,20 @@ module.exports = function(config) {
     autoWatch: false,
     sauceLabs: {
       testName: 'IronSource Atom js',
-      retryLimit: 1,
+      retryLimit: 2,
       recordVideo: false,
       recordScreenshots: false,
       build: process.env.TRAVIS_BUILD_NUMBER,
       tunnelIdentifier: process.env.TRAVIS_JOB_NUMBER,
       username: process.env.SAUCE_USERNAME,
       accessKey: process.env.SAUCE_ACCESS_KEY,
-      startConnect: true
+      startConnect: true,
+      public: 'public'
     },
-    captureTimeout: 200000,
-    browserDisconnectTimeout : 50000,
+    captureTimeout: 260000,
+    browserDisconnectTimeout : 60000,
     browserDisconnectTolerance : 3,
-    browserNoActivityTimeout : 20000,
+    browserNoActivityTimeout : 60000,
     customLaunchers: customLaunchers,
     browsers: Object.keys(customLaunchers),
     singleRun: true

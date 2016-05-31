@@ -12,7 +12,7 @@ describe('Atom class test', function() {
 
     expect(atom.options).to.eql({
       endpoint: "https://track.atom-data.io/",
-      apiVersion: "V1",
+      apiVersion: "1.0.1",
       auth: ""
     })
   });
@@ -21,7 +21,7 @@ describe('Atom class test', function() {
     var opt = {
       endpoint: "/some-url",
       auth: "aM<dy2gchHsad07*hdACY",
-      apiVersion: 'V1'
+      apiVersion: '1.0.1'
     };
     var atom = new ISAtom(opt);
 
@@ -46,21 +46,21 @@ describe('Atom class test', function() {
   it('should throw error for putEvent/putEvents if no required params', function(){
     var atom = new ISAtom();
 
-    expect(function() {
-      atom.putEvent({table: "test"});
-    }).to.throw('Data is required');
+      atom.putEvent({table: "test"}, function(err){
+        expect(err).to.be.eql('Data is required');
+      });
 
-    expect(function() {
-      atom.putEvent();
-    }).to.throw('Stream is required');
-
-    expect(function() {
-      atom.putEvents({table: "test"});
-    }).to.throw('Data (must be not empty array) is required');
-
-    expect(function() {
-      atom.putEvents({data: ['some data']});
-    }).to.throw('Stream is required');
+      atom.putEvent({}, function(err){
+        expect(err).to.be.eql('Stream is required');
+      });
+    
+      atom.putEvents({table: "test"}, function(err){
+        expect(err).to.be.eql('Data (must be not empty array) is required');
+      });
+    
+      atom.putEvents({data: ['some data']}, function(err){
+        expect(err).to.be.eql('Stream is required');
+      });
   });
 
   it('should generate right data for GET request', function() {

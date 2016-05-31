@@ -14,7 +14,7 @@
 function IronSourceAtom(opt) {
   opt = opt || {};
   var END_POINT = "https://track.atom-data.io/";
-  var API_VERSION = "V1";
+  var API_VERSION = "1.0.1";
   this.options = {
     endpoint: !!opt.endpoint && opt.endpoint.toString() || END_POINT,
     apiVersion: API_VERSION,
@@ -28,7 +28,7 @@ window.IronSourceAtom = IronSourceAtom;
  *
  * Put a single event to an Atom Stream.
  * @api {get/post} https://track.atom-data.io/ putEvent Send single data to Atom server
- * @apiVersion 1.0.0
+ * @apiVersion 1.0.1
  * @apiGroup Atom
  * @apiParam {String} stream Stream name for saving data in db table
  * @apiParam {String} data Data for saving 
@@ -45,9 +45,12 @@ window.IronSourceAtom = IronSourceAtom;
  * @apiErrorExample Error-Response:
  *  HTTP 401 Permission Denied
  *  {
- *    "err": {"Target Stream": "Permission denied",
+ *    "err": {
+ *      "message": "Permission denied",
+ *      "status": 401
+ *    },
  *    "data": null,
- *    "status": 401    
+ *
  *  }
  * 
  * @apiSuccessExample Response:
@@ -63,18 +66,13 @@ window.IronSourceAtom = IronSourceAtom;
  *    "stream": "streamName",
  *    "data":  "{\"name\": \"iron\", \"last_name\": \"Source\"}"
  * }
- * 
- * @param {Object} params
- * @param {String} params.table - target db table (cluster + table + schema)
- * @param {String} params.data - client data
- * @param {String} params.method (optional) - request method (default = "POST")
- * @param {Function} callback - callback client function
+ *
  */
 
 IronSourceAtom.prototype.putEvent = function (params, callback) {
   params = params || {};
-  if (!params.table) throw new Error('Stream is required');
-  if (!params.data) throw new Error('Data is required');
+  if (!params.table) return callback('Stream is required', null);
+  if (!params.data) return callback('Data is required', null);
 
   params.apiVersion = this.options.apiVersion;
   params.auth = this.options.auth;
@@ -91,7 +89,7 @@ IronSourceAtom.prototype.putEvent = function (params, callback) {
  * Put a bulk of events to Atom.
  *
  * @api {get/post} https://track.atom-data.io/bulk putEvents Send multiple events data to Atom server
- * @apiVersion 1.0.0
+ * @apiVersion 1.0.1
  * @apiGroup Atom
  * @apiParam {String} stream Stream name for saving data in db table
  * @apiParam {Array} data Multiple event data for saving
@@ -108,9 +106,12 @@ IronSourceAtom.prototype.putEvent = function (params, callback) {
  * @apiErrorExample Error-Response:
  *  HTTP 401 Permission Denied
  *  {
- *    "err": {"Target Stream": "Permission denied",
- *    "data": null,
- *    "status": 401
+ *    "err": 
+ *    {
+ *      "message": "Error message", 
+ *      "status": 401 
+ *    },
+ *    "data": null
  *  }
  *
  * @apiSuccessExample Response:
@@ -118,7 +119,6 @@ IronSourceAtom.prototype.putEvent = function (params, callback) {
  * {
  *    "err": null,
  *    "data": "success"
- *    "status": 200
  * }
  * @apiParamExample {json} Request-Example:
  * {
@@ -128,21 +128,16 @@ IronSourceAtom.prototype.putEvent = function (params, callback) {
  *
  * }
  *
- * @param {Object} params
- * @param {String} params.table - target db table (cluster + table + schema)
- * @param {Array} params.data - client data
- * @param {String} params.method (optional) - request method (default = "POST")
- * @param {Function} callback - callback client function
  */
 
 IronSourceAtom.prototype.putEvents = function (params, callback) {
   params = params || {};
   if (!params.table) {
-    throw new Error('Stream is required');
+    return callback('Stream is required', null);
   }
   
   if (!params.data || !(params.data instanceof Array) || !params.data.length) {
-    throw new Error('Data (must be not empty array) is required');
+    return callback('Data (must be not empty array) is required', null);
   }
 
   params.apiVersion = this.options.apiVersion;

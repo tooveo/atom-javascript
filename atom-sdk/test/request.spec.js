@@ -40,6 +40,7 @@ function setupServer(sinon, before, after) {
 global.XMLHttpRequest = require('xmlhttprequest').XMLHttpRequest;
 
 var Request = require('../../dist/sdk').Request;
+var ISAtom = require('../../dist/sdk').IronSourceAtom;
 var expect = require('chai').expect;
 var sinon = require('sinon');
 var mock = require("./mock/is.mock");
@@ -58,8 +59,8 @@ describe('Testing Request class and methods', function() {
   it('should send POST request', function(done) {    
     var req = new Request('/endpoint', params);
     
-    req.post(function(res) {
-      expect(res.data).to.be.eql({
+    req.post(function(err, data) {
+      expect(data).to.be.eql({
         success: "true"
       });
       done();
@@ -69,8 +70,8 @@ describe('Testing Request class and methods', function() {
   it('should send GET request', function(done) {
     var req = new Request('/endpoint', params);
     
-      req.get(function(res) {
-        expect(res.data).to.be.eql({
+      req.get(function(err, data) {
+        expect(data).to.be.eql({
           success: "true"
         });
         done();
@@ -80,9 +81,9 @@ describe('Testing Request class and methods', function() {
   it('should handle POST request error', function(done) {
     var req = new Request('/err', params);
 
-    req.post(function(res) {
-      expect(res.err.error).to.be.not.eql(null);
-      expect(res.status).to.be.eql(401);
+    req.post(function(err, data) {
+      expect(err).to.be.not.eql(null);
+      expect(err.status).to.be.eql(401);
       done();
     });
   });
@@ -90,45 +91,69 @@ describe('Testing Request class and methods', function() {
   it('should handle GET request error', function(done) {
     var req = new Request('/err', params);
 
-    req.get(function(res) {
-      expect(res.err.error).to.be.not.eql(null);
-      expect(res.status).to.be.eql(401);
+    req.get(function(err, data) {
+      expect(err).to.be.not.eql(null);
+      expect(err.status).to.be.eql(401);
       done();
     });
   });
   
-  it('should throw error after 2min resend request to server with 500+ status', function(done){
-    var req = new Request('/server-err', params);
-    var resp;
-    var clock = sinon.useFakeTimers();
-    
-    (function() {
-      req.post(function (res) {
-        resp = res;
-      });
-      clock.tick(12010);
-      expect(resp).to.be.undefined;
-      clock.tick(1201000);
-      expect(resp.status).to.be.eql(500);
-      done();      
-    })();
-    clock.restore();
-  });
-
   describe('should return throw error if params don`t have table or data attr', function() {
     var req = new Request('/endpoint', {});
     
     it('err for POST method', function() {
-      expect(function(){
-        req.post();
-      }).to.throw("Table and data required fields for send event");
+        req.post(function(err){
+          expect(err).to.be.eql('Table and data required fields for send event')
+        });
     });
     
     it('err for GET method', function() {
-      expect(function(){
-        req.get();
-      }).to.throw("Table and data required fields for send event");  
+        req.get(function(err){
+          expect(err).to.be.eql('Table and data required fields for send event')
+        });
     });
     
   });
+  
+  it('should check real params for putEvent', function(done) {
+    var atom = new ISAtom({"endpoint": '/endpoint'});
+    var params = {
+      table: 'table',
+      data: 'data',
+      method: 'GET'
+    };
+    
+    atom.putEvent(params, function(err, data){
+      expect(params.apiVersion).to.be.not.undefined;
+      expect(params.auth).to.be.not.undefined;
+      done();
+    });
+  });
+  
+  it('should check real params for putEvents', function(done) {
+    var atom = new ISAtom({"endpoint": '/endpoint'});
+    var params = {
+      table: 'table',
+      data: ['data']
+      
+    };
+   
+    atom.putEvents(params, function(err, data){
+      expect(params.apiVersion).to.be.not.undefined;
+      expect(params.auth).to.be.not.undefined;
+      done();
+    });
+  });
+
+  
+
+  it('should check health method', function(done) {
+    var atom = new ISAtom({"endpoint": '/endpoint'});
+
+    atom.health(function(err, data, status){
+      expect(status).to.be.not.eql(500);
+      expect(status).to.be.not.eql(404);
+      done();
+    })
+  })
 });

@@ -16,7 +16,7 @@
 function IronSourceAtom(opt) {
   opt = opt || {};
   var END_POINT = "https://track.atom-data.io/";
-  var API_VERSION = "V1";
+  var API_VERSION = "1.0.1";
   this.options = {
     endpoint: !!opt.endpoint && opt.endpoint.toString() || END_POINT,
     apiVersion: API_VERSION,
@@ -30,6 +30,7 @@ window.IronSourceAtom = IronSourceAtom;
  *
  * Put a single event to an Atom Stream.
  * @api {get/post} https://track.atom-data.io/ putEvent Send single data to Atom server
+ * @apiVersion 1.0.1
  * @apiGroup Atom
  * @apiParam {String} stream Stream name for saving data in db table
  * @apiParam {String} data Data for saving 
@@ -46,9 +47,12 @@ window.IronSourceAtom = IronSourceAtom;
  * @apiErrorExample Error-Response:
  *  HTTP 401 Permission Denied
  *  {
- *    "err": {"Target Stream": "Permission denied",
+ *    "err": {
+ *      "message": "Permission denied",
+ *      "status": 401
+ *    },
  *    "data": null,
- *    "status": 401    
+ *
  *  }
  * 
  * @apiSuccessExample Response:
@@ -64,18 +68,13 @@ window.IronSourceAtom = IronSourceAtom;
  *    "stream": "streamName",
  *    "data":  "{\"name\": \"iron\", \"last_name\": \"Source\"}"
  * }
- * 
- * @param {Object} params
- * @param {String} params.table - target db table (cluster + table + schema)
- * @param {String} params.data - client data
- * @param {String} params.method (optional) - request method (default = "POST")
- * @param {Function} callback - callback client function
+ *
  */
 
 IronSourceAtom.prototype.putEvent = function (params, callback) {
   params = params || {};
-  if (!params.table) throw new Error('Stream is required');
-  if (!params.data) throw new Error('Data is required');
+  if (!params.table) return callback('Stream is required', null);
+  if (!params.data) return callback('Data is required', null);
 
   params.apiVersion = this.options.apiVersion;
   params.auth = this.options.auth;
@@ -92,6 +91,7 @@ IronSourceAtom.prototype.putEvent = function (params, callback) {
  * Put a bulk of events to Atom.
  *
  * @api {get/post} https://track.atom-data.io/bulk putEvents Send multiple events data to Atom server
+ * @apiVersion 1.0.1
  * @apiGroup Atom
  * @apiParam {String} stream Stream name for saving data in db table
  * @apiParam {Array} data Multiple event data for saving
@@ -108,9 +108,12 @@ IronSourceAtom.prototype.putEvent = function (params, callback) {
  * @apiErrorExample Error-Response:
  *  HTTP 401 Permission Denied
  *  {
- *    "err": {"Target Stream": "Permission denied",
- *    "data": null,
- *    "status": 401
+ *    "err": 
+ *    {
+ *      "message": "Error message", 
+ *      "status": 401 
+ *    },
+ *    "data": null
  *  }
  *
  * @apiSuccessExample Response:
@@ -118,7 +121,6 @@ IronSourceAtom.prototype.putEvent = function (params, callback) {
  * {
  *    "err": null,
  *    "data": "success"
- *    "status": 200
  * }
  * @apiParamExample {json} Request-Example:
  * {
@@ -128,21 +130,16 @@ IronSourceAtom.prototype.putEvent = function (params, callback) {
  *
  * }
  *
- * @param {Object} params
- * @param {String} params.table - target db table (cluster + table + schema)
- * @param {Array} params.data - client data
- * @param {String} params.method (optional) - request method (default = "POST")
- * @param {Function} callback - callback client function
  */
 
 IronSourceAtom.prototype.putEvents = function (params, callback) {
   params = params || {};
   if (!params.table) {
-    throw new Error('Stream is required');
+    return callback('Stream is required', null);
   }
   
   if (!params.data || !(params.data instanceof Array) || !params.data.length) {
-    throw new Error('Data (must be not empty array) is required');
+    return callback('Data (must be not empty array) is required', null);
   }
 
   params.apiVersion = this.options.apiVersion;
@@ -191,7 +188,6 @@ function Request(endpoint, params) {
     contentType: "application/json;charset=UTF-8"
   };
 
-  this.timer = 1000;
   this.xhr = (XMLHttpRequest) ? new XMLHttpRequest() : new ActiveXObject("Microsoft.XMLHTTP");
 }
 
@@ -204,8 +200,9 @@ function Request(endpoint, params) {
 
 Request.prototype.post = function (callback) {
   if (!this.params.table || !this.params.data) {
-    throw new Error ("Table and data required fields for send event");
+    return callback("Table and data required fields for send event", null);
   }
+  
   var xhr = this.xhr;
   var data = JSON.stringify({
     data: this.params.data,
@@ -213,34 +210,22 @@ Request.prototype.post = function (callback) {
     apiVersion: this.params.apiVersion,
     auth: this.params.auth
   });
-  var self = this;
   
   xhr.open("POST", this.endpoint, true);
   xhr.setRequestHeader("Content-type", this.headers.contentType);
   xhr.setRequestHeader("x-ironsource-atom-sdk-type", "js");
-  xhr.setRequestHeader("x-ironsource-atom-sdk-version", "1.0");
+  xhr.setRequestHeader("x-ironsource-atom-sdk-version", "1.0.1");
 
   xhr.onreadystatechange = function () {
     if (xhr.readyState === XMLHttpRequest.DONE) {
       var res;
-      if (xhr.status >= 200 && xhr.status < 300) {
+      if (xhr.status >= 200 && xhr.status < 400) {
         res = new Response(false, xhr.response, xhr.status);
-        !!callback && callback(res.data());
-      }
-      else if (xhr.status >= 500) {
-        if (self.timer >= 2 * 60 * 1000) {
-          res = new Response(true, xhr.response, xhr.status);
-          !!callback && callback(res.err());
-        } else {
-          setTimeout(function(){
-            self.timer = self.timer * 2;
-            self.post(callback);
-          }, self.timer);
-        }
+        !!callback && callback(null, res.data());
       }
       else {
         res = new Response(true, xhr.response, xhr.status);
-        !!callback && callback(res.err());
+        !!callback && callback(res.err(), null);
       }
     }
   };
@@ -258,8 +243,9 @@ Request.prototype.post = function (callback) {
 
 Request.prototype.get = function (callback) {
   if (!this.params.table || !this.params.data) {
-    throw new Error ("Table and data required fields for send event");
+    return callback("Table and data required fields for send event", null);
   }
+  
   var xhr = this.xhr;
   var base64Data;
   var data = JSON.stringify({
@@ -268,7 +254,6 @@ Request.prototype.get = function (callback) {
     apiVersion: this.params.apiVersion,
     auth: this.params.auth
   });
-  var self = this;
 
   try {
     base64Data = btoa(data);
@@ -277,31 +262,19 @@ Request.prototype.get = function (callback) {
   xhr.open("GET", this.endpoint + '?data=' + base64Data, true);
   xhr.setRequestHeader("Content-type", this.headers.contentType);
   xhr.setRequestHeader("x-ironsource-atom-sdk-type", "js");
-  xhr.setRequestHeader("x-ironsource-atom-sdk-version", "1.0");
+  xhr.setRequestHeader("x-ironsource-atom-sdk-version", "1.0.1");
 
   xhr.onreadystatechange = function () {
     if (xhr.readyState === XMLHttpRequest.DONE) {
       var res;
       
-      if (xhr.status >= 200 && xhr.status < 300) {
+      if (xhr.status >= 200 && xhr.status < 400) {
         res = new Response(false, xhr.response, xhr.status);
-        !!callback && callback(res.data());
-      }
-      else if (xhr.status >= 500) {
-        if (self.timer >= 2 * 60 * 1000) {
-          res = new Response(true, xhr.response, xhr.status);
-          !!callback && callback(res.err());
-        }
-        else {
-          setTimeout(function () {
-            self.timer = self.timer * 2;
-            self.get(callback);
-          }, self.timer);
-        }
+        !!callback && callback(null, res.data());
       }
       else {
         res = new Response(true, xhr.response, xhr.status);
-        !!callback && callback(res.err());
+        !!callback && callback(res.err(), null);
       }
     }
   };
@@ -332,34 +305,21 @@ function Response(error, response, status) {
  */
 
 Response.prototype.data = function () {
-  return this.error ? null : {
-    err: null,
-    data: JSON.parse(this.response),
-    status: this.status
-  }
+  return this.error ? null : JSON.parse(this.response)
 };
 
 /**
  *
  * Returns the de-serialized response error data.
  *
- * @returns {Object} -return response  "error" or null if no errors
+ * @returns {Object} -return response  "error" with status or null if no errors
  */
 
-Response.prototype.err = function () {
-  try {
-    return this.error ? {
-      err: JSON.parse(this.response),
-      data: null,
-      status: this.status
-    } : null;
-  } catch (e) {
-    return this.error ? {
-      err: this.response,
-      data: null,
-      status: this.status
-    } : null;  
-  }  
+Response.prototype.err = function () {  
+  return {
+    message: this.response,
+    status: this.status
+  }
 };
 
 }(window, document));

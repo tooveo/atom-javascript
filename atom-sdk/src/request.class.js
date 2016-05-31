@@ -14,7 +14,6 @@ function Request(endpoint, params) {
     contentType: "application/json;charset=UTF-8"
   };
 
-  this.timer = 1000;
   this.xhr = (XMLHttpRequest) ? new XMLHttpRequest() : new ActiveXObject("Microsoft.XMLHTTP");
 }
 
@@ -27,8 +26,9 @@ function Request(endpoint, params) {
 
 Request.prototype.post = function (callback) {
   if (!this.params.table || !this.params.data) {
-    throw new Error ("Table and data required fields for send event");
+    return callback("Table and data required fields for send event", null);
   }
+  
   var xhr = this.xhr;
   var data = JSON.stringify({
     data: this.params.data,
@@ -36,34 +36,22 @@ Request.prototype.post = function (callback) {
     apiVersion: this.params.apiVersion,
     auth: this.params.auth
   });
-  var self = this;
   
   xhr.open("POST", this.endpoint, true);
   xhr.setRequestHeader("Content-type", this.headers.contentType);
   xhr.setRequestHeader("x-ironsource-atom-sdk-type", "js");
-  xhr.setRequestHeader("x-ironsource-atom-sdk-version", "1.0");
+  xhr.setRequestHeader("x-ironsource-atom-sdk-version", "1.0.1");
 
   xhr.onreadystatechange = function () {
     if (xhr.readyState === XMLHttpRequest.DONE) {
       var res;
-      if (xhr.status >= 200 && xhr.status < 300) {
+      if (xhr.status >= 200 && xhr.status < 400) {
         res = new Response(false, xhr.response, xhr.status);
-        !!callback && callback(res.data());
-      }
-      else if (xhr.status >= 500) {
-        if (self.timer >= 2 * 60 * 1000) {
-          res = new Response(true, xhr.response, xhr.status);
-          !!callback && callback(res.err());
-        } else {
-          setTimeout(function(){
-            self.timer = self.timer * 2;
-            self.post(callback);
-          }, self.timer);
-        }
+        !!callback && callback(null, res.data());
       }
       else {
         res = new Response(true, xhr.response, xhr.status);
-        !!callback && callback(res.err());
+        !!callback && callback(res.err(), null);
       }
     }
   };
@@ -81,8 +69,9 @@ Request.prototype.post = function (callback) {
 
 Request.prototype.get = function (callback) {
   if (!this.params.table || !this.params.data) {
-    throw new Error ("Table and data required fields for send event");
+    return callback("Table and data required fields for send event", null);
   }
+  
   var xhr = this.xhr;
   var base64Data;
   var data = JSON.stringify({
@@ -91,7 +80,6 @@ Request.prototype.get = function (callback) {
     apiVersion: this.params.apiVersion,
     auth: this.params.auth
   });
-  var self = this;
 
   try {
     base64Data = btoa(data);
@@ -100,31 +88,19 @@ Request.prototype.get = function (callback) {
   xhr.open("GET", this.endpoint + '?data=' + base64Data, true);
   xhr.setRequestHeader("Content-type", this.headers.contentType);
   xhr.setRequestHeader("x-ironsource-atom-sdk-type", "js");
-  xhr.setRequestHeader("x-ironsource-atom-sdk-version", "1.0");
+  xhr.setRequestHeader("x-ironsource-atom-sdk-version", "1.0.1");
 
   xhr.onreadystatechange = function () {
     if (xhr.readyState === XMLHttpRequest.DONE) {
       var res;
       
-      if (xhr.status >= 200 && xhr.status < 300) {
+      if (xhr.status >= 200 && xhr.status < 400) {
         res = new Response(false, xhr.response, xhr.status);
-        !!callback && callback(res.data());
-      }
-      else if (xhr.status >= 500) {
-        if (self.timer >= 2 * 60 * 1000) {
-          res = new Response(true, xhr.response, xhr.status);
-          !!callback && callback(res.err());
-        }
-        else {
-          setTimeout(function () {
-            self.timer = self.timer * 2;
-            self.get(callback);
-          }, self.timer);
-        }
+        !!callback && callback(null, res.data());
       }
       else {
         res = new Response(true, xhr.response, xhr.status);
-        !!callback && callback(res.err());
+        !!callback && callback(res.err(), null);
       }
     }
   };

@@ -23,6 +23,8 @@
 # JIRA plugin
 atlassian-ide-plugin.xml
 
+deploy_key
+
 # Crashlytics plugin (for Android Studio and IntelliJ)
 com_crashlytics_export_strings.xml
 crashlytics.properties
@@ -75,3 +77,5 @@ jspm_packages
 
 # Optional REPL history
 .node_repl_history
+apidoc
+out

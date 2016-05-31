@@ -4,6 +4,6 @@ script:
 node_js:
 - 4.4.4
 before_install:
-- npm i
+- npm i && npm i -g apidoc
 after_script:
-- cat ./coverage/lcov.info | ./node_modules/.bin/coveralls --verbose
+- cat ./coverage/Chrome*/lcov.info | ./node_modules/.bin/coveralls --verbose

@@ -8,21 +8,18 @@ describe('Test for Response class', function() {
   it('should return correct response data with no errors', function() {
     var response = new Response(false, "{\"key\": \"some data\"}", 200);
 
-    expect(response.err()).to.be.null;
+    expect(response.err()).to.be.not.null;
     expect(response.data()).to.be.eql({
-      err: null,
-      data: {key: "some data"},
-      status: 200
+      key: "some data"
     })
   });
   
   it('should return response object with error', function() {
-    var response = new Response(true, "{\"authError\": \"some data\"}", 401);
+    var response = new Response(true, "authError: some data", 401);
 
     expect(response.data()).to.be.null;
     expect(response.err()).to.be.eql({
-      err: {authError: "some data"},
-      data: null,
+      message: "authError: some data",
       status: 401
     })
   });

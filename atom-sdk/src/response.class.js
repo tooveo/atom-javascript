@@ -21,32 +21,19 @@ function Response(error, response, status) {
  */
 
 Response.prototype.data = function () {
-  return this.error ? null : {
-    err: null,
-    data: JSON.parse(this.response),
-    status: this.status
-  }
+  return this.error ? null : JSON.parse(this.response)
 };
 
 /**
  *
  * Returns the de-serialized response error data.
  *
- * @returns {Object} -return response  "error" or null if no errors
+ * @returns {Object} -return response  "error" with status or null if no errors
  */
 
-Response.prototype.err = function () {
-  try {
-    return this.error ? {
-      err: JSON.parse(this.response),
-      data: null,
-      status: this.status
-    } : null;
-  } catch (e) {
-    return this.error ? {
-      err: this.response,
-      data: null,
-      status: this.status
-    } : null;  
-  }  
+Response.prototype.err = function () {  
+  return {
+    message: this.response,
+    status: this.status
+  }
 };

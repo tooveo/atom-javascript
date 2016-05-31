@@ -43,52 +43,45 @@
 
   // Add putEvent(params, callback) params {object}, callback {function}
   sendEventBtn.addEventListener("click", function(){
-
-    try {
-      atom.putEvent({ data: "{name: iron, last_name: Source}",
-          table: stream,
-          method: httpMethod
-        },
-        function(res){
-          displayResponse(res);
-        });
-
-      displayRequest(
-        { data: "{name: iron, last_name: Source}",
-          table: stream,
-          method: httpMethod
-        });
-
-    } catch (e) {
-      displayError(e);
-    }
-
+    displayRequest(
+      { data: "{name: iron, last_name: Source}",
+        table: stream,
+        method: httpMethod
+      });
+    
+    atom.putEvent({ data: "{name: iron, last_name: Source}",
+        table: stream,
+        method: httpMethod
+      },
+      function(err, data, status) {
+        if (err) displayError(err);
+        else displayResponse(data);
+      });
   });
 
   // Add putEvent(params, callback) params {object}, callback {function}
   sendEventsBtn.addEventListener("click", function() {
-    try {
-      atom.putEvents({ data: data,
-          table: stream,
-          method: httpMethod
-        },
-        function(res){
-          displayResponse(res);
-          data = [];
-          count.innerHTML = data.length;
-          codeDisplay.innerHTML = "[]";
-        });
-
-      displayRequest(
+    displayRequest(
       { data: data,
         table: stream,
         method: httpMethod
       });
-
-    } catch (e) {
-      displayError(e);
-    }
-
+    
+    atom.putEvents({ data: data,
+        table: stream,
+        method: httpMethod
+      },
+      function(err, data, status){
+        if (err) {
+          displayError(err);      
+        }
+        else {
+          displayResponse(data);
+          data = [];
+          count.innerHTML = data.length;
+          codeDisplay.innerHTML = "[]";
+        }
+      });
   });
   
   addData.addEventListener("click", function(){
@@ -112,14 +105,12 @@
   }
 
   function displayError(e) {
-    responseDisplay.innerHTML = e;
+    responseDisplay.innerHTML = JSON.stringify(e);
   }
 
   function displayRequest (data) {
     if (httpMethod == "GET")  {
-      try {
-        data = btoa(data);
-      } catch (e) {}
+      data = btoa(data);
     } 
     requestDisplay.innerHTML = JSON.stringify(data);
   }
