@@ -14,7 +14,7 @@
 function IronSourceAtom(opt) {
   opt = opt || {};
   var END_POINT = "https://track.atom-data.io/";
-  var API_VERSION = "1.0.1";
+  var API_VERSION = "1.1.0";
   this.options = {
     endpoint: !!opt.endpoint && opt.endpoint.toString() || END_POINT,
     apiVersion: API_VERSION,
@@ -166,6 +166,7 @@ if (typeof module !== 'undefined' && module.exports) {
   module.exports = {
     IronSourceAtom: IronSourceAtom,
     Request: Request,
-    Response: Response
+    Response: Response,
+    Tracker: Tracker
   };
 }

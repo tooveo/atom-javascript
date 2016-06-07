@@ -12,7 +12,7 @@ describe('Atom class test', function() {
 
     expect(atom.options).to.eql({
       endpoint: "https://track.atom-data.io/",
-      apiVersion: "1.0.1",
+      apiVersion: "1.1.0",
       auth: ""
     })
   });
@@ -21,7 +21,7 @@ describe('Atom class test', function() {
     var opt = {
       endpoint: "/some-url",
       auth: "aM<dy2gchHsad07*hdACY",
-      apiVersion: '1.0.1'
+      apiVersion: '1.1.0'
     };
     var atom = new ISAtom(opt);
 
