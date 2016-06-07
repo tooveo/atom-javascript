@@ -9,10 +9,14 @@
       httpMethod = "POST";
 
   var atom = new IronSourceAtom(options);
+  var tracker = new Tracker({});
 
   var sendEventBtn  = document.getElementById("track-event"),
       sendEventsBtn  = document.getElementById("track-events"),
-      addData = document.getElementById("add-data");
+      addData = document.getElementById("add-data"),
+      trackerAdd = document.getElementById("tracker-btn"),
+      trackerFlush = document.getElementById("tracker-flush");
+
   
   var count = document.getElementById("events-count"),
       optionsDisplay = document.getElementById("options-display"),
@@ -21,6 +25,9 @@
       dataInput = document.getElementById("input-data"),
       methodInput = document.getElementsByName("method"),
       streamInput = document.getElementById("stream"),
+      trackerStream = document.getElementById("tracker-stream"),
+      trackerData = document.getElementById("tracker-data"),
+      trackerBatch = document.getElementById("tracker-batch"),
       codeDisplay = document.getElementById("bulk");
   
   var data = [];
@@ -42,7 +49,7 @@
   });
 
   // Add putEvent(params, callback) params {object}, callback {function}
-  sendEventBtn.addEventListener("click", function(){
+  sendEventBtn.addEventListener("click", function() {
     displayRequest(
       { data: "{name: iron, last_name: Source}",
         table: stream,
@@ -84,7 +91,7 @@
       });
   });
   
-  addData.addEventListener("click", function(){
+  addData.addEventListener("click", function() {
     if (dataInput.value == "") return;
     
     data.push(dataInput.value);
@@ -113,6 +120,29 @@
       data = btoa(data);
     } 
     requestDisplay.innerHTML = JSON.stringify(data);
+  }
+
+  // Tracker
+  trackerAdd.addEventListener("click", function() {
+    tracker.track(trackerStream.value, trackerData.value);
+    clearTrackerInputs();
+    updateBatch();
+  });
+
+  trackerFlush.addEventListener("click", function() {
+    tracker.flush();
+    clearTrackerInputs();
+    updateBatch();
+  });
+
+  function updateBatch() {
+    var batch = tracker.accumulated;
+    trackerBatch.innerHTML = JSON.stringify(batch);
+  }
+
+  function clearTrackerInputs() {
+    trackerStream.value = "";
+    trackerData.value = "";
   }
 
 })();
