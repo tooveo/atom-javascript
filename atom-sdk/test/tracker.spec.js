@@ -106,4 +106,12 @@ describe('Testing tracker class and methods', function() {
     clock.restore();
     sinon.assert.calledTwice(flush);
   });
+
+  it('should run flush with params', function() {
+    var t = new Tracker();
+
+    t.track('stream', 'data');
+    expect(t.flush('stream')).to.be.not.null;
+
+  });
 });
