@@ -10,6 +10,7 @@
 function Request(endpoint, params) {
   this.endpoint = endpoint.toString() || "";
   this.params = params || {};
+  this.params.data = JSON.stringify(this.params.data);
   this.headers = {
     contentType: "application/json;charset=UTF-8"
   };
@@ -34,13 +35,13 @@ Request.prototype.post = function (callback) {
     data: this.params.data,
     table: this.params.table,
     apiVersion: this.params.apiVersion,
-    auth: this.params.auth
+    auth: !!this.params.auth ? CryptoJS.HmacSHA256(this.params.data, this.params.auth).toString(CryptoJS.enc.Hex) : ""
   });
   
   xhr.open("POST", this.endpoint, true);
   xhr.setRequestHeader("Content-type", this.headers.contentType);
   xhr.setRequestHeader("x-ironsource-atom-sdk-type", "js");
-  xhr.setRequestHeader("x-ironsource-atom-sdk-version", "1.0.1");
+  xhr.setRequestHeader("x-ironsource-atom-sdk-version", "1.1.0");
 
   xhr.onreadystatechange = function () {
     if (xhr.readyState === XMLHttpRequest.DONE) {
@@ -78,7 +79,7 @@ Request.prototype.get = function (callback) {
     table: this.params.table,
     data: this.params.data,
     apiVersion: this.params.apiVersion,
-    auth: this.params.auth
+    auth: !!this.params.auth ? CryptoJS.HmacSHA256(this.params.data, this.params.auth).toString(CryptoJS.enc.Hex) : ""
   });
 
   try {
@@ -88,7 +89,7 @@ Request.prototype.get = function (callback) {
   xhr.open("GET", this.endpoint + '?data=' + base64Data, true);
   xhr.setRequestHeader("Content-type", this.headers.contentType);
   xhr.setRequestHeader("x-ironsource-atom-sdk-type", "js");
-  xhr.setRequestHeader("x-ironsource-atom-sdk-version", "1.0.1");
+  xhr.setRequestHeader("x-ironsource-atom-sdk-version", "1.1.0");
 
   xhr.onreadystatechange = function () {
     if (xhr.readyState === XMLHttpRequest.DONE) {

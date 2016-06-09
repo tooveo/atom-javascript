@@ -3,6 +3,7 @@
 (function(){
   var options = {
     endpoint: "https://track.atom-data.io/",
+    // CHANGE TO YOUR API KEY
     auth: "YOUR_API_KEY"
   };
   var stream = "",
@@ -56,7 +57,7 @@
         method: httpMethod
       });
     
-    atom.putEvent({ data: "{name: iron, last_name: Source}",
+    atom.putEvent({ data: {"action":"track","id":"85"},
         table: stream,
         method: httpMethod
       },
