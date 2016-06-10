@@ -143,10 +143,9 @@ IronSourceAtom.prototype.putEvents = function (params, callback) {
   params.apiVersion = this.options.apiVersion;
   params.auth = this.options.auth;
 
-  var req = new Request(this.options.endpoint + '/bulk', params);
+  var req = new Request(this.options.endpoint + 'bulk', params);
 
-  return (!!params.method && params.method.toUpperCase() === "GET") ?
-    req.get(callback) : req.post(callback);
+  return req.post(callback);
 };
 
 /**
