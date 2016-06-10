@@ -29,6 +29,7 @@
       trackerStream = document.getElementById("tracker-stream"),
       trackerData = document.getElementById("tracker-data"),
       trackerBatch = document.getElementById("tracker-batch"),
+      trackerResult = document.getElementById("tracker-result"),
       codeDisplay = document.getElementById("bulk");
   
   var data = [];
@@ -125,7 +126,10 @@
 
   // Tracker
   trackerAdd.addEventListener("click", function() {
-    tracker.track(trackerStream.value, trackerData.value);
+    tracker.track(trackerStream.value, trackerData.value, function(err, data){
+      var res = err || data;
+      trackerResult.innerHTML = JSON.stringify(res);
+    });
     clearTrackerInputs();
     updateBatch();
   });

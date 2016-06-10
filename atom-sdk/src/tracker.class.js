@@ -70,11 +70,14 @@ window.Tracker = Tracker;
  *
  */
 
-Tracker.prototype.track = function (stream, data) {
+Tracker.prototype.track = function (stream, data, callback) {
   var self = this;
-
+  this.callback = callback || function (err, data) {
+      return err ? new Error(err) : null;
+    };
+  
   if (stream == undefined || data == undefined || !data.length) {
-    return new Error('Stream or data empty');
+    return self.callback('Stream or data empty', null);
   }
 
   if (!self.accumulated[stream]) self.accumulated[stream] = [];
@@ -126,11 +129,14 @@ Tracker.prototype.flush = function(batchStream, batchData, timeout) {
             }, timeout);
           } else {
             //some handler for err after 10min retry fail
-            return new Error('Server not response more then 10min.');
+            return self.callback('Server not response more then 10min.', null);
           }
         } else {
-          return new Error(err);
+          return self.callback(err, null);
         }
+      }
+      else {
+        self.callback(null, body);
       }
     })
   }
