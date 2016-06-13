@@ -23,7 +23,7 @@ function ISAtomMock(opt) {
 function RequestMock(url, params) {
   this.get = function(cb) {
     var data = JSON.stringify({
-      table: params.table,
+      table: params.stream,
       data: params.data,
       apiVersion: params.apiVersion,
       auth: params.auth

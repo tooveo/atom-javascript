@@ -119,7 +119,7 @@ Tracker.prototype.flush = function(batchStream, batchData, timeout) {
   }
   /* istanbul ignore next */
   function send (stream, data, timeout) {
-    return self.atom.putEvents({"table": stream, "data": data}, function(err, body) {
+    return self.atom.putEvents({"stream": stream, "data": data}, function(err, body) {
       if (err != null) {
         if (err.status >= 500) {
           if (timeout < 10 * 60 * 1000) {

@@ -73,7 +73,7 @@ window.IronSourceAtom = IronSourceAtom;
 
 IronSourceAtom.prototype.putEvent = function (params, callback) {
   params = params || {};
-  if (!params.table) return callback('Stream is required', null);
+  if (!params.stream) return callback('Stream is required', null);
   if (!params.data) return callback('Data is required', null);
 
   params.apiVersion = this.options.apiVersion;
@@ -134,7 +134,7 @@ IronSourceAtom.prototype.putEvent = function (params, callback) {
 
 IronSourceAtom.prototype.putEvents = function (params, callback) {
   params = params || {};
-  if (!params.table) {
+  if (!params.stream) {
     return callback('Stream is required', null);
   }
   
@@ -200,14 +200,14 @@ function Request(endpoint, params) {
  */
 
 Request.prototype.post = function (callback) {
-  if (!this.params.table || !this.params.data) {
-    return callback("Table and data required fields for send event", null);
+  if (!this.params.stream || !this.params.data) {
+    return callback("Stream and data required fields for send event", null);
   }
   
   var xhr = this.xhr;
   var data = JSON.stringify({
     data: this.params.data,
-    table: this.params.table,
+    table: this.params.stream,
     apiVersion: this.params.apiVersion,
     auth: !!this.params.auth ? CryptoJS.HmacSHA256(this.params.data, this.params.auth).toString(CryptoJS.enc.Hex) : ""
   });
@@ -243,14 +243,14 @@ Request.prototype.post = function (callback) {
 
 
 Request.prototype.get = function (callback) {
-  if (!this.params.table || !this.params.data) {
-    return callback("Table and data required fields for send event", null);
+  if (!this.params.stream || !this.params.data) {
+    return callback("Stream and data required fields for send event", null);
   }
   
   var xhr = this.xhr;
   var base64Data;
   var data = JSON.stringify({
-    table: this.params.table,
+    table: this.params.stream,
     data: this.params.data,
     apiVersion: this.params.apiVersion,
     auth: !!this.params.auth ? CryptoJS.HmacSHA256(this.params.data, this.params.auth).toString(CryptoJS.enc.Hex) : ""
@@ -444,7 +444,7 @@ Tracker.prototype.flush = function(batchStream, batchData, timeout) {
   }
   /* istanbul ignore next */
   function send (stream, data, timeout) {
-    return self.atom.putEvents({"table": stream, "data": data}, function(err, body) {
+    return self.atom.putEvents({"stream": stream, "data": data}, function(err, body) {
       if (err != null) {
         if (err.status >= 500) {
           if (timeout < 10 * 60 * 1000) {

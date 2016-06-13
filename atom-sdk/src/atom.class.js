@@ -71,7 +71,7 @@ window.IronSourceAtom = IronSourceAtom;
 
 IronSourceAtom.prototype.putEvent = function (params, callback) {
   params = params || {};
-  if (!params.table) return callback('Stream is required', null);
+  if (!params.stream) return callback('Stream is required', null);
   if (!params.data) return callback('Data is required', null);
 
   params.apiVersion = this.options.apiVersion;
@@ -132,7 +132,7 @@ IronSourceAtom.prototype.putEvent = function (params, callback) {
 
 IronSourceAtom.prototype.putEvents = function (params, callback) {
   params = params || {};
-  if (!params.table) {
+  if (!params.stream) {
     return callback('Stream is required', null);
   }
   

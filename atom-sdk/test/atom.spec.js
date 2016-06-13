@@ -31,14 +31,14 @@ describe('Atom class test', function() {
   it('should generate right data for POST request', function() {
     var atom = new mock.ISAtomMock();
     var param = {
-      table: 'table',
+      stream: 'table',
       data: 'data'
     };
 
     expect(atom.putEvent(param)).to.be.eql({
       apiVersion: "V1",
       auth: "auth-key",
-      table: "table",
+      stream: "table",
       data: "data"
     });
   });
@@ -46,7 +46,7 @@ describe('Atom class test', function() {
   it('should throw error for putEvent/putEvents if no required params', function(){
     var atom = new ISAtom();
 
-      atom.putEvent({table: "test"}, function(err){
+      atom.putEvent({stream: "test"}, function(err){
         expect(err).to.be.eql('Data is required');
       });
 
@@ -54,7 +54,7 @@ describe('Atom class test', function() {
         expect(err).to.be.eql('Stream is required');
       });
     
-      atom.putEvents({table: "test"}, function(err){
+      atom.putEvents({stream: "test"}, function(err){
         expect(err).to.be.eql('Data (must be not empty array) is required');
       });
     
@@ -67,13 +67,13 @@ describe('Atom class test', function() {
     var atom = new mock.ISAtomMock();
 
     var param = {
-      table: 'table',
+      stream: 'table',
       data: 'data',
       method: 'GET'
     };
 
     var param2 = {
-      table: 'table',
+      stream: 'table',
       data: ['data'],
       method: 'GET'
     };

@@ -21,7 +21,7 @@ function setupServer(sinon, before, after) {
       {
         'Content-Type': 'application/json'
       },
-      '{"error": "No permission for this table"}'
+      '{"error": "No permission for this stream"}'
     ]);
 
     server.respondWith(/server-err(\?data=.*)?/, [
