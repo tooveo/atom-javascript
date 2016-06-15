@@ -397,17 +397,21 @@ window.Tracker = Tracker;
 
 Tracker.prototype.track = function (stream, data, callback) {
   var self = this;
-  this.callback = callback || function (err, data) {
+  this.callback = callback || function (err, body) {
       return err ? new Error(err) : null;
     };
   
-  if (stream == undefined || data == undefined || !data.length) {
-    return self.callback('Stream or data empty', null);
+  if (stream == undefined || data == undefined) {
+    return self.callback('Stream or data is empty', null);
   }
 
   if (!self.accumulated[stream]) self.accumulated[stream] = [];
+  try {
+    self.accumulated[stream].push(JSON.parse(data));
+  } catch (e) {
+    self.accumulated[stream].push(data);
+  }
 
-  self.accumulated[stream].push(data);
 
   if (self.accumulated[stream].length >= self.params.bulkLen || sizeof(self.accumulated[stream]) >= self.params.bulkSize) {
     self.flush(stream);
@@ -447,14 +451,14 @@ Tracker.prototype.flush = function(batchStream, batchData, timeout) {
     return self.atom.putEvents({"stream": stream, "data": data}, function(err, body) {
       if (err != null) {
         if (err.status >= 500) {
-          if (timeout < 10 * 60 * 1000) {
+          if (timeout < 60 * 60 * 1000) {
             setTimeout(function() {
               timeout = timeout * 2;
               self.flush(stream, data, timeout);
             }, timeout);
           } else {
             //some handler for err after 10min retry fail
-            return self.callback('Server not response more then 10min.', null);
+            return self.callback('Server not response more then 1hr.', null);
           }
         } else {
           return self.callback(err, null);

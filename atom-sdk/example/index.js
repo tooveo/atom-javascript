@@ -4,7 +4,7 @@
   var options = {
     endpoint: "https://track.atom-data.io/",
     // CHANGE TO YOUR API KEY
-    auth: "YOUR_API_KEY"
+    auth: ""
   };
   var stream = "",
       httpMethod = "POST";
@@ -53,13 +53,13 @@
   // Add putEvent(params, callback) params {object}, callback {function}
   sendEventBtn.addEventListener("click", function() {
     displayRequest(
-      { data: "{name: iron, last_name: Source}",
-        table: stream,
+      { data: "{string_value: track, id: 1}",
+        stream: stream,
         method: httpMethod
       });
     
-    atom.putEvent({ data: {"action":"track","id":"85"},
-        table: stream,
+    atom.putEvent({ data: {"string_value": "track", "bool_value": false},
+        stream: stream,
         method: httpMethod
       },
       function(err, data, status) {
@@ -72,12 +72,12 @@
   sendEventsBtn.addEventListener("click", function() {
     displayRequest(
       { data: data,
-        table: stream,
+        stream: stream,
         method: httpMethod
       });
     
     atom.putEvents({ data: data,
-        table: stream,
+        stream: stream,
         method: httpMethod
       },
       function(err, data, status){

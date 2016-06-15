@@ -85,7 +85,7 @@ describe('Testing tracker class and methods', function() {
   it('should throw err when stream empty', function() {
     var t = new Tracker();
     
-    expect(t.track()).to.be.eql(new Error('Stream or data empty'));
+    expect(t.track()).to.be.eql(new Error('Stream or data is empty'));
   });
   
   it('should check run flush after timeout len size',function() {
