@@ -10,7 +10,7 @@
       httpMethod = "POST";
 
   var atom = new IronSourceAtom(options);
-  var tracker = new Tracker({});
+  var tracker = new Tracker({auth: ""});
 
   var sendEventBtn  = document.getElementById("track-event"),
       sendEventsBtn  = document.getElementById("track-events"),
