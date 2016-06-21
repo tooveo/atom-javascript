@@ -17,12 +17,6 @@ module.exports = function(config) {
       platform: 'OS X 10.9',
       version: '7'
     },
-    'SL_IOS9': {
-      base: 'SauceLabs',
-      browserName: 'iphone',
-      platform: 'OS X 10.9',
-      version: '9.0'
-    },
     'SL_IE10': {
       base: 'SauceLabs',
       browserName: 'internet explorer',
