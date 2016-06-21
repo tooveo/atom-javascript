@@ -54,7 +54,7 @@
   sendEventBtn.addEventListener("click", function() {
     displayRequest(
       { data: "{string_value: track, id: 1}",
-        stream: stream,
+        table: stream,
         method: httpMethod
       });
     

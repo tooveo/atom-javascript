@@ -20,7 +20,7 @@ function Tracker(params) {
   this.params = params;
   this.params.flushInterval = !!params.flushInterval ? params.flushInterval * 1000 : 10000;
   this.params.bulkLen = !!params.bulkLen ? params.bulkLen : 10000;
-  this.params.bulkSize = !!params.bulkSize ? params.bulkSize * 1024:  64 * 1024;
+  this.params.bulkSize = !!params.bulkSize ? params.bulkSize * 1024 : 64 * 1024;
 
   this.accumulated = {};
   this.atom = new IronSourceAtom(params);
@@ -88,7 +88,7 @@ Tracker.prototype.track = function (stream, data, callback) {
   }
 
 
-  if (self.accumulated[stream].length >= self.params.bulkLen || sizeof(self.accumulated[stream]) >= self.params.bulkSize) {
+  if (self.accumulated[stream].length >= self.params.bulkLen || JSON.stringify(self.accumulated[stream]).length * 2 >= self.params.bulkSize) {
     self.flush(stream);
   }
 
