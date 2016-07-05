@@ -24,8 +24,28 @@ $ bower install --save atom-sdk-js
 ```
 
 #### Using the API layer to send events
+##### High lvl api "Tracker"
+ ```js
+ var options = {
+   endpoint: "https://track.atom-data.io/",
+   auth: "YOUR_API_KEY",
+   flushInterval: 10, // in seconds
+   bulkLen: 100,
+   bulkSize: 20 // in Kb
+ }
 
-Here's an example of sending an event:
+ var tracker = new Tracker(options);
+
+ var params = {
+   stream: "STREAM_NAME", // your target stream name
+   data: JSON.stringify({id: 1, string_col: "String"}) // string with any data and any structure.
+ }
+
+ tracker.track(params); // to track
+ tracker.flush(); // to send accumulated data immediately
+ ```
+
+##### Low lvl api
 ```js
 var options = {
   endpoint: "https://track.atom-data.io/",

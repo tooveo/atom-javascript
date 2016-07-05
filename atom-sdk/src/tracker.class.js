@@ -19,8 +19,8 @@ function Tracker(params) {
   params = params || {};
   this.params = params;
   this.params.flushInterval = !!params.flushInterval ? params.flushInterval * 1000 : 10000;
-  this.params.bulkLen = !!params.bulkLen ? params.bulkLen : 10000;
-  this.params.bulkSize = !!params.bulkSize ? params.bulkSize * 1024 : 64 * 1024;
+  this.params.bulkLen = !!params.bulkLen ? params.bulkLen : 20;
+  this.params.bulkSize = !!params.bulkSize ? params.bulkSize * 1024 : 5 * 1024;
 
   this.accumulated = {};
   this.atom = new IronSourceAtom(params);
