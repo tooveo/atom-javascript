@@ -23,41 +23,41 @@ $ bower install --save atom-sdk-js
 <script src="bower_components/atom-sdk-js/dist/sdk.min.js"></script>
 ```
 
-#### Using the API layer to send events
+#### Usage
 ##### High Level API - "Tracker"
  ```js
  var options = {
    endpoint: "https://track.atom-data.io/",
-   auth: "YOUR_HMAC_AUTH_KEY",
-   flushInterval: 10, // in seconds
-   bulkLen: 50, // number of events per bulk
-   bulkSize: 20 // size of each bulk in KB
+   auth: "YOUR_HMAC_AUTH_KEY", // Optional, depends on your stream config
+   flushInterval: 10, // Tracker flush interval in seconds
+   bulkLen: 50, // Number of events per bulk
+   bulkSize: 20 // Size of each bulk in KB
  }
 
- var tracker = new Tracker(options);
+ var tracker = new Tracker(options); // Init a new tracker
 
  var params = {
-   stream: "STREAM_NAME", // your target stream name
-   data: JSON.stringify({id: 1, string_col: "String"}) // stringified json
+   stream: "STREAM_NAME", // Your target stream name
+   data: JSON.stringify({id: 1, string_col: "String"}) // Data that matches your DB structure
  }
 
- tracker.track(params); // to start tracking
- tracker.flush(); // to send accumulated data immediately
+ tracker.track(params); // Start tracking
+ tracker.flush(); // Send accumulated data immediately
  ```
 
 ##### Low Level API
 ```js
 var options = {
   endpoint: "https://track.atom-data.io/",
-  auth: "YOUR_HMAC_AUTH_KEY" // optional, depends on your stream
+  auth: "YOUR_HMAC_AUTH_KEY" // Optional, depends on your stream config
 }
 
 var atom = new IronSourceAtom(options);
 
 var params = {
-  stream: "STREAM_NAME", //your target stream name
-  data: JSON.stringify({name: "iron", last_name: "Source"}), //String with any data and any structure.
-  method: "GET" // optional, default "POST"
+  stream: "STREAM_NAME", // Your target stream name
+  data: JSON.stringify({name: "iron", last_name: "Source"}), // String with data that matches your DB structure
+  method: "GET" // HTTP request method - Optional, default "POST"
 }
 
 var callback = function(res) {
@@ -67,14 +67,14 @@ var callback = function(res) {
 
 atom.putEvent(params, callback);
 
-// or
+// OR
 
 var params = {
-  stream: "STREAM_NAME", // your target stream name
+  stream: "STREAM_NAME", // Your target stream name
   data: [{name: "iron", last_name: "Beast"},
          {name: "iron2", last_name: "Beast2"}], // Array with any data that matches your DB structure.
-  method: "GET" // optional, default "POST" (GET is supported only for putEvent func).
-}
+  // Note: you can't send bulk events with GET HTTP method.
+} 
 
 atom.putEvents(params, callback); // for send bulk of events
 ```
