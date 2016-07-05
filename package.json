@@ -1,12 +1,11 @@
 {
   "name": "atom-sdk-js",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "description": "IronSource Atom JS SDK",
   "main": "dist/sdk.js",
   "scripts": {
     "test": "karma start",
     "test-local": "karma start karma-local.config.js",
-    "travis": "",
     "coverage": "cat ./coverage/lcov.info | ./node_modules/.bin/coveralls --verbose"
   },
   "repository": {

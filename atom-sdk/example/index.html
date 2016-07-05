@@ -10,7 +10,32 @@
         <header class="page-header">
             <h1 class="text-center">Example for IronSource Atom JS SDK</h1>
         </header>
-
+        <section class="row">
+            <div class="col-md-9">
+                <h1>Test high lvl API</h1>
+                <h2>Tracker</h2>
+            </div>
+            <div class="col-md-3">
+                <label for="auth-key">Your Stream auth key</label>
+                <input type="text" id="auth-key" class="form-control" placeholder="Enter stream auth key">
+            </div>
+            <div class="col-md-4">
+                <label for="tracker-stream">Tracker Stream Name</label>
+                <input type="text" id="tracker-stream" class="form-control" placeholder="Enter stream name">
+                <label for="tracker-data">Tracker data</label>
+                <input type="text" id="tracker-data" class="form-control" placeholder='Enter data {"key": "value"}'>
+                <br>
+                <button id="tracker-btn" class="btn btn-primary">Track</button>
+                <button id="tracker-flush" class="btn btn-success">Flush</button>
+            </div>
+            <div class="col-md-8">
+                <label for="tracker-batch">Accumulated data</label>
+                <pre id="tracker-batch"></pre>
+                <label for="tracker-result">Result</label>
+                <pre id="tracker-result"></pre>
+            </div>
+        </section>
+        <h1>Test low lvl API</h1>
         <section class="row">
             <div class="form-group col-md-4">
                 <label for="stream">Stream Name</label>

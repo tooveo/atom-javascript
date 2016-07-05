@@ -14,7 +14,7 @@
 function IronSourceAtom(opt) {
   opt = opt || {};
   var END_POINT = "https://track.atom-data.io/";
-  var API_VERSION = "1.0.1";
+  var API_VERSION = "1.1.0";
   this.options = {
     endpoint: !!opt.endpoint && opt.endpoint.toString() || END_POINT,
     apiVersion: API_VERSION,
@@ -28,7 +28,7 @@ window.IronSourceAtom = IronSourceAtom;
  *
  * Put a single event to an Atom Stream.
  * @api {get/post} https://track.atom-data.io/ putEvent Send single data to Atom server
- * @apiVersion 1.0.1
+ * @apiVersion 1.1.0
  * @apiGroup Atom
  * @apiParam {String} stream Stream name for saving data in db table
  * @apiParam {String} data Data for saving 
@@ -71,7 +71,7 @@ window.IronSourceAtom = IronSourceAtom;
 
 IronSourceAtom.prototype.putEvent = function (params, callback) {
   params = params || {};
-  if (!params.table) return callback('Stream is required', null);
+  if (!params.stream) return callback('Stream is required', null);
   if (!params.data) return callback('Data is required', null);
 
   params.apiVersion = this.options.apiVersion;
@@ -89,7 +89,7 @@ IronSourceAtom.prototype.putEvent = function (params, callback) {
  * Put a bulk of events to Atom.
  *
  * @api {get/post} https://track.atom-data.io/bulk putEvents Send multiple events data to Atom server
- * @apiVersion 1.0.1
+ * @apiVersion 1.1.0
  * @apiGroup Atom
  * @apiParam {String} stream Stream name for saving data in db table
  * @apiParam {Array} data Multiple event data for saving
@@ -132,7 +132,7 @@ IronSourceAtom.prototype.putEvent = function (params, callback) {
 
 IronSourceAtom.prototype.putEvents = function (params, callback) {
   params = params || {};
-  if (!params.table) {
+  if (!params.stream) {
     return callback('Stream is required', null);
   }
   
@@ -143,10 +143,9 @@ IronSourceAtom.prototype.putEvents = function (params, callback) {
   params.apiVersion = this.options.apiVersion;
   params.auth = this.options.auth;
 
-  var req = new Request(this.options.endpoint + '/bulk', params);
+  var req = new Request(this.options.endpoint + 'bulk', params);
 
-  return (!!params.method && params.method.toUpperCase() === "GET") ?
-    req.get(callback) : req.post(callback);
+  return req.post(callback);
 };
 
 /**
@@ -166,6 +165,7 @@ if (typeof module !== 'undefined' && module.exports) {
   module.exports = {
     IronSourceAtom: IronSourceAtom,
     Request: Request,
-    Response: Response
+    Response: Response,
+    Tracker: Tracker
   };
 }

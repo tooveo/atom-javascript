@@ -6,7 +6,7 @@
 ## Browsers support
 [![Sauce Test Status][sauce-image]][sauce-url]
 
-atom-javascript is the official [ironSource.atom](http://www.ironsrc.com/data-flow-management) SDK for the JavaScript programming language.
+atom-javascript is the official [ironSource.atom](http://www.ironsrc.com/data-flow-management) SDK for Web Browsers.
 
 - [Signup](https://atom.ironsrc.com/#/signup)
 - [Documentation](https://ironsource.github.io/atom-javascript/)
@@ -24,12 +24,32 @@ $ bower install --save atom-sdk-js
 ```
 
 #### Using the API layer to send events
+##### High Level API - "Tracker"
+ ```js
+ var options = {
+   endpoint: "https://track.atom-data.io/",
+   auth: "YOUR_HMAC_AUTH_KEY",
+   flushInterval: 10, // in seconds
+   bulkLen: 50, // number of events per bulk
+   bulkSize: 20 // size of each bulk in KB
+ }
 
-Here's an example of sending an event:
+ var tracker = new Tracker(options);
+
+ var params = {
+   stream: "STREAM_NAME", // your target stream name
+   data: JSON.stringify({id: 1, string_col: "String"}) // stringified json
+ }
+
+ tracker.track(params); // to start tracking
+ tracker.flush(); // to send accumulated data immediately
+ ```
+
+##### Low Level API
 ```js
 var options = {
   endpoint: "https://track.atom-data.io/",
-  auth: "YOUR_API_KEY"
+  auth: "YOUR_HMAC_AUTH_KEY" // optional, depends on your stream
 }
 
 var atom = new IronSourceAtom(options);
@@ -52,8 +72,8 @@ atom.putEvent(params, callback);
 var params = {
   stream: "STREAM_NAME", // your target stream name
   data: [{name: "iron", last_name: "Beast"},
-         {name: "iron2", last_name: "Beast2"}], // Array with any data and any structure.
-  method: "GET" // optional, default "POST"
+         {name: "iron2", last_name: "Beast2"}], // Array with any data that matches your DB structure.
+  method: "GET" // optional, default "POST" (GET is supported only for putEvent func).
 }
 
 atom.putEvents(params, callback); // for send bulk of events
@@ -69,7 +89,7 @@ You can use our [example][example-url] for sending data to Atom:
 MIT
 
 [example-url]: https://github.com/ironSource/atom-javascript/blob/master/atom-sdk/example/index.html
-[example]: https://cloud.githubusercontent.com/assets/7361100/15369750/abf65a62-1d3c-11e6-90c3-c25dd331c5c6.png "example"
+[example]: https://cloud.githubusercontent.com/assets/19283325/16585493/ce347b24-42c9-11e6-8930-765605663eca.png "example"
 [license-image]: https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square
 [license-url]: LICENSE
 [travis-image]: https://travis-ci.org/ironSource/atom-javascript.svg?branch=master

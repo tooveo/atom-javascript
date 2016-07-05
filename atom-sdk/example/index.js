@@ -1,26 +1,36 @@
 "use strict";
 
 (function(){
+  
   var options = {
     endpoint: "https://track.atom-data.io/",
-    auth: "YOUR_API_KEY"
+    auth: ""
   };
   var stream = "",
       httpMethod = "POST";
 
   var atom = new IronSourceAtom(options);
+  var tracker = new Tracker(options);
 
   var sendEventBtn  = document.getElementById("track-event"),
       sendEventsBtn  = document.getElementById("track-events"),
-      addData = document.getElementById("add-data");
+      addData = document.getElementById("add-data"),
+      trackerAdd = document.getElementById("tracker-btn"),
+      trackerFlush = document.getElementById("tracker-flush");
+
   
   var count = document.getElementById("events-count"),
+      authKey = document.getElementById("auth-key"),
       optionsDisplay = document.getElementById("options-display"),
       responseDisplay = document.getElementById("response-display"),
       requestDisplay = document.getElementById("request-display"),
       dataInput = document.getElementById("input-data"),
       methodInput = document.getElementsByName("method"),
       streamInput = document.getElementById("stream"),
+      trackerStream = document.getElementById("tracker-stream"),
+      trackerData = document.getElementById("tracker-data"),
+      trackerBatch = document.getElementById("tracker-batch"),
+      trackerResult = document.getElementById("tracker-result"),
       codeDisplay = document.getElementById("bulk");
   
   var data = [];
@@ -41,16 +51,22 @@
     }
   });
 
+  authKey.addEventListener('blur', function() {
+    options.auth = authKey.value;
+    atom = new IronSourceAtom(options);
+    tracker = new Tracker(options);
+  });
+
   // Add putEvent(params, callback) params {object}, callback {function}
-  sendEventBtn.addEventListener("click", function(){
+  sendEventBtn.addEventListener("click", function() {
     displayRequest(
-      { data: "{name: iron, last_name: Source}",
+      { data: "{string_value: track, id: 1}",
         table: stream,
         method: httpMethod
       });
     
-    atom.putEvent({ data: "{name: iron, last_name: Source}",
-        table: stream,
+    atom.putEvent({ data: {"string_value": "track", "bool_value": false},
+        stream: stream,
         method: httpMethod
       },
       function(err, data, status) {
@@ -63,12 +79,12 @@
   sendEventsBtn.addEventListener("click", function() {
     displayRequest(
       { data: data,
-        table: stream,
+        stream: stream,
         method: httpMethod
       });
     
     atom.putEvents({ data: data,
-        table: stream,
+        stream: stream,
         method: httpMethod
       },
       function(err, data, status){
@@ -84,7 +100,7 @@
       });
   });
   
-  addData.addEventListener("click", function(){
+  addData.addEventListener("click", function() {
     if (dataInput.value == "") return;
     
     data.push(dataInput.value);
@@ -113,6 +129,32 @@
       data = btoa(data);
     } 
     requestDisplay.innerHTML = JSON.stringify(data);
+  }
+
+  // Tracker
+  trackerAdd.addEventListener("click", function() {
+    tracker.track(trackerStream.value, trackerData.value, function(err, data){
+      var res = err || data;
+      trackerResult.innerHTML = JSON.stringify(res);
+    });
+    clearTrackerInputs();
+    updateBatch();
+  });
+
+  trackerFlush.addEventListener("click", function() {
+    tracker.flush();
+    clearTrackerInputs();
+    updateBatch();
+  });
+
+  function updateBatch() {
+    var batch = tracker.accumulated;
+    trackerBatch.innerHTML = JSON.stringify(batch);
+  }
+
+  function clearTrackerInputs() {
+    trackerStream.value = "";
+    trackerData.value = "";
   }
 
 })();

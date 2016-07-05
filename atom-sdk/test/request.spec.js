@@ -52,7 +52,7 @@ describe('Testing Request class and methods', function() {
   setupServer(sinon, before, after);
   
   var params = {
-    table: "tableName",
+    stream: "tableName",
     data: "analyticsData"
   };
   
@@ -98,18 +98,18 @@ describe('Testing Request class and methods', function() {
     });
   });
   
-  describe('should return throw error if params don`t have table or data attr', function() {
+  describe('should return throw error if params don`t have stream or data attr', function() {
     var req = new Request('/endpoint', {});
     
     it('err for POST method', function() {
         req.post(function(err){
-          expect(err).to.be.eql('Table and data required fields for send event')
+          expect(err).to.be.eql('Stream and data required fields for send event')
         });
     });
     
     it('err for GET method', function() {
         req.get(function(err){
-          expect(err).to.be.eql('Table and data required fields for send event')
+          expect(err).to.be.eql('Stream and data required fields for send event')
         });
     });
     
@@ -118,7 +118,7 @@ describe('Testing Request class and methods', function() {
   it('should check real params for putEvent', function(done) {
     var atom = new ISAtom({"endpoint": '/endpoint'});
     var params = {
-      table: 'table',
+      stream: 'table',
       data: 'data',
       method: 'GET'
     };
@@ -133,7 +133,7 @@ describe('Testing Request class and methods', function() {
   it('should check real params for putEvents', function(done) {
     var atom = new ISAtom({"endpoint": '/endpoint'});
     var params = {
-      table: 'table',
+      stream: 'table',
       data: ['data']
       
     };
