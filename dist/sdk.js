@@ -30,7 +30,7 @@ window.IronSourceAtom = IronSourceAtom;
  *
  * Put a single event to an Atom Stream.
  * @api {get/post} https://track.atom-data.io/ putEvent Send single data to Atom server
- * @apiVersion 1.0.1
+ * @apiVersion 1.1.0
  * @apiGroup Atom
  * @apiParam {String} stream Stream name for saving data in db table
  * @apiParam {String} data Data for saving 
@@ -91,7 +91,7 @@ IronSourceAtom.prototype.putEvent = function (params, callback) {
  * Put a bulk of events to Atom.
  *
  * @api {get/post} https://track.atom-data.io/bulk putEvents Send multiple events data to Atom server
- * @apiVersion 1.0.1
+ * @apiVersion 1.1.0
  * @apiGroup Atom
  * @apiParam {String} stream Stream name for saving data in db table
  * @apiParam {Array} data Multiple event data for saving
@@ -344,8 +344,8 @@ function Tracker(params) {
   params = params || {};
   this.params = params;
   this.params.flushInterval = !!params.flushInterval ? params.flushInterval * 1000 : 10000;
-  this.params.bulkLen = !!params.bulkLen ? params.bulkLen : 10000;
-  this.params.bulkSize = !!params.bulkSize ? params.bulkSize * 1024 : 64 * 1024;
+  this.params.bulkLen = !!params.bulkLen ? params.bulkLen : 20;
+  this.params.bulkSize = !!params.bulkSize ? params.bulkSize * 1024 : 5 * 1024;
 
   this.accumulated = {};
   this.atom = new IronSourceAtom(params);
@@ -457,8 +457,8 @@ Tracker.prototype.flush = function(batchStream, batchData, timeout) {
               self.flush(stream, data, timeout);
             }, timeout);
           } else {
-            //some handler for err after 10min retry fail
-            return self.callback('Server not response more then 1hr.', null);
+            // Case server didn't respond for more than 1 hour
+            return self.callback('Timeout - No response from server', null);
           }
         } else {
           return self.callback(err, null);

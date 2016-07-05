@@ -54,8 +54,8 @@ describe('Testing tracker class and methods', function() {
 
     expect(t.params).to.be.eql({
       flushInterval: 10000,
-      bulkLen: 10000,
-      bulkSize: 64 * 1024
+      bulkLen: 20,
+      bulkSize: 5 * 1024
     });
 
     var params = {
