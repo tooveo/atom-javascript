@@ -132,8 +132,8 @@ Tracker.prototype.flush = function(batchStream, batchData, timeout) {
               self.flush(stream, data, timeout);
             }, timeout);
           } else {
-            //some handler for err after 10min retry fail
-            return self.callback('Server not response more then 1hr.', null);
+            // Case server didn't respond for more than 1 hour
+            return self.callback('Timeout - No response from server', null);
           }
         } else {
           return self.callback(err, null);
