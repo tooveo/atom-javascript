@@ -1,16 +1,16 @@
 "use strict";
 
 (function(){
+  
   var options = {
     endpoint: "https://track.atom-data.io/",
-    // CHANGE TO YOUR API KEY
     auth: ""
   };
   var stream = "",
       httpMethod = "POST";
 
   var atom = new IronSourceAtom(options);
-  var tracker = new Tracker({auth: ""});
+  var tracker = new Tracker(options);
 
   var sendEventBtn  = document.getElementById("track-event"),
       sendEventsBtn  = document.getElementById("track-events"),
@@ -20,6 +20,7 @@
 
   
   var count = document.getElementById("events-count"),
+      authKey = document.getElementById("auth-key"),
       optionsDisplay = document.getElementById("options-display"),
       responseDisplay = document.getElementById("response-display"),
       requestDisplay = document.getElementById("request-display"),
@@ -48,6 +49,12 @@
       stream = this.value;
       updateOptionsDisplay();
     }
+  });
+
+  authKey.addEventListener('blur', function() {
+    options.auth = authKey.value;
+    atom = new IronSourceAtom(options);
+    tracker = new Tracker(options);
   });
 
   // Add putEvent(params, callback) params {object}, callback {function}
