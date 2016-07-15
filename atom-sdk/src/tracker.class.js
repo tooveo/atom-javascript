@@ -27,7 +27,7 @@ function Tracker(params) {
   this.timer = null;
 }
 
-window.Tracker = Tracker;
+window.IronSourceAtom.Tracker = Tracker;
 
 /**
  *
