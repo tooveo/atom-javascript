@@ -21,11 +21,32 @@ $ bower install --save atom-sdk-js
 ```html
 // ...
 <script src="bower_components/atom-sdk-js/dist/sdk.min.js"></script>
+
+// OR for async loading scrypt
+
+<script type="text/javascript">
+  (function(){
+      var isa = document.createElement('script');
+      isa.type = 'text/javascript';
+      isa.async = true;
+      isa.src = 'bower_components/atom-sdk-js/dist/sdk.min.js';
+      (document.getElementsByTagName('head')[0]||document.getElementsByTagName('body')[0]).appendChild(isa);
+  })();
+</script>
 ```
 
 #### Usage
+##### Init SDK
+```js
+ window.IronSourceAtomInit = function() {
+
+ // Your code here ...
+
+ }
+```
 ##### High Level API - "Tracker"
  ```js
+
  var options = {
    endpoint: "https://track.atom-data.io/",
    auth: "YOUR_HMAC_AUTH_KEY", // Optional, depends on your stream config
@@ -34,7 +55,7 @@ $ bower install --save atom-sdk-js
    bulkSize: 20 // Size of each bulk in KB
  }
 
- var tracker = new Tracker(options); // Init a new tracker
+ var tracker = new IronSourceAtom.Tracker(options); // Init a new tracker
 
  var params = {
    stream: "STREAM_NAME", // Your target stream name
