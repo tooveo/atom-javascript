@@ -43,7 +43,7 @@ describe('Atom class test', function() {
     });
   });
 
-  it('should throw error for putEvent/putEvents if no required params', function(){
+  it('should throw error for putEvent/putEvents if no required params', function() {
     var atom = new ISAtom();
 
       atom.putEvent({stream: "test"}, function(err){
