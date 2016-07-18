@@ -21,8 +21,9 @@ $ bower install --save atom-sdk-js
 ```html
 // ...
 <script src="bower_components/atom-sdk-js/dist/sdk.min.js"></script>
+// your code after sdk
 
-// OR for async loading scrypt
+// OR for async loading script
 
 <script type="text/javascript">
   (function(){
@@ -33,17 +34,15 @@ $ bower install --save atom-sdk-js
       (document.getElementsByTagName('head')[0]||document.getElementsByTagName('body')[0]).appendChild(isa);
   })();
 </script>
+// Init your track code after load sdk
+<script type="text/javascript">
+  window.IronSourceAtomInit = function() {
+      // Your code here ...
+   }
+ </script>
 ```
 
 #### Usage
-##### Init SDK
-```js
- window.IronSourceAtomInit = function() {
-
- // Your code here ...
-
- }
-```
 ##### High Level API - "Tracker"
  ```js
 

@@ -94,17 +94,22 @@
             </div>
         </section>
     </div>
-
+    <!-- Async load sdk need wrap all your code what use sdk into -->
+    <!-- window.ironSourceAtomInit = function() { -->
+         <!--// ... code -->
+    <!-- } -->
     <script type="text/javascript">
         (function() {
-            var bsa = document.createElement('script');
-            bsa.type = 'text/javascript';
-            bsa.async = true;
-            bsa.src = '../../dist/sdk.js';
-            (document.getElementsByTagName('head')[0]||document.getElementsByTagName('body')[0]).appendChild(bsa);
+            var isa = document.createElement('script');
+            isa.type = 'text/javascript';
+            isa.async = true;
+            isa.src = '../../dist/sdk.js';
+            (document.getElementsByTagName('head')[0]||document.getElementsByTagName('body')[0]).appendChild(isa);
         })();
     </script>
 
+    <!--For sync loading sdk-->
+    <!--<script src="../../dist/sdk.js"></script>-->
     <script src="index.js"></script>
 </body>
 </html>
