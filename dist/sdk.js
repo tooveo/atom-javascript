@@ -201,7 +201,7 @@ function Request(endpoint, params) {
 
 Request.prototype.post = function (callback) {
   if (!this.params.stream || !this.params.data) {
-    return callback("Stream and data required fields for send event", null);
+    return callback("Stream and data required fields for send event", null, null);
   }
   
   var xhr = this.xhr;
@@ -222,11 +222,11 @@ Request.prototype.post = function (callback) {
       var res;
       if (xhr.status >= 200 && xhr.status < 400) {
         res = new Response(false, xhr.response, xhr.status);
-        !!callback && callback(null, res.data());
+        !!callback && callback(null, res.data(), xhr.status);
       }
       else {
         res = new Response(true, xhr.response, xhr.status);
-        !!callback && callback(res.err(), null);
+        !!callback && callback(res.err(), null,  xhr.status);
       }
     }
   };
@@ -244,7 +244,7 @@ Request.prototype.post = function (callback) {
 
 Request.prototype.get = function (callback) {
   if (!this.params.stream || !this.params.data) {
-    return callback("Stream and data required fields for send event", null);
+    return callback("Stream and data required fields for send event", null, null);
   }
   
   var xhr = this.xhr;
@@ -271,11 +271,11 @@ Request.prototype.get = function (callback) {
       
       if (xhr.status >= 200 && xhr.status < 400) {
         res = new Response(false, xhr.response, xhr.status);
-        !!callback && callback(null, res.data());
+        !!callback && callback(null, res.data(), xhr.status);
       }
       else {
         res = new Response(true, xhr.response, xhr.status);
-        !!callback && callback(res.err(), null);
+        !!callback && callback(res.err(), null, xhr.status);
       }
     }
   };
@@ -317,10 +317,7 @@ Response.prototype.data = function () {
  */
 
 Response.prototype.err = function () {  
-  return {
-    message: this.response,
-    status: this.status
-  }
+  return this.response
 };
 
 'use strict';
@@ -458,7 +455,7 @@ Tracker.prototype.flush = function(batchStream, batchData, timeout) {
             }, timeout);
           } else {
             // Case server didn't respond for more than 1 hour
-            return self.callback('Timeout - No response from server', null);
+            return self.callback('Timeout - No response from server', null, null);
           }
         } else {
           return self.callback(err, null);

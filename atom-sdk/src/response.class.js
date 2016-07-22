@@ -32,8 +32,5 @@ Response.prototype.data = function () {
  */
 
 Response.prototype.err = function () {  
-  return {
-    message: this.response,
-    status: this.status
-  }
+  return this.response
 };

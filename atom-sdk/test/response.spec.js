@@ -18,9 +18,6 @@ describe('Test for Response class', function() {
     var response = new Response(true, "authError: some data", 401);
 
     expect(response.data()).to.be.null;
-    expect(response.err()).to.be.eql({
-      message: "authError: some data",
-      status: 401
-    })
+    expect(response.err()).to.be.eql("authError: some data")
   });
 });

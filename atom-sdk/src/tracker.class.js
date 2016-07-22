@@ -133,7 +133,7 @@ Tracker.prototype.flush = function(batchStream, batchData, timeout) {
             }, timeout);
           } else {
             // Case server didn't respond for more than 1 hour
-            return self.callback('Timeout - No response from server', null);
+            return self.callback('Timeout - No response from server', null, null);
           }
         } else {
           return self.callback(err, null);
