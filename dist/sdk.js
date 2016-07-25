@@ -16,7 +16,7 @@
 function IronSourceAtom(opt) {
   opt = opt || {};
   var END_POINT = "https://track.atom-data.io/";
-  var API_VERSION = "1.1.0";
+  var API_VERSION = "1.1.1";
   this.options = {
     endpoint: !!opt.endpoint && opt.endpoint.toString() || END_POINT,
     apiVersion: API_VERSION,
@@ -30,7 +30,7 @@ window.IronSourceAtom = IronSourceAtom;
  *
  * Put a single event to an Atom Stream.
  * @api {get/post} https://track.atom-data.io/ putEvent Send single data to Atom server
- * @apiVersion 1.1.0
+ * @apiVersion 1.1.1
  * @apiGroup Atom
  * @apiParam {String} stream Stream name for saving data in db table
  * @apiParam {String} data Data for saving 
@@ -47,12 +47,9 @@ window.IronSourceAtom = IronSourceAtom;
  * @apiErrorExample Error-Response:
  *  HTTP 401 Permission Denied
  *  {
- *    "err": {
- *      "message": "Permission denied",
- *      "status": 401
- *    },
+ *    "err": "Permission denied",
  *    "data": null,
- *
+ *    "status": 401
  *  }
  * 
  * @apiSuccessExample Response:
@@ -91,7 +88,7 @@ IronSourceAtom.prototype.putEvent = function (params, callback) {
  * Put a bulk of events to Atom.
  *
  * @api {get/post} https://track.atom-data.io/bulk putEvents Send multiple events data to Atom server
- * @apiVersion 1.1.0
+ * @apiVersion 1.1.1
  * @apiGroup Atom
  * @apiParam {String} stream Stream name for saving data in db table
  * @apiParam {Array} data Multiple event data for saving
@@ -108,12 +105,9 @@ IronSourceAtom.prototype.putEvent = function (params, callback) {
  * @apiErrorExample Error-Response:
  *  HTTP 401 Permission Denied
  *  {
- *    "err": 
- *    {
- *      "message": "Error message", 
- *      "status": 401 
- *    },
- *    "data": null
+ *    "err": "Error message", 
+ *    "data": null,
+ *    "status": 401
  *  }
  *
  * @apiSuccessExample Response:
@@ -121,6 +115,7 @@ IronSourceAtom.prototype.putEvent = function (params, callback) {
  * {
  *    "err": null,
  *    "data": "success"
+ *    "status": 200
  * }
  * @apiParamExample {json} Request-Example:
  * {
@@ -215,7 +210,7 @@ Request.prototype.post = function (callback) {
   xhr.open("POST", this.endpoint, true);
   xhr.setRequestHeader("Content-type", this.headers.contentType);
   xhr.setRequestHeader("x-ironsource-atom-sdk-type", "atom-js");
-  xhr.setRequestHeader("x-ironsource-atom-sdk-version", "1.1.0");
+  xhr.setRequestHeader("x-ironsource-atom-sdk-version", "1.1.1");
 
   xhr.onreadystatechange = function () {
     if (xhr.readyState === XMLHttpRequest.DONE) {
@@ -263,7 +258,7 @@ Request.prototype.get = function (callback) {
   xhr.open("GET", this.endpoint + '?data=' + base64Data, true);
   xhr.setRequestHeader("Content-type", this.headers.contentType);
   xhr.setRequestHeader("x-ironsource-atom-sdk-type", "atom-js");
-  xhr.setRequestHeader("x-ironsource-atom-sdk-version", "1.1.0");
+  xhr.setRequestHeader("x-ironsource-atom-sdk-version", "1.1.1");
 
   xhr.onreadystatechange = function () {
     if (xhr.readyState === XMLHttpRequest.DONE) {
@@ -356,7 +351,7 @@ window.IronSourceAtom.Tracker = Tracker;
  * Start track events
  *
  * @api {post} endpoint/bulk track Accumulate and send events to server
- * @apiVersion 1.1.0
+ * @apiVersion 1.1.1
  * @apiGroup Atom
  * @apiParam {String} stream Stream name for saving data in db table
  * @apiParam {All} data Event data for saving

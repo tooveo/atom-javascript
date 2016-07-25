@@ -34,7 +34,7 @@ window.IronSourceAtom.Tracker = Tracker;
  * Start track events
  *
  * @api {post} endpoint/bulk track Accumulate and send events to server
- * @apiVersion 1.1.0
+ * @apiVersion 1.1.1
  * @apiGroup Atom
  * @apiParam {String} stream Stream name for saving data in db table
  * @apiParam {All} data Event data for saving

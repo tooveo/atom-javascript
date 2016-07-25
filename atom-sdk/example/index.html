@@ -104,11 +104,17 @@
             isa.type = 'text/javascript';
             isa.async = true;
             isa.src = '../../dist/sdk.js';
+//          isa.src = 'http://js-sdk.atom-data.io/1.1.1/sdk.min.js';
             (document.getElementsByTagName('head')[0]||document.getElementsByTagName('body')[0]).appendChild(isa);
         })();
     </script>
 
-    <!--For sync loading sdk-->
+<!--For sync loading sdk-->
+
+    <!--From cdn-->
+    <!--<script src="https://js-sdk.atom-data.io/1.1.1/sdk.min.js"></script>-->
+
+    <!--From locally-->
     <!--<script src="../../dist/sdk.js"></script>-->
     <script src="index.js"></script>
 </body>

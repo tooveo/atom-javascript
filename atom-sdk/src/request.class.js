@@ -41,7 +41,7 @@ Request.prototype.post = function (callback) {
   xhr.open("POST", this.endpoint, true);
   xhr.setRequestHeader("Content-type", this.headers.contentType);
   xhr.setRequestHeader("x-ironsource-atom-sdk-type", "atom-js");
-  xhr.setRequestHeader("x-ironsource-atom-sdk-version", "1.1.0");
+  xhr.setRequestHeader("x-ironsource-atom-sdk-version", "1.1.1");
 
   xhr.onreadystatechange = function () {
     if (xhr.readyState === XMLHttpRequest.DONE) {
@@ -89,7 +89,7 @@ Request.prototype.get = function (callback) {
   xhr.open("GET", this.endpoint + '?data=' + base64Data, true);
   xhr.setRequestHeader("Content-type", this.headers.contentType);
   xhr.setRequestHeader("x-ironsource-atom-sdk-type", "atom-js");
-  xhr.setRequestHeader("x-ironsource-atom-sdk-version", "1.1.0");
+  xhr.setRequestHeader("x-ironsource-atom-sdk-version", "1.1.1");
 
   xhr.onreadystatechange = function () {
     if (xhr.readyState === XMLHttpRequest.DONE) {

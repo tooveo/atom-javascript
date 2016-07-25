@@ -21,6 +21,9 @@ $ bower install --save atom-sdk-js
 ```html
 // ...
 <script src="bower_components/atom-sdk-js/dist/sdk.min.js"></script>
+// or from CDN
+<script src="https://js-sdk.atom-data.io/1.1.1/sdk.min.js"></script>
+
 // your code after sdk
 
 // OR for async loading script
@@ -31,6 +34,13 @@ $ bower install --save atom-sdk-js
       isa.type = 'text/javascript';
       isa.async = true;
       isa.src = 'bower_components/atom-sdk-js/dist/sdk.min.js';
+
+//    or use CDN
+//    isa.src = 'http://js-sdk.atom-data.io/1.1.1/sdk.min.js';
+
+//    or with HTTPS
+//    isa.src = 'https://js-sdk.atom-data.io/1.1.1/sdk.min.js';
+
       (document.getElementsByTagName('head')[0]||document.getElementsByTagName('body')[0]).appendChild(isa);
   })();
 </script>
@@ -118,5 +128,5 @@ MIT
 [coveralls-url]: https://coveralls.io/github/ironSource/atom-javascript?branch=master
 [docs-image]: https://img.shields.io/badge/docs-latest-blue.svg
 [docs-url]: https://ironsource.github.io/atom-javascript/
-[sauce-image]: https://saucelabs.com/browser-matrix/jacckson.svg?auth=433c2b373dfd86bc7d78fc8bf36dbc3b
-[sauce-url]: https://saucelabs.com/u/jacckson?auth=433c2b373dfd86bc7d78fc8bf36dbc3b
+[sauce-image]: https://saucelabs.com/browser-matrix/jacckson.svg?auth=f38fd52d67c371c24d1152f88f3183b2
+[sauce-url]: https://saucelabs.com/u/jacckson?auth=f38fd52d67c371c24d1152f88f3183b2
