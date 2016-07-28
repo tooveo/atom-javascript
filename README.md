@@ -38,7 +38,7 @@ $ bower install --save atom-sdk-js
 
  var params = {
    stream: "STREAM_NAME", // Your target stream name
-   data: JSON.stringify({id: 1, string_col: "String"}) // Data that matches your DB structure
+   data: {id: 1, string_col: "String"} // Data that matches your DB structure
  }
 
  tracker.track(params); // Start tracking
@@ -56,8 +56,8 @@ var atom = new IronSourceAtom(options);
 
 var params = {
   stream: "STREAM_NAME", // Your target stream name
-  data: JSON.stringify({name: "iron", last_name: "Source"}), // String with data that matches your DB structure
-  method: "GET" // HTTP request method - Optional, default "POST"
+  data: {name: "iron", last_name: "Source"}, // String with data that matches your DB structure
+  method: "POST" // HTTP request method - Optional, default "POST"
 }
 
 var callback = function(res) {
