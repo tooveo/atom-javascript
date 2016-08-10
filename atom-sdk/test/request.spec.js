@@ -1,7 +1,6 @@
 'use strict';
 
 var Request = require('../../dist/sdk').Request;
-var ISAtom = require('../../dist/sdk').IronSourceAtom;
 var expect = require('chai').expect;
 var sinon = require('sinon');
 var assert = require('assert');
@@ -127,7 +126,6 @@ describe('Request class test', function () {
   });
 
 });
-
 
 function _setupServer(sinon, before, after) {
   var server;

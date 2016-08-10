@@ -143,7 +143,7 @@ Tracker.prototype.flush = function (targetStream, callback) {
 
   function _send(sendStream, sendData, timeout, callback, firstRun) {
 
-    // Solves a bug in the
+    // In order to prevent the deletion of the data on each function call
     if (firstRun) {
       self.accumulated[sendStream] = [];
       firstRun = false;
