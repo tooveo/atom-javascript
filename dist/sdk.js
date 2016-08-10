@@ -196,7 +196,9 @@ function Request(endpoint, params) {
       }
     }
     this.headers = {
-      contentType: "application/json;charset=UTF-8"
+      contentType: "application/json;charset=UTF-8",
+      sdkType: "atom-js",
+      sdkVersion: "1.5.0"
     };
   }
   this.xhr = (XMLHttpRequest) ? new XMLHttpRequest() : new ActiveXObject("Microsoft.XMLHTTP");
@@ -225,8 +227,8 @@ Request.prototype.post = function (callback) {
 
   xhr.open("POST", this.endpoint, true);
   xhr.setRequestHeader("Content-type", this.headers.contentType);
-  xhr.setRequestHeader("x-ironsource-atom-sdk-type", "atom-js");
-  xhr.setRequestHeader("x-ironsource-atom-sdk-version", "2.0.0");
+  xhr.setRequestHeader("x-ironsource-atom-sdk-type", this.headers.sdkType);
+  xhr.setRequestHeader("x-ironsource-atom-sdk-version", this.headers.sdkVersion);
 
   xhr.onerror = function () {
     if (xhr.status == 0) {
@@ -279,8 +281,8 @@ Request.prototype.get = function (callback) {
 
   xhr.open("GET", this.endpoint + '?data=' + base64Data, true);
   xhr.setRequestHeader("Content-type", this.headers.contentType);
-  xhr.setRequestHeader("x-ironsource-atom-sdk-type", "atom-js");
-  xhr.setRequestHeader("x-ironsource-atom-sdk-version", "1.1.1");
+  xhr.setRequestHeader("x-ironsource-atom-sdk-type", this.headers.sdkType);
+  xhr.setRequestHeader("x-ironsource-atom-sdk-version", this.headers.sdkVersion);
 
   xhr.onreadystatechange = function () {
     if (xhr.readyState === XMLHttpRequest.DONE) {
