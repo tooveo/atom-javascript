@@ -1,5 +1,5 @@
 "use strict";
-window.ironSourceAtomInit = function() {
+window.ironSourceAtomInit = function () {
 
   var options = {
     endpoint: "https://track.atom-data.io/",
@@ -11,12 +11,12 @@ window.ironSourceAtomInit = function() {
   var atom = new IronSourceAtom(options);
   var tracker = new IronSourceAtom.Tracker(options);
 
-  var sendEventBtn = document.getElementById("track-event"),
-    sendEventsBtn = document.getElementById("track-events"),
+  var sendEventBtn = document.getElementById("put-event"),
+    sendEventsBtn = document.getElementById("put-events"),
     addData = document.getElementById("add-data"),
     trackerAdd = document.getElementById("tracker-btn"),
-    trackerFlush = document.getElementById("tracker-flush");
-
+    trackerFlush = document.getElementById("tracker-flush"),
+    trackerClear = document.getElementById("tracker-clear");
 
   var count = document.getElementById("events-count"),
     authKey = document.getElementById("auth-key"),
@@ -30,7 +30,9 @@ window.ironSourceAtomInit = function() {
     trackerData = document.getElementById("tracker-data"),
     trackerBatch = document.getElementById("tracker-batch"),
     trackerResult = document.getElementById("tracker-result"),
-    codeDisplay = document.getElementById("bulk");
+    codeDisplay = document.getElementById("bulk"),
+    generateTrackerData = document.getElementById('generate-tracker-data'),
+    generateData = document.getElementById("generate-data");
 
   var data = [];
 
@@ -56,27 +58,41 @@ window.ironSourceAtomInit = function() {
     tracker = new IronSourceAtom.Tracker(options);
   });
 
-  // Add putEvent(params, callback) params {object}, callback {function}
+  // putEvent
   sendEventBtn.addEventListener("click", function () {
-    displayRequest(
-      {
-        data: "{string_value: track, id: 1}",
-        table: stream,
-        method: httpMethod
-      });
+    var number = Math.random() * 3000 + 1;
+    data = {
+      event_name: "JS-SDK-PUT-EVENT-TEST",
+      string_value: String(number),
+      int_value: Math.round(number),
+      float_value: number,
+      ts: new Date()
+    };
+
+    displayRequest({
+      data: data,
+      table: stream,
+      method: httpMethod
+    });
 
     atom.putEvent({
-        data: {"string_value": "track", "bool_value": false},
+        data: data,
         stream: stream,
         method: httpMethod
       },
       function (err, data, status) {
-        if (err) displayError(err);
-        else displayResponse(data);
+        err ? displayError(err) : displayResponse(data);
+        data = [];
       });
+
+    atom.health(function (err, data, status) {
+      console.log("Health Check:", data, status);
+    });
+
   });
 
-  // Add putEvent(params, callback) params {object}, callback {function}
+
+  // putEvents
   sendEventsBtn.addEventListener("click", function () {
     displayRequest(
       {
@@ -90,12 +106,13 @@ window.ironSourceAtomInit = function() {
         stream: stream,
         method: httpMethod
       },
-      function (err, data, status) {
+      function (err, res, status) {
         if (err) {
           displayError(err);
         }
         else {
-          displayResponse(data);
+          displayResponse(res);
+          // init data
           data = [];
           count.innerHTML = data.length;
           codeDisplay.innerHTML = "[]";
@@ -105,13 +122,35 @@ window.ironSourceAtomInit = function() {
 
   addData.addEventListener("click", function () {
     if (dataInput.value == "") return;
-
+    if (!(data instanceof Array)) {
+      data = [];
+    }
     data.push(dataInput.value);
     dataInput.value = "";
     count.innerHTML = data.length;
     codeDisplay.innerHTML = "[" + data.join(',\n') + "]";
   });
 
+  generateData.addEventListener("click", function () {
+    if (!(data instanceof Array)) {
+      data = [];
+    }
+    for (var i = 0; i < 10; i++) {
+      var number = Math.random() * (3000 - 3) + 3;
+      var genData = {
+        event_name: "JS-SDK-PUT-EVENTS-TEST",
+        string_value: String(number),
+        int_value: Math.round(number),
+        float_value: number,
+        ts: new Date()
+      };
+      data.push(genData);
+    }
+
+    dataInput.value = "";
+    count.innerHTML = data.length;
+    codeDisplay.innerHTML = JSON.stringify(data).replace(/},{/g, "},\n{");
+  });
 
   function updateOptionsDisplay() {
     optionsDisplay.innerHTML = '{ <br>' +
@@ -134,20 +173,49 @@ window.ironSourceAtomInit = function() {
     requestDisplay.innerHTML = JSON.stringify(data);
   }
 
+
   // Tracker
   trackerAdd.addEventListener("click", function () {
-    tracker.track(trackerStream.value, trackerData.value, function (err, data) {
-      var res = err || data;
-      trackerResult.innerHTML = JSON.stringify(res);
-    });
-    clearTrackerInputs();
+    try {
+      tracker.track(trackerStream.value, trackerData.value);
+    } catch (e) {
+      trackerResult.innerHTML = e;
+      return;
+    }
     updateBatch();
   });
 
-  trackerFlush.addEventListener("click", function () {
-    tracker.flush();
-    clearTrackerInputs();
+
+  generateTrackerData.addEventListener("click", function () {
+    for (var i = 0; i < 10; i++) {
+      var number = Math.random() * (3000 - 3) + 3;
+      var genData = {
+        event_name: "JS-SDK-TRACKER",
+        string_value: String(number),
+        int_value: Math.round(number),
+        float_value: number,
+        ts: new Date()
+      };
+      try {
+        tracker.track(trackerStream.value, genData);
+      } catch(e) {
+        trackerResult.innerHTML = e;
+        return;
+      }
+    }
     updateBatch();
+  });
+
+
+  trackerFlush.addEventListener("click", function () {
+    tracker.flush(null, function (results) {
+      trackerResult.innerHTML = JSON.stringify(results);
+      updateBatch();
+    });
+  });
+
+  trackerClear.addEventListener("click", function () {
+    clearTrackerInputs();
   });
 
   function updateBatch() {

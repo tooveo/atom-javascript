@@ -3,119 +3,124 @@
 <head>
     <meta charset="UTF-8">
     <title>Example page for IronSource Atom JS SDK</title>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"
+          integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
 </head>
 <body>
-    <div class="container">
-        <header class="page-header">
-            <h1 class="text-center">Example for IronSource Atom JS SDK</h1>
-        </header>
-        <section class="row">
-            <div class="col-md-9">
-                <h1>Test high lvl API</h1>
-                <h2>Tracker</h2>
-            </div>
-            <div class="col-md-3">
-                <label for="auth-key">Your Stream auth key</label>
-                <input type="text" id="auth-key" class="form-control" placeholder="Enter stream auth key">
-            </div>
-            <div class="col-md-4">
-                <label for="tracker-stream">Tracker Stream Name</label>
-                <input type="text" id="tracker-stream" class="form-control" placeholder="Enter stream name">
-                <label for="tracker-data">Tracker data</label>
-                <input type="text" id="tracker-data" class="form-control" placeholder='Enter data {"key": "value"}'>
-                <br>
-                <button id="tracker-btn" class="btn btn-primary">Track</button>
-                <button id="tracker-flush" class="btn btn-success">Flush</button>
-            </div>
-            <div class="col-md-8">
-                <label for="tracker-batch">Accumulated data</label>
-                <pre id="tracker-batch"></pre>
-                <label for="tracker-result">Result</label>
-                <pre id="tracker-result"></pre>
-            </div>
-        </section>
-        <h1>Test low lvl API</h1>
-        <section class="row">
-            <div class="form-group col-md-4">
-                <label for="stream">Stream Name</label>
-                <input id="stream" class="form-control" type="text" placeholder="Enter StreamName">
-            </div>
-            <div class="form-group col-md-4">
-                <label>HTTP send method</label><br>
-                <input class="method" type="radio" name="method" value="POST" checked> POST<br>
-                <input class="method" type="radio" name="method" value="GET"> GET
-            </div>
-        </section>
+<div class="container">
+    <header class="page-header">
+        <h1 class="text-center">Example for IronSource Atom JS SDK</h1>
+    </header>
+    <section class="row">
+        <div class="col-md-9">
+            <h1>Test high lvl API</h1>
+            <h2>Tracker</h2>
+        </div>
+        <div class="col-md-3">
+            <label for="auth-key">Your Stream auth key</label>
+            <input type="text" id="auth-key" class="form-control" placeholder="Enter stream auth key">
+        </div>
+        <div class="col-md-5">
+            <label for="tracker-stream">Tracker Stream Name</label>
+            <input type="text" id="tracker-stream" class="form-control" placeholder="Enter stream name">
+            <label for="tracker-data">Tracker data</label>
+            <input type="text" id="tracker-data" class="form-control" placeholder='Enter data {"key": "value"}'>
+            <br>
+            <button id="tracker-clear" class="btn btn-success">Clear Input</button>
+            <button id="generate-tracker-data" class="btn btn-primary">Generate & Track Data</button>
+            <button id="tracker-btn" class="btn btn-primary">Track</button>
+            <button id="tracker-flush" class="btn btn-success">Flush</button>
+        </div>
+        <div class="col-md-7">
+            <label for="tracker-batch">Accumulated Tracker data</label>
+            <pre id="tracker-batch"></pre>
+            <label for="tracker-result">Result</label>
+            <pre id="tracker-result"></pre>
+        </div>
+    </section>
+    <h1>Test low lvl API</h1>
+    <section class="row">
+        <div class="form-group col-md-4">
+            <label for="stream">Stream Name</label>
+            <input id="stream" class="form-control" type="text" placeholder="Enter StreamName">
+        </div>
+        <div class="form-group col-md-4">
+            <label>HTTP send method</label><br>
+            <input class="method" type="radio" name="method" value="POST" checked> POST<br>
+            <input class="method" type="radio" name="method" value="GET"> GET
+        </div>
+    </section>
 
-        <section class="row">
-            <div class="col-md-4">
-                <h4>Options</h4>
-                <pre id="options-display"></pre>
-            </div>
-            <div class="col-md-8">
-                <h4>Request</h4>
-                <pre id="request-display"></pre>
-                <h4>Response</h4>
-                <pre id="response-display"></pre>
-            </div>
-        </section>
+    <section class="row">
+        <div class="col-md-4">
+            <h4>Options</h4>
+            <pre id="options-display"></pre>
+        </div>
+        <div class="col-md-8">
+            <h4>Request</h4>
+            <pre id="request-display"></pre>
+            <h4>Response</h4>
+            <pre id="response-display"></pre>
+        </div>
+    </section>
 
-        <section class="row">
-            <div class="col-md-4">
-                <h2>Test putEvent method</h2>
-                <button id="track-event" class="btn btn-primary">Send</button>
-            </div>
-        </section>
-        <section class="row">
-            <div class="col-md-9">
-                <h2>Test putEvents method</h2>
+    <section class="row">
+        <div class="col-md-4">
+            <h2>Test putEvent method</h2>
+            <button id="put-event" class="btn btn-primary">Send</button>
+        </div>
+    </section>
+    <section class="row">
+        <div class="col-md-9">
+            <h2>Test putEvents method</h2>
 
-                <div class="row">
-                    <div class="col-md-4">
-                        <input id="input-data" class="form-control" type="text" placeholder="Enter data to send">
-                    </div>
-                    <div class="col-md-4">
-                        <span id="events-count" class="badge" style="margin: 7px 0 7px -15px;">0</span>
-                    </div>
+            <div class="row">
+                <div class="col-md-4">
+                    <input id="input-data" class="form-control" type="text" placeholder="Enter data to send">
                 </div>
-                <div class="row" style="margin: 15px -15px;">
-                    <div class="col-md-8">
-                        <button id="add-data" class="btn btn-success">Add</button>
-                        <button id="track-events" class="btn btn-primary">Send</button>
-                    </div>
+                <div class="col-md-4">
+                    <span id="events-count" class="badge" style="margin: 7px 0 7px -15px;">0</span>
                 </div>
+            </div>
+            <div class="row" style="margin: 15px -15px;">
+                <div class="col-md-8">
+                    <button id="add-data" class="btn btn-success">Add</button>
+                    <button id="generate-data" class="btn btn-primary">Generate Random data</button>
+                    <button id="put-events" class="btn btn-primary">Send</button>
+                </div>
+            </div>
 
-            </div>
-        </section>
-        <section class="row">
-            <div class="col-md-12">
-                <pre id="bulk">[]</pre>
-            </div>
-        </section>
-    </div>
-    <!-- Async load sdk need wrap all your code what use sdk into -->
-    <!-- window.ironSourceAtomInit = function() { -->
-         <!--// ... code -->
-    <!-- } -->
-    <script type="text/javascript">
-        (function() {
-            var isa = document.createElement('script');
-            isa.type = 'text/javascript';
-            isa.async = true;
-            isa.src = '../../dist/sdk.js';
-//          isa.src = 'http://js-sdk.atom-data.io/1.1.1/sdk.min.js';
-            (document.getElementsByTagName('head')[0]||document.getElementsByTagName('body')[0]).appendChild(isa);
-        })();
-    </script>
+        </div>
+    </section>
+    <section class="row">
+        <div class="col-md-12">
+            <pre id="bulk">[]</pre>
+        </div>
+    </section>
+</div>
+<!-- Async load sdk need wrap all your code what use sdk into -->
+<!-- window.ironSourceAtomInit = function() { -->
+<!--// ... code -->
+<!-- } -->
+<script type="text/javascript">
+    (function () {
+        var isa = document.createElement('script');
+        isa.type = 'text/javascript';
+        isa.async = true;
+        isa.src = '../../dist/sdk.js';
+        // For CDN:
+//         isa.src = 'https://js-sdk.atom-data.io/1.1.0/sdk.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(isa);
+    })();
+</script>
 
 <!--For sync loading sdk-->
 
-    <!--From cdn-->
-    <!--<script src="https://js-sdk.atom-data.io/1.1.1/sdk.min.js"></script>-->
+<!--From cdn-->
+<!--<script src="https://js-sdk.atom-data.io/1.1.1/sdk.min.js"></script>-->
 
-    <!--From locally-->
-    <!--<script src="../../dist/sdk.js"></script>-->
-    <script src="index.js"></script>
+<!--From locally-->
+<!--<script src="../../dist/sdk.js"></script>-->
+<script src="index.js"></script>
 </body>
 </html>
