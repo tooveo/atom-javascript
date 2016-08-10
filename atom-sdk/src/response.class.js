@@ -2,7 +2,7 @@
  *
  * Object with response data
  *
- * @param {Boolean} error - (true) if response have errors
+ * @param {Boolean} error - (true) if response has errors
  * @param {String} response - response after request
  * @param {String} status - response status code
  * @constructor
@@ -21,7 +21,14 @@ function Response(error, response, status) {
  */
 
 Response.prototype.data = function () {
-  return this.error ? null : JSON.parse(this.response)
+  if (this.error) {
+    return null;
+  }
+  try {
+    return JSON.parse(this.response);
+  } catch (e) {
+    return this.response
+  }
 };
 
 /**
@@ -31,6 +38,10 @@ Response.prototype.data = function () {
  * @returns {Object} -return response  "error" with status or null if no errors
  */
 
-Response.prototype.err = function () {  
-  return this.response
+Response.prototype.err = function () {
+  try {
+    return JSON.parse(this.error);
+  } catch (e) {
+    return this.error;
+  }
 };
