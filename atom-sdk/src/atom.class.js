@@ -3,7 +3,7 @@
 /**
  *
  * Constructs an Atom service object.
- * 
+ *
  * @param {Object} opt
  * @param {String} opt.endpoint - Endpoint api url
  * @param {String} opt.auth (optional) - auth key for authentication
@@ -14,7 +14,7 @@
 function IronSourceAtom(opt) {
   opt = opt || {};
   var END_POINT = "https://track.atom-data.io/";
-  var API_VERSION = "1.1.1";
+  var API_VERSION = "V1"; // The atom API endpoint version (don't change it)
   this.options = {
     endpoint: !!opt.endpoint && opt.endpoint.toString() || END_POINT,
     apiVersion: API_VERSION,
@@ -22,7 +22,7 @@ function IronSourceAtom(opt) {
   };
 }
 
-window.IronSourceAtom = IronSourceAtom; 
+window.IronSourceAtom = IronSourceAtom;
 
 /**
  *
@@ -31,17 +31,17 @@ window.IronSourceAtom = IronSourceAtom;
  * @apiVersion 1.1.1
  * @apiGroup Atom
  * @apiParam {String} stream Stream name for saving data in db table
- * @apiParam {String} data Data for saving 
+ * @apiParam {String} data Data for saving
  * @apiParam {String} method POST or GET method for do request
- * 
- * @apiSuccess {Null} err Server response error 
+ *
+ * @apiSuccess {Null} err Server response error
  * @apiSuccess {Object} data Server response data
  * @apiSuccess {String} status Server response status
- * 
+ *
  * @apiError {Object} err Server response error
  * @apiError {Null} data Server response data
  * @apiError {String} status Server response status
- * 
+ *
  * @apiErrorExample Error-Response:
  *  HTTP 401 Permission Denied
  *  {
@@ -49,7 +49,7 @@ window.IronSourceAtom = IronSourceAtom;
  *    "data": null,
  *    "status": 401
  *  }
- * 
+ *
  * @apiSuccessExample Response:
  * HTTP 200 OK
  * {
@@ -68,8 +68,8 @@ window.IronSourceAtom = IronSourceAtom;
 
 IronSourceAtom.prototype.putEvent = function (params, callback) {
   params = params || {};
-  if (!params.stream) return callback('Stream is required', null);
-  if (!params.data) return callback('Data is required', null);
+  if (!params.stream) return callback('Stream is required', null, 400);
+  if (!params.data) return callback('Data is required', null, 400);
 
   params.apiVersion = this.options.apiVersion;
   params.auth = this.options.auth;
@@ -128,11 +128,17 @@ IronSourceAtom.prototype.putEvent = function (params, callback) {
 IronSourceAtom.prototype.putEvents = function (params, callback) {
   params = params || {};
   if (!params.stream) {
-    return callback('Stream is required', null);
+    return callback('Stream is required', null, 400);
   }
-  
+
   if (!params.data || !(params.data instanceof Array) || !params.data.length) {
-    return callback('Data (must be not empty array) is required', null);
+    return callback('Data (must be not empty array) is required', null, 400);
+  }
+
+  if (params.method) {
+    if (params.method.toUpperCase() == 'GET') {
+      return callback('GET is not a valid method for putEvents', null, 400);
+    }
   }
 
   params.apiVersion = this.options.apiVersion;
@@ -151,9 +157,8 @@ IronSourceAtom.prototype.putEvents = function (params, callback) {
  */
 
 IronSourceAtom.prototype.health = function (callback) {
-  var req = new Request(this.options.endpoint, {table: 'health_check', data: "null"});
-  
-  return req.get(callback);
+  var req = new Request(this.options.endpoint + 'health', "health");
+  return req.health(callback);
 };
 
 if (typeof module !== 'undefined' && module.exports) {
@@ -161,6 +166,7 @@ if (typeof module !== 'undefined' && module.exports) {
     IronSourceAtom: IronSourceAtom,
     Request: Request,
     Response: Response,
-    Tracker: Tracker
+    Tracker: Tracker,
+    taskMap: taskMap
   };
 }

@@ -2,29 +2,38 @@
 
 /**
  *
- * This class is the main entry point into this client API.
+ * This class implements a tracker for tracking events to ironSource atom
  *
  * @param {Object} params
- * @param {Number} params.flushInterval - timer for send data in seconds
+ * @param {Number} params.flushInterval - data sending interval
  * @param {Number} params.bulkLen - number of records in each bulk request
- * @param {Number} params.bulkSize - the Maximum bulk size in Kb.
- *
- * Optional for ISAtom main object
+ * @param {Number} params.bulkSize - the maximum bulk size in KB.
+ * Optional for ISAtom main object:
  * @param {String} params.endpoint - Endpoint api url
- * @param {String} params.auth (optional) - auth key for authentication
+ * @param {String} params.auth (optional) - key for hmac authentication
  *
  * @constructor
  */
 function Tracker(params) {
+  var self = this;
   params = params || {};
   this.params = params;
-  this.params.flushInterval = !!params.flushInterval ? params.flushInterval * 1000 : 10000;
+  this.params.flushInterval = !!params.flushInterval ? params.flushInterval * 1000 : 30000;
   this.params.bulkLen = !!params.bulkLen ? params.bulkLen : 20;
   this.params.bulkSize = !!params.bulkSize ? params.bulkSize * 1024 : 5 * 1024;
+  this.params.auth = !!params.auth ? params.auth : ''; // Default auth for all streams
+  this.retryTimeout = 1000;
 
+  // Dict of accumulated records: (stream -> [data array])
   this.accumulated = {};
   this.atom = new IronSourceAtom(params);
-  this.timer = null;
+
+  //Flush everything every {flushInterval} seconds
+  if (!this.timer) {
+    this.timer = setInterval(function () {
+      self.flush();
+    }, this.params.flushInterval);
+  }
 }
 
 window.IronSourceAtom.Tracker = Tracker;
@@ -70,78 +79,97 @@ window.IronSourceAtom.Tracker = Tracker;
  *
  */
 
-Tracker.prototype.track = function (stream, data, callback) {
+Tracker.prototype.track = function (stream, data) {
   var self = this;
-  this.callback = callback || function (err, body) {
-      return err ? new Error(err) : null;
-    };
-  
-  if (stream == undefined || data == undefined) {
-    return self.callback('Stream or data is empty', null);
+  if (stream === undefined || stream.length == 0 || data.length == 0 || data === undefined) {
+    throw new Error('Stream name and data are required parameters');
   }
 
-  if (!self.accumulated[stream]) self.accumulated[stream] = [];
-  try {
-    self.accumulated[stream].push(JSON.parse(data));
-  } catch (e) {
+  // Init the stream backlog (stream -> [data array])
+  if (!(stream in self.accumulated)) {
+    self.accumulated[stream] = [];
+  }
+
+  // Store the data as an array of strings
+  if ((typeof data !== 'string' && !(data instanceof String))) {
+    try {
+      self.accumulated[stream].push(JSON.stringify(data))
+    } catch (e) {
+      throw new Error("Invalid Data - can't be stringified", e);
+    }
+  } else {
     self.accumulated[stream].push(data);
   }
 
-
-  if (self.accumulated[stream].length >= self.params.bulkLen || JSON.stringify(self.accumulated[stream]).length * 2 >= self.params.bulkSize) {
+  // Flush on a certain bulk length or bulk size (in bytes)
+  if (self.accumulated[stream].length >= self.params.bulkLen
+    || _byteCount(self.accumulated[stream]) >= self.params.bulkSize) {
     self.flush(stream);
-  }
-
-  else if (!self.timer) {
-    self.timer = setTimeout(function() {
-      self.flush();
-    }, self.params.flushInterval);
   }
 };
 
-Tracker.prototype.flush = function(batchStream, batchData, timeout) {
+Tracker.prototype.flush = function (targetStream, callback) {
   var self = this;
-  timeout = timeout || 1000;
+  var timeout = this.retryTimeout;
 
-  if (!!batchStream && !!batchData) {
-    // for send or retry method
-    send(batchStream, batchData, timeout);
+  if (!callback) {
+    callback = function (err, data) {
+      return err ? new Error(err) : data;
+    };
   }
 
-  else if (!!batchStream && !batchData) {
-    // send with custom stream when >= len || size
-    if (self.accumulated[batchStream].length >= 1) send(batchStream, self.accumulated[batchStream]);
-  }
+  var tasks = [];
 
-  else {
-    //send all when no params
-    for(var key in self.accumulated) {
-      if (self.accumulated[key].length >= 1) self.flush(key, self.accumulated[key]);
-      self.accumulated[key] = [];
+  if (targetStream) {
+    if (self.accumulated[targetStream].length >= 1) {
+      tasks.push(function (taskCb) {
+        _send(targetStream, self.accumulated[targetStream], timeout, taskCb, true);
+      });
     }
-    self.timer = null;
+  } else {
+    for (var stream in self.accumulated) {
+      if (self.accumulated[stream].length >= 1) {
+        // The IIFE is here to create a separate scope so we don't get the stream as closure from the upper func.
+        // DO NOT REMOVE IT unless you find a nicer way to copy the stream by value without jqeury/es6.
+        (function (stream) {
+          tasks.push(function (taskCb) {
+            return _send(stream, self.accumulated[stream], timeout, taskCb, true);
+          });
+        })(stream);
+      }
+    }
   }
-  /* istanbul ignore next */
-  function send (stream, data, timeout) {
-    return self.atom.putEvents({"stream": stream, "data": data}, function(err, body) {
-      if (err != null) {
-        if (err.status >= 500) {
-          if (timeout < 60 * 60 * 1000) {
-            setTimeout(function() {
-              timeout = timeout * 2;
-              self.flush(stream, data, timeout);
-            }, timeout);
-          } else {
-            // Case server didn't respond for more than 1 hour
-            return self.callback('Timeout - No response from server', null, null);
-          }
+  return taskMap(tasks, callback);
+
+  function _send(sendStream, sendData, timeout, callback, firstRun) {
+
+    // Solves a bug in the
+    if (firstRun) {
+      self.accumulated[sendStream] = [];
+      firstRun = false;
+    }
+
+    // check return
+    return self.atom.putEvents({"stream": sendStream, "data": sendData}, function (err, data, status) {
+      if (err != null && status >= 500) {
+        // Exponential back off + jitter - retry for 20 minutes max
+        if (timeout < 20 * 60 * 1000) {
+          setTimeout(function () {
+            timeout = timeout * 2 + Math.floor((Math.random() * 1000) + 100);
+            _send(sendStream, sendData, timeout, callback, firstRun);
+          }, timeout);
+          return;
         } else {
-          return self.callback(err, null);
+          // Case server didn't respond for too much time
+          return callback('Timeout - No response from server', null, 408);
         }
       }
-      else {
-        self.callback(null, body);
-      }
+      return callback(err, data, status);
+
     })
   }
 };
+
+function _byteCount(string) {
+  return encodeURI(string).split(/%..|./).length - 1;
+}

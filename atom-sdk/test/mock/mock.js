@@ -1,42 +1,24 @@
 'use strict';
 var btoa = require('btoa');
 
-function ISAtomMock(opt) {
-  opt = opt || {};
-  this.options = {
-    endpoint: "/some-url",
-    apiVersion: "V1",
-    auth: "auth-key"
-  };
-
+function ISAtomMock(options) {
+  var i = 0;
   this.putEvents = this.putEvent = function (params, callback) {
-    var req = new RequestMock(this.options.endpoint, params);
-
-    params.apiVersion = this.options.apiVersion;
-    params.auth = this.options.auth;
-
-    return (!!params.method && params.method.toUpperCase() === "GET") ?
-      req.get(callback) : req.post(callback);
+    switch (options.status) {
+      case 200:
+      default:
+        return callback(null, '{ "Status": "OK" }', 200);
+      case 500:
+        if (++i == 3) {
+          return callback(null, '{ "Status": "OK" }', 200);
+        }
+        return callback('Service Unavailable', null, 500);
+      case 401:
+        return callback('"Auth Error ' + params.data, null, 401);
+    }
   };
-}
-
-function RequestMock(url, params) {
-  this.get = function (cb) {
-    var data = JSON.stringify({
-      table: params.stream,
-      data: params.data,
-      apiVersion: params.apiVersion,
-      auth: params.auth
-    });
-
-    return btoa(data);
-  };
-  this.post = function (cb) {
-    return params;
-  }
 }
 
 module.exports = {
-  RequestMock: RequestMock,
   ISAtomMock: ISAtomMock
 };
