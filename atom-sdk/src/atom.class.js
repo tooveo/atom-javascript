@@ -4,21 +4,21 @@
  *
  * Constructs an Atom service object.
  *
- * @param {Object} opt
- * @param {String} opt.endpoint - Endpoint api url
- * @param {String} opt.auth (optional) - auth key for authentication
+ * @param {Object} options
+ * @param {String} options.endpoint - Endpoint api url
+ * @param {String} options.auth (optional) - auth key for authentication
  *
  * @constructor new IronSourceAtom(options = {}) => Object
  */
 
-function IronSourceAtom(opt) {
-  opt = opt || {};
+function IronSourceAtom(options) {
+  options = options || {};
   var END_POINT = "https://track.atom-data.io/";
   var API_VERSION = "V1"; // The atom API endpoint version (don't change it)
   this.options = {
-    endpoint: !!opt.endpoint && opt.endpoint.toString() || END_POINT,
+    endpoint: !!options.endpoint && options.endpoint.toString() || END_POINT,
     apiVersion: API_VERSION,
-    auth: !!opt.auth ? opt.auth : ""
+    auth: !!options.auth ? options.auth : ""
   };
 }
 

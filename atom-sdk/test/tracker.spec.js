@@ -146,7 +146,26 @@ describe('Tracker class and methods', function () {
         sinon.assert.calledThrice(flush);
         done();
       });
-
     });
+
+    it('should get a timeout on too long retry time', function (done) {
+      var params = {
+        status: 500
+      };
+
+      var tracker = new Tracker(params);
+      tracker.retryTimeout = 1200001;
+      tracker.atom = new ISAtomMock(tracker.params);
+
+      tracker.track("test", "test");
+      var flush = sinon.spy(tracker.atom, 'putEvents');
+
+      tracker.flush('test', function (results) {
+        expect(results[0]).to.be.eql({err: 'Timeout - No response from server', data: null, status: 408});
+        flush.restore();
+        done();
+      });
+    });
+
   });
 });

@@ -3,6 +3,7 @@
 var ISAtom = require('../../dist/sdk').IronSourceAtom;
 var expect = require('chai').expect;
 var Request = require('../../dist/sdk').Request;
+var Response = require('../../dist/sdk').Response;
 var sinon = require('sinon');
 
 describe('Atom class test', function () {
@@ -31,7 +32,7 @@ describe('Atom class test', function () {
     });
   });
 
-  describe("putEvent and putEvents test", function () {
+  describe("putEvent, putEvents and health methods test", function () {
 
     beforeEach(function () {
       sinon.stub(Request.prototype, "get", function () {
@@ -41,6 +42,12 @@ describe('Atom class test', function () {
       sinon.stub(Request.prototype, "post", function () {
         return this.params;
       });
+
+      sinon.stub(Request.prototype, "health", function (callback) {
+        var res = new Response(null, 'ok', '200');
+        return callback(null, res.data(), res.status);
+      });
+
     });
 
     it('should generate right data for POST & GET requests on putEvent method', function () {
@@ -97,7 +104,7 @@ describe('Atom class test', function () {
       });
     });
 
-    it('should return error for putEvent/putEvents if missing required params', function () {
+    it('should return error for putEvent/putEvents on wrong params', function () {
       var atom = new ISAtom();
 
       atom.putEvent({stream: "test"}, function (err) {
@@ -115,12 +122,27 @@ describe('Atom class test', function () {
       atom.putEvents({data: ['some data']}, function (err) {
         expect(err).to.be.eql('Stream is required');
       });
+
+      atom.putEvents({stream: 'test', data: ['some data'], method: 'GET'}, function (err) {
+        expect(err).to.be.eql('GET is not a valid method for putEvents');
+      });
+
+    });
+
+    it('should generate right data for Health method', function () {
+      var atom = new ISAtom();
+      atom.health(function (err, data, status) {
+        expect(err).to.be.null;
+        expect(data).to.be.eql('ok');
+        expect(status).to.be.eql('200');
+      });
     });
 
     afterEach(function () {
       Request.prototype.post.restore();
       Request.prototype.get.restore();
+      Request.prototype.health.restore();
     });
-  });
 
+  });
 });

@@ -16,8 +16,7 @@ function Request(endpoint, params) {
       try {
         this.params.data = JSON.stringify(this.params.data);
       } catch (e) {
-        console.error("data is invalid - can't be stringified", e);
-        throw e
+        throw new Error('data is invalid - can\'t be stringified')
       }
     }
     this.headers = {
@@ -26,7 +25,7 @@ function Request(endpoint, params) {
       sdkVersion: "1.5.0"
     };
   }
-  this.xhr = (XMLHttpRequest) ? new XMLHttpRequest() : new ActiveXObject("Microsoft.XMLHTTP");
+  this.xhr = XMLHttpRequest ? new XMLHttpRequest() : new ActiveXObject("Microsoft.XMLHTTP");
 }
 
 /**
@@ -55,25 +54,21 @@ Request.prototype.post = function (callback) {
   xhr.setRequestHeader("x-ironsource-atom-sdk-type", this.headers.sdkType);
   xhr.setRequestHeader("x-ironsource-atom-sdk-version", this.headers.sdkVersion);
 
-  xhr.onerror = function () {
-    if (xhr.status == 0) {
-      callback("No connection to server", null, 500);
-    }
-  };
-
   xhr.onreadystatechange = function (event) {
     if (xhr.readyState === XMLHttpRequest.DONE) {
       var res;
       if (xhr.status == 200) {
         res = new Response(null, xhr.response, xhr.status);
         callback(null, res.data(), xhr.status);
-      }
-      else if (xhr.status >= 400 && xhr.status < 600) {
+      } else if (xhr.status >= 400 && xhr.status < 600) {
         res = new Response(xhr.response, null, xhr.status);
         callback(res.err(), null, xhr.status);
+      } else if (xhr.status == 0) {
+        callback("No connection to server", null, 500);
       }
     }
   };
+
   xhr.send(payload);
 };
 
@@ -112,14 +107,14 @@ Request.prototype.get = function (callback) {
   xhr.onreadystatechange = function () {
     if (xhr.readyState === XMLHttpRequest.DONE) {
       var res;
-
-      if (xhr.status >= 200 && xhr.status < 400) {
+      if (xhr.status == 200) {
         res = new Response(null, xhr.response, xhr.status);
-        !!callback && callback(null, res.data(), xhr.status);
-      }
-      else {
+        callback(null, res.data(), xhr.status);
+      } else if (xhr.status >= 400 && xhr.status < 600) {
         res = new Response(xhr.response, null, xhr.status);
-        !!callback && callback(res.err(), null, xhr.status);
+        callback(res.err(), null, xhr.status);
+      } else if (xhr.status == 0) {
+        callback("No connection to server", null, 500);
       }
     }
   };

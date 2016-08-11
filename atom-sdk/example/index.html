@@ -98,9 +98,9 @@
         </div>
     </section>
 </div>
-<!-- Async load sdk need wrap all your code what use sdk into -->
+<!-- In order to use Async loading you need to wrap your code with the init function -->
 <!-- window.ironSourceAtomInit = function() { -->
-<!--// ... code -->
+<!-- // ... code -->
 <!-- } -->
 <script type="text/javascript">
     (function () {
@@ -109,18 +109,19 @@
         isa.async = true;
         isa.src = '../../dist/sdk.js';
         // For CDN:
-//         isa.src = 'https://js-sdk.atom-data.io/1.1.0/sdk.js';
+        // isa.src = 'https://js-sdk.atom-data.io/1.1.0/sdk.js';
         (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(isa);
     })();
 </script>
 
-<!--For sync loading sdk-->
+<!--Synced loading-->
 
 <!--From cdn-->
 <!--<script src="https://js-sdk.atom-data.io/1.1.1/sdk.min.js"></script>-->
 
-<!--From locally-->
+<!--From localhost-->
 <!--<script src="../../dist/sdk.js"></script>-->
+
 <script src="index.js"></script>
 </body>
 </html>

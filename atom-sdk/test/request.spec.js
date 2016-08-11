@@ -106,6 +106,28 @@ describe('Request class test', function () {
         done();
       })
     });
+
+    it('should handle connection error on POST request', function (done) {
+      var req = new Request('/no-connection', params);
+      req.post(function (err, data, status) {
+        expect(status).to.be.eql(500);
+        expect(data).to.be.null;
+        expect(err).to.be.eql("No connection to server");
+        done();
+      })
+    });
+
+    it('should handle connection error on GET request', function (done) {
+      var req = new Request('/no-connection', params);
+      req.get(function (err, data, status) {
+        expect(status).to.be.eql(500);
+        expect(data).to.be.null;
+        expect(err).to.be.eql("No connection to server");
+        done();
+      })
+    });
+
+
   });
 
   describe('Request class argument assertion', function () {
@@ -123,6 +145,14 @@ describe('Request class test', function () {
       });
     });
 
+    it('should return an error on invalid data', function () {
+      var obj = {};
+      obj.a = {b: obj};
+      var testFunc = function () {
+        new Request('/endpoint', {data: obj})
+      };
+      expect(testFunc).to.throw('data is invalid - can\'t be stringified');
+    });
   });
 
 });
@@ -142,6 +172,8 @@ function _setupServer(sinon, before, after) {
     server.respondWith(/auth-error(\?data=.*)?/, [401, {'Content-Type': 'text/plain'}, 'Auth Error: "testStream"']);
 
     server.respondWith("/health", [200, {'Content-Type': 'text/plain'}, "up"]);
+
+    server.respondWith(/no-connection(\?data=.*)?/, [0, {'Content-Type': 'text/plain'}, "ERROR: No connection to server"]);
 
     server.respondWith(/server-error(\?data=.*)?/, [503, {'Content-Type': 'text/plain'}, 'Service Unavailable']);
 

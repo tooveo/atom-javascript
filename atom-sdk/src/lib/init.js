@@ -1,6 +1,7 @@
 /* istanbul ignore next */
-// handle situation if user load sdk sync 
+
+// Handles situation if the sdk is loaded synchronously
 window.ironSourceAtomInit = window.ironSourceAtomInit || function() {};
 
-// run user code after load sdk lib
+// Run this function on sdk async loading
 window.ironSourceAtomInit();

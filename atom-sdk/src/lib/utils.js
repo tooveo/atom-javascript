@@ -1,7 +1,7 @@
 /**
  * Helper function for sending tracker bulks to Atom.
- * @param tasks
- * @param callback
+ * @param tasks - array of functions with a callback(err,data,status)
+ * @param callback - the final callback that will be called when all tasks are done
  */
 
 function taskMap(tasks, callback) {
