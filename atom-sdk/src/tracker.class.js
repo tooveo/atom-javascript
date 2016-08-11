@@ -95,6 +95,7 @@ Tracker.prototype.track = function (stream, data) {
     try {
       self.accumulated[stream].push(JSON.stringify(data))
     } catch (e) {
+      /* istanbul ignore next */
       throw new Error("Invalid Data - can't be stringified", e);
     }
   } else {
@@ -165,7 +166,6 @@ Tracker.prototype.flush = function (targetStream, callback) {
         }
       }
       return callback(err, data, status);
-
     })
   }
 };

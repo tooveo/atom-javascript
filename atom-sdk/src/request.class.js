@@ -131,12 +131,13 @@ Request.prototype.health = function (callback) {
   xhr.onreadystatechange = function () {
     if (xhr.readyState === XMLHttpRequest.DONE) {
       var res;
-
       if (xhr.status == 200) {
         res = new Response(null, xhr.response, xhr.status);
         !!callback && callback(null, res.data(), xhr.status);
       } else {
+        /* istanbul ignore next */
         res = new Response(xhr.response, null, xhr.status);
+        /* istanbul ignore next */
         !!callback && callback(res.err(), null, xhr.status);
       }
     }
