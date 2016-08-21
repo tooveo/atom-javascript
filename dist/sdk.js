@@ -5,67 +5,67 @@
 /**
  *
  * Constructs an Atom service object.
+ * @constructor
+ * @param {Object} [options] - options for Atom class
+ * @param {String} [options.endpoint] - Atom API url
+ * @param {String} [options.auth] - Auth key for authentication
+ * @param {String} [options.apiVersion] - Atom API version (shouldn't be changed).
+ * @param {String} [options.sdkVersion] - Atom SDK Version
+ * @param {String} [options.sdkType] - Atom SDK Type
  *
- * @param {Object} options
- * @param {String} options.endpoint - Endpoint api url
- * @param {String} options.auth (optional) - auth key for authentication
- *
- * @constructor new IronSourceAtom(options = {}) => Object
  */
 
 function IronSourceAtom(options) {
   options = options || {};
   var END_POINT = "https://track.atom-data.io/";
   var API_VERSION = "V1"; // The atom API endpoint version (don't change it)
+  var SDK_VERSION = "1.5.0";
+  var SDK_TYPE = "atom-js";
   this.options = {
-    endpoint: !!options.endpoint && options.endpoint.toString() || END_POINT,
+    endpoint: options.endpoint || END_POINT,
     apiVersion: API_VERSION,
-    auth: !!options.auth ? options.auth : ""
+    auth: options.auth || "",
+    sdkVersion: SDK_VERSION,
+    sdkType: SDK_TYPE
   };
 }
 
 window.IronSourceAtom = IronSourceAtom;
 
 /**
+ * Atom Callback function
+ * @callback atomCallback
+ * @param {String} error - error if exists else null
+ * @param {Object} data - response from server
+ * @param {Integer} status - response status from server
+ */
+
+/**
+ * putEvent - Put a single event to an Atom stream.
+ * @param {Object} params - parameters that the function can take
+ * @param {String} params.stream - atom stream name
+ * @param {(String|Object)} params.data - data (stringified data or object)
+ * @param {String} [params.method=POST] - HTTP method
+ * @param {String} [params.endpoint] - Atom API endpoint
+ * @param {String} [params.auth] - Atom stream HMAC auth key
+ * @param {atomCallback} callback - The callback that handles the response.
  *
- * Put a single event to an Atom Stream.
- * @api {get/post} https://track.atom-data.io/ putEvent Send single data to Atom server
- * @apiVersion 1.1.1
- * @apiGroup Atom
- * @apiParam {String} stream Stream name for saving data in db table
- * @apiParam {String} data Data for saving
- * @apiParam {String} method POST or GET method for do request
+ * @example Request-Example:
  *
- * @apiSuccess {Null} err Server response error
- * @apiSuccess {Object} data Server response data
- * @apiSuccess {String} status Server response status
+ * var stream = "MY.ATOM.STREAM";
+ * var data = {
+ *     event_name: "JS-SDK-PUT-EVENT-TEST",
+ *     string_value: String(number),
+ *     int_value: Math.round(number),
+ *     float_value: number,
+ *     ts: new Date()
+ * };
  *
- * @apiError {Object} err Server response error
- * @apiError {Null} data Server response data
- * @apiError {String} status Server response status
- *
- * @apiErrorExample Error-Response:
- *  HTTP 401 Permission Denied
- *  {
- *    "err": "Permission denied",
- *    "data": null,
- *    "status": 401
- *  }
- *
- * @apiSuccessExample Response:
- * HTTP 200 OK
- * {
- *    "err": null,
- *    "data": "success"
- *    "status": 200
- * }
- *
- * @apiParamExample {json} Request-Example:
- * {
- *    "stream": "streamName",
- *    "data":  "{\"name\": \"iron\", \"last_name\": \"Source\"}"
- * }
- *
+ * var atom = new IronSourceAtom();
+ * atom.putEvent({ data: data, stream: stream },
+ *  function (err, data, status) {
+ *  .....
+ * });
  */
 
 IronSourceAtom.prototype.putEvent = function (params, callback) {
@@ -74,57 +74,37 @@ IronSourceAtom.prototype.putEvent = function (params, callback) {
   if (!params.data) return callback('Data is required', null, 400);
 
   params.apiVersion = this.options.apiVersion;
-  params.auth = this.options.auth;
+  params.sdkVersion = this.options.sdkVersion;
+  params.sdkType = this.options.sdkType;
+  params.auth = params.auth || this.options.auth;
+  params.endpoint = params.endpoint || this.options.endpoint;
 
-  var req = new Request(this.options.endpoint, params);
+  var req = new Request(params);
 
   return (!!params.method && params.method.toUpperCase() === "GET") ?
     req.get(callback) : req.post(callback);
 };
 
-
 /**
+ * putEvents - Put a bulk of events to Atom.
  *
- * Put a bulk of events to Atom.
+ * @param {Object} params - parameters that the function can take
+ * @param {String} params.stream - atom stream name
+ * @param {Array} params.data - Multiple events in an an array
+ * @param {String} [params.method=POST] - HTTP method
+ * @param {atomCallback} callback - The callback that handles the response.
  *
- * @api {get/post} https://track.atom-data.io/bulk putEvents Send multiple events data to Atom server
- * @apiVersion 1.1.1
- * @apiGroup Atom
- * @apiParam {String} stream Stream name for saving data in db table
- * @apiParam {Array} data Multiple event data for saving
- * @apiParam {String} method POST or GET method for do request
+ * @example Request-Example:
  *
- * @apiSuccess {Null} err Server response error
- * @apiSuccess {Object} data Server response data
- * @apiSuccess {String} status Server response status
- *
- * @apiError {Object} err Server response error
- * @apiError {Null} data Server response data
- * @apiError {String} status Server response status
- *
- * @apiErrorExample Error-Response:
- *  HTTP 401 Permission Denied
- *  {
- *    "err": "Error message", 
- *    "data": null,
- *    "status": 401
- *  }
- *
- * @apiSuccessExample Response:
- * HTTP 200 OK
- * {
- *    "err": null,
- *    "data": "success"
- *    "status": 200
- * }
- * @apiParamExample {json} Request-Example:
- * {
- *    "stream": "streamName",
- *    "data":  ["{\"name\": \"iron\", \"last_name\": \"Source\"}",
- *            "{\"name\": \"iron2\", \"last_name\": \"Source2\"}"]
- *
- * }
- *
+ * var stream = "MY.ATOM.STREAM";
+ * var data = [
+ * {"event_name":"JS-SDK-PUT-EVENTS-TEST","string_value":"67.217","int_value":67,"float_value":67.21,"ts":"2016-08-14T12:54:55.839Z"},
+ * {"event_name":"JS-SDK-PUT-EVENTS-TEST","string_value":"2046.43","int_value":20,"float_value":2046.43,"ts":"2016-08-14T12:54:55.839Z"];
+ * var atom = new IronSourceAtom();
+ * atom.putEvents({ data: data, stream: stream },
+ *  function (err, data, status) {
+ *  .....
+ * });
  */
 
 IronSourceAtom.prototype.putEvents = function (params, callback) {
@@ -138,6 +118,7 @@ IronSourceAtom.prototype.putEvents = function (params, callback) {
   }
 
   if (params.method) {
+    // Even though it will only send post we want to notify the client that he is not sending right.
     if (params.method.toUpperCase() == 'GET') {
       return callback('GET is not a valid method for putEvents', null, 400);
     }
@@ -145,21 +126,26 @@ IronSourceAtom.prototype.putEvents = function (params, callback) {
 
   params.apiVersion = this.options.apiVersion;
   params.auth = this.options.auth;
+  params.sdkVersion = this.options.sdkVersion;
+  params.sdkType = this.options.sdkType;
+  params.endpoint = this.options.endpoint + 'bulk';
 
-  var req = new Request(this.options.endpoint + 'bulk', params);
+  var req = new Request(params);
 
   return req.post(callback);
 };
 
 /**
  *
- * Sends a /GET health check to the Atom endpoint.
- *
- * @param {Function} callback - client callback function
+ * Sends a /GET health check to the Atom endpoint
+ * @param {atomCallback} callback - The callback that handles the response.
  */
 
 IronSourceAtom.prototype.health = function (callback) {
-  var req = new Request(this.options.endpoint + 'health', "health");
+  var params = this.options;
+  params.data = 'health';
+
+  var req = new Request(params);
   return req.health(callback);
 };
 
@@ -174,40 +160,42 @@ if (typeof module !== 'undefined' && module.exports) {
 }
 
 /**
- *
- * All requests made through the SDK are asynchronous and use a callback interface.
- *
- * @param {String} endpoint - the Atom endpoint to send data to
- * @param {Object} params - the params that are needed to construct the request.
+ * Handles all requests to ironSource atom
  * @constructor
+ * @param {Object} params - Request class parameters.
+ * @param {String} params.endpoint - The Atom endpoint we send to.
+ * @param {String} params.skdType - Atom SDK type header
+ * @param {String} params.sdkVersion - Atom SDK version header
+ * @param {(String|Array|Object)} params.data - Payload that will be delivered to Atom.
+ * @param {String} params.stream - Atom stream name
+ * @param {String} [params.auth] - Atom Stream HMAC auth key
+ * @param {String} [params.method] - HTTP send method
  */
 
-function Request(endpoint, params) {
-  this.endpoint = endpoint.toString() || "";
+function Request(params) {
   this.params = params || {};
-  if (params !== "health") {
-    // If we delivered some params and it's not a string we try to stringify it.
-    if ((typeof params.data !== 'string' && !(params.data instanceof String))) {
-      try {
-        this.params.data = JSON.stringify(this.params.data);
-      } catch (e) {
-        throw new Error('data is invalid - can\'t be stringified')
-      }
+
+  // If we delivered some params and it's not a string we try to stringify it.
+  if ((typeof params.data !== 'string' && !(params.data instanceof String))) {
+    try {
+      this.params.data = JSON.stringify(this.params.data);
+    } catch (e) {
+      throw new Error("data is invalid - can't be stringified")
     }
-    this.headers = {
-      contentType: "application/json;charset=UTF-8",
-      sdkType: "atom-js",
-      sdkVersion: "1.5.0"
-    };
   }
+
+  this.headers = {
+    contentType: "application/json;charset=UTF-8",
+    sdkType: this.params.sdkType,
+    sdkVersion: this.params.sdkVersion
+  };
+
   this.xhr = XMLHttpRequest ? new XMLHttpRequest() : new ActiveXObject("Microsoft.XMLHTTP");
 }
 
 /**
- *
  * Perform an HTTP POST to the Atom endpoint.
- *
- * @param {Function} callback - client callback function
+ * @param {atomCallback} callback - The callback that handles the response.
  */
 
 Request.prototype.post = function (callback) {
@@ -224,7 +212,7 @@ Request.prototype.post = function (callback) {
     auth: !!this.params.auth ? CryptoJS.HmacSHA256(this.params.data, this.params.auth).toString(CryptoJS.enc.Hex) : ""
   });
 
-  xhr.open("POST", this.endpoint, true);
+  xhr.open("POST", this.params.endpoint, true);
   xhr.setRequestHeader("Content-type", this.headers.contentType);
   xhr.setRequestHeader("x-ironsource-atom-sdk-type", this.headers.sdkType);
   xhr.setRequestHeader("x-ironsource-atom-sdk-version", this.headers.sdkVersion);
@@ -250,10 +238,8 @@ Request.prototype.post = function (callback) {
 /**
  *
  * Perform an HTTP GET to the Atom endpoint.
- *
- * @param {Function} callback - client callback function
+ * @param {atomCallback} callback - The callback that handles the response.
  */
-
 
 Request.prototype.get = function (callback) {
   if (!this.params.stream || !this.params.data) {
@@ -274,7 +260,7 @@ Request.prototype.get = function (callback) {
   } catch (e) {
   }
 
-  xhr.open("GET", this.endpoint + '?data=' + base64Data, true);
+  xhr.open("GET", this.params.endpoint + '?data=' + base64Data, true);
   xhr.setRequestHeader("Content-type", this.headers.contentType);
   xhr.setRequestHeader("x-ironsource-atom-sdk-type", this.headers.sdkType);
   xhr.setRequestHeader("x-ironsource-atom-sdk-version", this.headers.sdkVersion);
@@ -297,11 +283,14 @@ Request.prototype.get = function (callback) {
   xhr.send();
 };
 
-
+/**
+ * Preform a health check on Atom Endpoint
+ * @param {atomCallback} callback - The callback that handles the response.
+ */
 Request.prototype.health = function (callback) {
   var xhr = this.xhr;
 
-  xhr.open("GET", this.endpoint, true);
+  xhr.open("GET", this.params.endpoint, true);
 
   xhr.onreadystatechange = function () {
     if (xhr.readyState === XMLHttpRequest.DONE) {
@@ -324,11 +313,10 @@ Request.prototype.health = function (callback) {
 
 /**
  *
- * Object with response data
- *
- * @param {Boolean} error - (true) if response has errors
- * @param {String} response - response after request
- * @param {String} status - response status code
+ * Constructs an Object with response data
+ * @param {Object|String} error - Error if exist, else null
+ * @param {Object|String} response - return response data or null if response failed
+ * @param {Number} status - response status code
  * @constructor
  */
 function Response(error, response, status) {
@@ -340,8 +328,7 @@ function Response(error, response, status) {
 /**
  *
  * Returns the de-serialized response data.
- *
- * @returns {Object} - return response data or null if response failed
+ * @returns {Object|String} - return response data or null if response failed
  */
 
 Response.prototype.data = function () {
@@ -358,8 +345,7 @@ Response.prototype.data = function () {
 /**
  *
  * Returns the de-serialized response error data.
- *
- * @returns {Object} -return response  "error" with status or null if no errors
+ * @returns {Object|String} - return response "error" or null if no error exists.
  */
 
 Response.prototype.err = function () {
@@ -375,26 +361,25 @@ Response.prototype.err = function () {
 /**
  *
  * This class implements a tracker for tracking events to ironSource atom
- *
  * @param {Object} params
- * @param {Number} params.flushInterval - data sending interval
- * @param {Number} params.bulkLen - number of records in each bulk request
- * @param {Number} params.bulkSize - the maximum bulk size in KB.
- * Optional for ISAtom main object:
- * @param {String} params.endpoint - Endpoint api url
- * @param {String} params.auth (optional) - key for hmac authentication
+ * @param {Number} [params.flushInterval=30 seconds] - Data sending interval
+ * @param {Number} [params.bulkLen=20] - Number of records in each bulk request
+ * @param {Number} [params.bulkSize=40KB] - The maximum bulk size in KB.
  *
+ * Optional for ISAtom main object:
+ * @param {String} [params.endpoint] - Endpoint api url
+ * @param {String} [params.auth] - Key for hmac authentication
  * @constructor
  */
 function Tracker(params) {
   var self = this;
+  this.retryTimeout = 1000;
   params = params || {};
   this.params = params;
-  this.params.flushInterval = !!params.flushInterval ? params.flushInterval * 1000 : 30000;
-  this.params.bulkLen = !!params.bulkLen ? params.bulkLen : 20;
-  this.params.bulkSize = !!params.bulkSize ? params.bulkSize * 1024 : 5 * 1024;
-  this.params.auth = !!params.auth ? params.auth : ''; // Default auth for all streams
-  this.retryTimeout = 1000;
+  this.params.flushInterval = params.flushInterval ? params.flushInterval * 1000 : 30000;
+  this.params.bulkLen = params.bulkLen ? params.bulkLen : 20;
+  this.params.bulkSize = params.bulkSize ? params.bulkSize * 1024 : 40 * 1024;
+  this.params.auth = params.auth ? params.auth : ''; // Default auth for all streams
 
   // Dict of accumulated records: (stream -> [data array])
   this.accumulated = {};
@@ -411,43 +396,29 @@ function Tracker(params) {
 window.IronSourceAtom.Tracker = Tracker;
 
 /**
+ * Atom Callback function
+ * @callback trackerCallback
+ * @param {Array} data - Array with responce from server: [{err,data,status}...]
+ */
+
+/**
+ * Start tracking events to ironSource Atom
+ * @param {String} stream - atom stream name
+ * @param {String|Object} data - data to be tracked to atom.
  *
- * Start track events
- *
- * @api {post} endpoint/bulk track Accumulate and send events to server
- * @apiVersion 1.1.1
- * @apiGroup Atom
- * @apiParam {String} stream Stream name for saving data in db table
- * @apiParam {All} data Event data for saving
- *
- * @apiSuccess {Null} err Server response error
- * @apiSuccess {Object} data Server response data
- * @apiSuccess {String} status Server response status
- *
- * @apiError {Object} err Server response error
- * @apiError {Null} data Server response data
- * @apiError {String} status Server response status
- *
- * @apiErrorExample Error-Response:
- *  HTTP 401 Permission Denied
- *  {
- *    "err": {"Target Stream": "Permission denied",
- *    "data": null,
- *    "status": 401
- *  }
- *
- * @apiSuccessExample Response:
- * HTTP 200 OK
- * {
- *    "err": null,
- *    "data": "success"
- *    "status": 200
+ * @example
+ * var options = {
+ *    endpoint: "https://track.atom-data.io/",
+ *    auth: "YOUR_HMAC_AUTH_KEY", // Optional, depends on your stream config
+ *    flushInterval: 10, // Optional, Tracker flush interval in seconds (default: 30 seconds)
+ *    bulkLen: 50, // Optional, Number of events per bulk (batch) (default: 20)
+ *    bulkSize: 20 // Optional, Size of each bulk in KB (default: 40KB)
  * }
- * @apiParamExample {json} Request-Example:
- * {
- *    "stream": "streamName",
- *    "data": "Some data"
- * }
+ *
+ * var tracker = new IronSourceAtom.Tracker(options); // Init a new tracker
+ * var stream = "MY_STREAM_NAME", // Your target stream name
+ * var data = {id: 1, string_col: "String"} // Data that matches your DB structure
+ * tracker.track(stream, data); // Start tracking and empty on the described above conditions
  *
  */
 
@@ -480,6 +451,27 @@ Tracker.prototype.track = function (stream, data) {
     self.flush(stream);
   }
 };
+
+/**
+ * Flush accumulated events to ironSource Atom
+ * @param {String} targetStream - atom stream name
+ * @param {trackerCallback} callback - The callback that handles the response.
+ *
+ * @example
+ *
+ *  // To Flush all events:
+ *  tracker.flush(null, function (results) {
+ *    //returns an array of results, for example:
+ *    //data is: {"a":[{key: "value"}],"b":[{key: "value"}]}
+ *    //result: [{"err":"Auth Error: \"a\"","data":null,"status":401} ,{"err":null,"data":{"Status":"OK"},"status":200}]
+ *    NOTE: the results will be in the same order as the data.
+ *  }); // Send accumulated data immediately
+
+ // If you don't need the results, just do:
+ tracker.flush();
+ // OR to flush a single stream (optional callback)
+ tracker.flush(stream);
+ */
 
 Tracker.prototype.flush = function (targetStream, callback) {
   var self = this;

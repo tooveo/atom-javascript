@@ -1,10 +1,9 @@
 /**
  *
- * Object with response data
- *
- * @param {Boolean} error - (true) if response has errors
- * @param {String} response - response after request
- * @param {String} status - response status code
+ * Constructs an Object with response data
+ * @param {Object|String} error - Error if exist, else null
+ * @param {Object|String} response - return response data or null if response failed
+ * @param {Number} status - response status code
  * @constructor
  */
 function Response(error, response, status) {
@@ -16,8 +15,7 @@ function Response(error, response, status) {
 /**
  *
  * Returns the de-serialized response data.
- *
- * @returns {Object} - return response data or null if response failed
+ * @returns {Object|String} - return response data or null if response failed
  */
 
 Response.prototype.data = function () {
@@ -34,8 +32,7 @@ Response.prototype.data = function () {
 /**
  *
  * Returns the de-serialized response error data.
- *
- * @returns {Object} -return response  "error" with status or null if no errors
+ * @returns {Object|String} - return response "error" or null if no error exists.
  */
 
 Response.prototype.err = function () {

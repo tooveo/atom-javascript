@@ -18,9 +18,10 @@ describe('Tracker class and methods', function () {
       expect(tracker.params).to.be.eql({
         flushInterval: 30000,
         bulkLen: 20,
-        bulkSize: 5 * 1024,
+        bulkSize: 40 * 1024,
         auth: ''
       });
+
     });
 
     it('should generate new Tracker objects with custom values', function () {

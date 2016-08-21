@@ -3,67 +3,67 @@
 /**
  *
  * Constructs an Atom service object.
+ * @constructor
+ * @param {Object} [options] - options for Atom class
+ * @param {String} [options.endpoint] - Atom API url
+ * @param {String} [options.auth] - Auth key for authentication
+ * @param {String} [options.apiVersion] - Atom API version (shouldn't be changed).
+ * @param {String} [options.sdkVersion] - Atom SDK Version
+ * @param {String} [options.sdkType] - Atom SDK Type
  *
- * @param {Object} options
- * @param {String} options.endpoint - Endpoint api url
- * @param {String} options.auth (optional) - auth key for authentication
- *
- * @constructor new IronSourceAtom(options = {}) => Object
  */
 
 function IronSourceAtom(options) {
   options = options || {};
   var END_POINT = "https://track.atom-data.io/";
   var API_VERSION = "V1"; // The atom API endpoint version (don't change it)
+  var SDK_VERSION = "1.5.0";
+  var SDK_TYPE = "atom-js";
   this.options = {
-    endpoint: !!options.endpoint && options.endpoint.toString() || END_POINT,
+    endpoint: options.endpoint || END_POINT,
     apiVersion: API_VERSION,
-    auth: !!options.auth ? options.auth : ""
+    auth: options.auth || "",
+    sdkVersion: SDK_VERSION,
+    sdkType: SDK_TYPE
   };
 }
 
 window.IronSourceAtom = IronSourceAtom;
 
 /**
+ * Atom Callback function
+ * @callback atomCallback
+ * @param {String} error - error if exists else null
+ * @param {Object} data - response from server
+ * @param {Integer} status - response status from server
+ */
+
+/**
+ * putEvent - Put a single event to an Atom stream.
+ * @param {Object} params - parameters that the function can take
+ * @param {String} params.stream - atom stream name
+ * @param {(String|Object)} params.data - data (stringified data or object)
+ * @param {String} [params.method=POST] - HTTP method
+ * @param {String} [params.endpoint] - Atom API endpoint
+ * @param {String} [params.auth] - Atom stream HMAC auth key
+ * @param {atomCallback} callback - The callback that handles the response.
  *
- * Put a single event to an Atom Stream.
- * @api {get/post} https://track.atom-data.io/ putEvent Send single data to Atom server
- * @apiVersion 1.1.1
- * @apiGroup Atom
- * @apiParam {String} stream Stream name for saving data in db table
- * @apiParam {String} data Data for saving
- * @apiParam {String} method POST or GET method for do request
+ * @example Request-Example:
  *
- * @apiSuccess {Null} err Server response error
- * @apiSuccess {Object} data Server response data
- * @apiSuccess {String} status Server response status
+ * var stream = "MY.ATOM.STREAM";
+ * var data = {
+ *     event_name: "JS-SDK-PUT-EVENT-TEST",
+ *     string_value: String(number),
+ *     int_value: Math.round(number),
+ *     float_value: number,
+ *     ts: new Date()
+ * };
  *
- * @apiError {Object} err Server response error
- * @apiError {Null} data Server response data
- * @apiError {String} status Server response status
- *
- * @apiErrorExample Error-Response:
- *  HTTP 401 Permission Denied
- *  {
- *    "err": "Permission denied",
- *    "data": null,
- *    "status": 401
- *  }
- *
- * @apiSuccessExample Response:
- * HTTP 200 OK
- * {
- *    "err": null,
- *    "data": "success"
- *    "status": 200
- * }
- *
- * @apiParamExample {json} Request-Example:
- * {
- *    "stream": "streamName",
- *    "data":  "{\"name\": \"iron\", \"last_name\": \"Source\"}"
- * }
- *
+ * var atom = new IronSourceAtom();
+ * atom.putEvent({ data: data, stream: stream },
+ *  function (err, data, status) {
+ *  .....
+ * });
  */
 
 IronSourceAtom.prototype.putEvent = function (params, callback) {
@@ -72,57 +72,37 @@ IronSourceAtom.prototype.putEvent = function (params, callback) {
   if (!params.data) return callback('Data is required', null, 400);
 
   params.apiVersion = this.options.apiVersion;
-  params.auth = this.options.auth;
+  params.sdkVersion = this.options.sdkVersion;
+  params.sdkType = this.options.sdkType;
+  params.auth = params.auth || this.options.auth;
+  params.endpoint = params.endpoint || this.options.endpoint;
 
-  var req = new Request(this.options.endpoint, params);
+  var req = new Request(params);
 
   return (!!params.method && params.method.toUpperCase() === "GET") ?
     req.get(callback) : req.post(callback);
 };
 
-
 /**
+ * putEvents - Put a bulk of events to Atom.
  *
- * Put a bulk of events to Atom.
+ * @param {Object} params - parameters that the function can take
+ * @param {String} params.stream - atom stream name
+ * @param {Array} params.data - Multiple events in an an array
+ * @param {String} [params.method=POST] - HTTP method
+ * @param {atomCallback} callback - The callback that handles the response.
  *
- * @api {get/post} https://track.atom-data.io/bulk putEvents Send multiple events data to Atom server
- * @apiVersion 1.1.1
- * @apiGroup Atom
- * @apiParam {String} stream Stream name for saving data in db table
- * @apiParam {Array} data Multiple event data for saving
- * @apiParam {String} method POST or GET method for do request
+ * @example Request-Example:
  *
- * @apiSuccess {Null} err Server response error
- * @apiSuccess {Object} data Server response data
- * @apiSuccess {String} status Server response status
- *
- * @apiError {Object} err Server response error
- * @apiError {Null} data Server response data
- * @apiError {String} status Server response status
- *
- * @apiErrorExample Error-Response:
- *  HTTP 401 Permission Denied
- *  {
- *    "err": "Error message", 
- *    "data": null,
- *    "status": 401
- *  }
- *
- * @apiSuccessExample Response:
- * HTTP 200 OK
- * {
- *    "err": null,
- *    "data": "success"
- *    "status": 200
- * }
- * @apiParamExample {json} Request-Example:
- * {
- *    "stream": "streamName",
- *    "data":  ["{\"name\": \"iron\", \"last_name\": \"Source\"}",
- *            "{\"name\": \"iron2\", \"last_name\": \"Source2\"}"]
- *
- * }
- *
+ * var stream = "MY.ATOM.STREAM";
+ * var data = [
+ * {"event_name":"JS-SDK-PUT-EVENTS-TEST","string_value":"67.217","int_value":67,"float_value":67.21,"ts":"2016-08-14T12:54:55.839Z"},
+ * {"event_name":"JS-SDK-PUT-EVENTS-TEST","string_value":"2046.43","int_value":20,"float_value":2046.43,"ts":"2016-08-14T12:54:55.839Z"];
+ * var atom = new IronSourceAtom();
+ * atom.putEvents({ data: data, stream: stream },
+ *  function (err, data, status) {
+ *  .....
+ * });
  */
 
 IronSourceAtom.prototype.putEvents = function (params, callback) {
@@ -136,6 +116,7 @@ IronSourceAtom.prototype.putEvents = function (params, callback) {
   }
 
   if (params.method) {
+    // Even though it will only send post we want to notify the client that he is not sending right.
     if (params.method.toUpperCase() == 'GET') {
       return callback('GET is not a valid method for putEvents', null, 400);
     }
@@ -143,21 +124,26 @@ IronSourceAtom.prototype.putEvents = function (params, callback) {
 
   params.apiVersion = this.options.apiVersion;
   params.auth = this.options.auth;
+  params.sdkVersion = this.options.sdkVersion;
+  params.sdkType = this.options.sdkType;
+  params.endpoint = this.options.endpoint + 'bulk';
 
-  var req = new Request(this.options.endpoint + 'bulk', params);
+  var req = new Request(params);
 
   return req.post(callback);
 };
 
 /**
  *
- * Sends a /GET health check to the Atom endpoint.
- *
- * @param {Function} callback - client callback function
+ * Sends a /GET health check to the Atom endpoint
+ * @param {atomCallback} callback - The callback that handles the response.
  */
 
 IronSourceAtom.prototype.health = function (callback) {
-  var req = new Request(this.options.endpoint + 'health', "health");
+  var params = this.options;
+  params.data = 'health';
+
+  var req = new Request(params);
   return req.health(callback);
 };
 

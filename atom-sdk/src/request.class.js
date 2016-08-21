@@ -1,38 +1,40 @@
 /**
- *
- * All requests made through the SDK are asynchronous and use a callback interface.
- *
- * @param {String} endpoint - the Atom endpoint to send data to
- * @param {Object} params - the params that are needed to construct the request.
+ * Handles all requests to ironSource atom
  * @constructor
+ * @param {Object} params - Request class parameters.
+ * @param {String} params.endpoint - The Atom endpoint we send to.
+ * @param {String} params.skdType - Atom SDK type header
+ * @param {String} params.sdkVersion - Atom SDK version header
+ * @param {(String|Array|Object)} params.data - Payload that will be delivered to Atom.
+ * @param {String} params.stream - Atom stream name
+ * @param {String} [params.auth] - Atom Stream HMAC auth key
+ * @param {String} [params.method] - HTTP send method
  */
 
-function Request(endpoint, params) {
-  this.endpoint = endpoint.toString() || "";
+function Request(params) {
   this.params = params || {};
-  if (params !== "health") {
-    // If we delivered some params and it's not a string we try to stringify it.
-    if ((typeof params.data !== 'string' && !(params.data instanceof String))) {
-      try {
-        this.params.data = JSON.stringify(this.params.data);
-      } catch (e) {
-        throw new Error('data is invalid - can\'t be stringified')
-      }
+
+  // If we delivered some params and it's not a string we try to stringify it.
+  if ((typeof params.data !== 'string' && !(params.data instanceof String))) {
+    try {
+      this.params.data = JSON.stringify(this.params.data);
+    } catch (e) {
+      throw new Error("data is invalid - can't be stringified")
     }
-    this.headers = {
-      contentType: "application/json;charset=UTF-8",
-      sdkType: "atom-js",
-      sdkVersion: "1.5.0"
-    };
   }
+
+  this.headers = {
+    contentType: "application/json;charset=UTF-8",
+    sdkType: this.params.sdkType,
+    sdkVersion: this.params.sdkVersion
+  };
+
   this.xhr = XMLHttpRequest ? new XMLHttpRequest() : new ActiveXObject("Microsoft.XMLHTTP");
 }
 
 /**
- *
  * Perform an HTTP POST to the Atom endpoint.
- *
- * @param {Function} callback - client callback function
+ * @param {atomCallback} callback - The callback that handles the response.
  */
 
 Request.prototype.post = function (callback) {
@@ -49,7 +51,7 @@ Request.prototype.post = function (callback) {
     auth: !!this.params.auth ? CryptoJS.HmacSHA256(this.params.data, this.params.auth).toString(CryptoJS.enc.Hex) : ""
   });
 
-  xhr.open("POST", this.endpoint, true);
+  xhr.open("POST", this.params.endpoint, true);
   xhr.setRequestHeader("Content-type", this.headers.contentType);
   xhr.setRequestHeader("x-ironsource-atom-sdk-type", this.headers.sdkType);
   xhr.setRequestHeader("x-ironsource-atom-sdk-version", this.headers.sdkVersion);
@@ -75,10 +77,8 @@ Request.prototype.post = function (callback) {
 /**
  *
  * Perform an HTTP GET to the Atom endpoint.
- *
- * @param {Function} callback - client callback function
+ * @param {atomCallback} callback - The callback that handles the response.
  */
-
 
 Request.prototype.get = function (callback) {
   if (!this.params.stream || !this.params.data) {
@@ -99,7 +99,7 @@ Request.prototype.get = function (callback) {
   } catch (e) {
   }
 
-  xhr.open("GET", this.endpoint + '?data=' + base64Data, true);
+  xhr.open("GET", this.params.endpoint + '?data=' + base64Data, true);
   xhr.setRequestHeader("Content-type", this.headers.contentType);
   xhr.setRequestHeader("x-ironsource-atom-sdk-type", this.headers.sdkType);
   xhr.setRequestHeader("x-ironsource-atom-sdk-version", this.headers.sdkVersion);
@@ -122,11 +122,14 @@ Request.prototype.get = function (callback) {
   xhr.send();
 };
 
-
+/**
+ * Preform a health check on Atom Endpoint
+ * @param {atomCallback} callback - The callback that handles the response.
+ */
 Request.prototype.health = function (callback) {
   var xhr = this.xhr;
 
-  xhr.open("GET", this.endpoint, true);
+  xhr.open("GET", this.params.endpoint, true);
 
   xhr.onreadystatechange = function () {
     if (xhr.readyState === XMLHttpRequest.DONE) {

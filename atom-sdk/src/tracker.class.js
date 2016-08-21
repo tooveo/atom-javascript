@@ -3,26 +3,25 @@
 /**
  *
  * This class implements a tracker for tracking events to ironSource atom
- *
  * @param {Object} params
- * @param {Number} params.flushInterval - data sending interval
- * @param {Number} params.bulkLen - number of records in each bulk request
- * @param {Number} params.bulkSize - the maximum bulk size in KB.
- * Optional for ISAtom main object:
- * @param {String} params.endpoint - Endpoint api url
- * @param {String} params.auth (optional) - key for hmac authentication
+ * @param {Number} [params.flushInterval=30 seconds] - Data sending interval
+ * @param {Number} [params.bulkLen=20] - Number of records in each bulk request
+ * @param {Number} [params.bulkSize=40KB] - The maximum bulk size in KB.
  *
+ * Optional for ISAtom main object:
+ * @param {String} [params.endpoint] - Endpoint api url
+ * @param {String} [params.auth] - Key for hmac authentication
  * @constructor
  */
 function Tracker(params) {
   var self = this;
+  this.retryTimeout = 1000;
   params = params || {};
   this.params = params;
-  this.params.flushInterval = !!params.flushInterval ? params.flushInterval * 1000 : 30000;
-  this.params.bulkLen = !!params.bulkLen ? params.bulkLen : 20;
-  this.params.bulkSize = !!params.bulkSize ? params.bulkSize * 1024 : 5 * 1024;
-  this.params.auth = !!params.auth ? params.auth : ''; // Default auth for all streams
-  this.retryTimeout = 1000;
+  this.params.flushInterval = params.flushInterval ? params.flushInterval * 1000 : 30000;
+  this.params.bulkLen = params.bulkLen ? params.bulkLen : 20;
+  this.params.bulkSize = params.bulkSize ? params.bulkSize * 1024 : 40 * 1024;
+  this.params.auth = params.auth ? params.auth : ''; // Default auth for all streams
 
   // Dict of accumulated records: (stream -> [data array])
   this.accumulated = {};
@@ -39,43 +38,29 @@ function Tracker(params) {
 window.IronSourceAtom.Tracker = Tracker;
 
 /**
+ * Atom Callback function
+ * @callback trackerCallback
+ * @param {Array} data - Array with responce from server: [{err,data,status}...]
+ */
+
+/**
+ * Start tracking events to ironSource Atom
+ * @param {String} stream - atom stream name
+ * @param {String|Object} data - data to be tracked to atom.
  *
- * Start track events
- *
- * @api {post} endpoint/bulk track Accumulate and send events to server
- * @apiVersion 1.1.1
- * @apiGroup Atom
- * @apiParam {String} stream Stream name for saving data in db table
- * @apiParam {All} data Event data for saving
- *
- * @apiSuccess {Null} err Server response error
- * @apiSuccess {Object} data Server response data
- * @apiSuccess {String} status Server response status
- *
- * @apiError {Object} err Server response error
- * @apiError {Null} data Server response data
- * @apiError {String} status Server response status
- *
- * @apiErrorExample Error-Response:
- *  HTTP 401 Permission Denied
- *  {
- *    "err": {"Target Stream": "Permission denied",
- *    "data": null,
- *    "status": 401
- *  }
- *
- * @apiSuccessExample Response:
- * HTTP 200 OK
- * {
- *    "err": null,
- *    "data": "success"
- *    "status": 200
+ * @example
+ * var options = {
+ *    endpoint: "https://track.atom-data.io/",
+ *    auth: "YOUR_HMAC_AUTH_KEY", // Optional, depends on your stream config
+ *    flushInterval: 10, // Optional, Tracker flush interval in seconds (default: 30 seconds)
+ *    bulkLen: 50, // Optional, Number of events per bulk (batch) (default: 20)
+ *    bulkSize: 20 // Optional, Size of each bulk in KB (default: 40KB)
  * }
- * @apiParamExample {json} Request-Example:
- * {
- *    "stream": "streamName",
- *    "data": "Some data"
- * }
+ *
+ * var tracker = new IronSourceAtom.Tracker(options); // Init a new tracker
+ * var stream = "MY_STREAM_NAME", // Your target stream name
+ * var data = {id: 1, string_col: "String"} // Data that matches your DB structure
+ * tracker.track(stream, data); // Start tracking and empty on the described above conditions
  *
  */
 
@@ -108,6 +93,27 @@ Tracker.prototype.track = function (stream, data) {
     self.flush(stream);
   }
 };
+
+/**
+ * Flush accumulated events to ironSource Atom
+ * @param {String} targetStream - atom stream name
+ * @param {trackerCallback} callback - The callback that handles the response.
+ *
+ * @example
+ *
+ *  // To Flush all events:
+ *  tracker.flush(null, function (results) {
+ *    //returns an array of results, for example:
+ *    //data is: {"a":[{key: "value"}],"b":[{key: "value"}]}
+ *    //result: [{"err":"Auth Error: \"a\"","data":null,"status":401} ,{"err":null,"data":{"Status":"OK"},"status":200}]
+ *    NOTE: the results will be in the same order as the data.
+ *  }); // Send accumulated data immediately
+
+ // If you don't need the results, just do:
+ tracker.flush();
+ // OR to flush a single stream (optional callback)
+ tracker.flush(stream);
+ */
 
 Tracker.prototype.flush = function (targetStream, callback) {
   var self = this;

@@ -17,7 +17,8 @@ describe('Request class test', function () {
     };
 
     it('should send a valid POST request', function (done) {
-      var req = new Request('/ok', params);
+      params.endpoint = '/ok';
+      var req = new Request(params);
       req.post(function (err, data, status) {
         expect(data).to.be.eql({Status: "OK"});
         expect(status).to.be.eql(200);
@@ -26,7 +27,8 @@ describe('Request class test', function () {
     });
 
     it('should send a valid GET request', function (done) {
-      var req = new Request('/ok', params);
+      params.endpoint = '/ok';
+      var req = new Request(params);
       req.get(function (err, data, status) {
         expect(data).to.be.eql({Status: "OK"});
         expect(status).to.be.eql(200);
@@ -35,7 +37,8 @@ describe('Request class test', function () {
     });
 
     it('should generate a valid GET request', function (done) {
-      var req = new Request('/get', params);
+      params.endpoint = '/get';
+      var req = new Request(params);
       req.get(function (err, data, status) {
         data = data.split("=")[1];
         expect(data).to.eql("eyJ0YWJsZSI6InRhYmxlTmFtZSIsImRhdGEiOiJhbmFseXRpY3NEYXRhIiwiYXV0aCI6IiJ9");
@@ -45,7 +48,8 @@ describe('Request class test', function () {
     });
 
     it('should handle POST request auth error', function (done) {
-      var req = new Request('/auth-error', params);
+      params.endpoint = '/auth-error';
+      var req = new Request(params);
       req.post(function (err, data, status) {
         expect(err).to.be.eql('Auth Error: "testStream"');
         expect(status).to.be.eql(401);
@@ -54,7 +58,8 @@ describe('Request class test', function () {
     });
 
     it('should handle GET request auth error', function (done) {
-      var req = new Request('/auth-error', params);
+      params.endpoint = '/auth-error';
+      var req = new Request(params);
       req.get(function (err, data, status) {
         expect(err).to.be.eql('Auth Error: "testStream"');
         expect(status).to.be.eql(401);
@@ -63,7 +68,8 @@ describe('Request class test', function () {
     });
 
     it('should handle POST request server error', function (done) {
-      var req = new Request('/server-error', params);
+      params.endpoint = '/server-error';
+      var req = new Request(params);
       req.post(function (err, data, status) {
         expect(err).to.be.eql('Service Unavailable');
         expect(status).to.be.eql(503);
@@ -72,7 +78,8 @@ describe('Request class test', function () {
     });
 
     it('should handle GET request server error', function (done) {
-      var req = new Request('/server-error', params);
+      params.endpoint = '/server-error';
+      var req = new Request(params);
       req.get(function (err, data, status) {
         expect(err).to.be.eql('Service Unavailable');
         expect(status).to.be.eql(503);
@@ -81,7 +88,8 @@ describe('Request class test', function () {
     });
 
     it('should check health method', function (done) {
-      var req = new Request('/health', "health");
+      params.endpoint = '/health';
+      var req = new Request(params);
       req.health(function (err, data, status) {
         expect(status).to.be.eql(200);
         expect(data).to.be.eql('up');
@@ -93,9 +101,10 @@ describe('Request class test', function () {
       params = {
         stream: "tableName",
         data: "analyticsData",
-        auth: "TestHMAC"
+        auth: "TestHMAC",
+        endpoint: '/encrypt'
       };
-      var req = new Request('/encrypt', params);
+      var req = new Request(params);
       req.post(function (err, data, status) {
         expect(status).to.be.eql(200);
         expect(data).to.be.eql({
@@ -108,7 +117,8 @@ describe('Request class test', function () {
     });
 
     it('should handle connection error on POST request', function (done) {
-      var req = new Request('/no-connection', params);
+      params.endpoint = '/no-connection';
+      var req = new Request(params);
       req.post(function (err, data, status) {
         expect(status).to.be.eql(500);
         expect(data).to.be.null;
@@ -118,7 +128,8 @@ describe('Request class test', function () {
     });
 
     it('should handle connection error on GET request', function (done) {
-      var req = new Request('/no-connection', params);
+      params.endpoint = '/no-connection';
+      var req = new Request(params);
       req.get(function (err, data, status) {
         expect(status).to.be.eql(500);
         expect(data).to.be.null;
@@ -131,7 +142,8 @@ describe('Request class test', function () {
   });
 
   describe('Request class argument assertion', function () {
-    var req = new Request('/endpoint', {});
+
+    var req = new Request({endpoint: '/endpoint'});
 
     it('should return an error on missing arguments at post method', function () {
       req.post(function (err) {
@@ -149,7 +161,7 @@ describe('Request class test', function () {
       var obj = {};
       obj.a = {b: obj};
       var testFunc = function () {
-        new Request('/endpoint', {data: obj})
+        new Request({endpoint: '/endpoint', data: obj})
       };
       expect(testFunc).to.throw('data is invalid - can\'t be stringified');
     });

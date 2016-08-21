@@ -8,23 +8,32 @@ var sinon = require('sinon');
 
 describe('Atom class test', function () {
 
+  var SDK_VERSION = "1.5.0";
+  var SDK_TYPE = "atom-js";
+  var API_VERSION = 'V1';
+  var END_POINT = 'https://track.atom-data.io/';
+
   describe("Constructor Tests", function () {
 
     it('should generate new IronSourceAtom object with default values', function () {
       var atom = new ISAtom();
 
       expect(atom.options).to.eql({
-        endpoint: "https://track.atom-data.io/",
-        apiVersion: "V1",
-        auth: ""
-      })
+        endpoint: END_POINT,
+        apiVersion: API_VERSION,
+        auth: "",
+        sdkVersion: SDK_VERSION,
+        sdkType: SDK_TYPE
+      });
     });
 
     it('should generate new IronSourceAtom object with custom values', function () {
       var opt = {
         endpoint: "/some-url",
         auth: "aM<dy2gchHsad07*hdACY",
-        apiVersion: 'V1'
+        apiVersion: API_VERSION,
+        sdkVersion: SDK_VERSION,
+        sdkType: SDK_TYPE
       };
       var atom = new ISAtom(opt);
 
@@ -64,8 +73,11 @@ describe('Atom class test', function () {
       expect(atom.putEvent(params)).to.be.eql({
         stream: "table",
         data: 'data',
-        apiVersion: "V1",
-        auth: "auth-key"
+        apiVersion: API_VERSION,
+        auth: "auth-key",
+        sdkVersion: SDK_VERSION,
+        sdkType: SDK_TYPE,
+        endpoint: END_POINT
       });
 
       atom = new ISAtom(options);
@@ -78,9 +90,12 @@ describe('Atom class test', function () {
       expect(atom.putEvent(params)).to.be.eql({
         stream: "table",
         data: 'data',
-        apiVersion: "V1",
+        apiVersion: API_VERSION,
         auth: "auth-key",
-        method: 'GET'
+        sdkVersion: SDK_VERSION,
+        sdkType: SDK_TYPE,
+        method: 'GET',
+        endpoint: END_POINT
       });
     });
 
@@ -99,8 +114,11 @@ describe('Atom class test', function () {
       expect(atom.putEvents(params)).to.be.eql({
         stream: "table",
         data: '[\"data\"]',
-        apiVersion: "V1",
-        auth: "auth-key"
+        apiVersion: API_VERSION,
+        auth: "auth-key",
+        sdkVersion: SDK_VERSION,
+        sdkType: SDK_TYPE,
+        endpoint: END_POINT + 'bulk'
       });
     });
 
