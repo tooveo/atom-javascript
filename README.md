@@ -34,6 +34,9 @@ To install a certain version just do:
 
 For example:
 <script src="https://js-sdk.atom-data.io/1.5.0/sdk.min.js"></script>
+OR
+<script src="https://js-sdk.atom-data.io/1.5.0/sdk.js"></script>
+
 
 The CDN supports both HTTP and HTTPS 
 ```
