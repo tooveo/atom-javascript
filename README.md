@@ -3,6 +3,7 @@
 [![Docs][docs-image]][docs-url]
 [![Coverage Status][coveralls-image]][coveralls-url]
 [![Build status][travis-image]][travis-url]
+[![Sauce Build Status][sauce-badge-image]][sauce-url]
 ## Browsers support
 [![Sauce Test Status][sauce-image]][sauce-url]
 
@@ -180,5 +181,6 @@ You can use our [example][example-url] for sending data to Atom:
 [coveralls-url]: https://coveralls.io/github/ironSource/atom-javascript?branch=master
 [docs-image]: https://img.shields.io/badge/docs-latest-blue.svg
 [docs-url]: https://ironsource.github.io/atom-javascript/
-[sauce-image]: https://saucelabs.com/browser-matrix/jacckson.svg?auth=f38fd52d67c371c24d1152f88f3183b2
-[sauce-url]: https://saucelabs.com/u/jacckson?auth=f38fd52d67c371c24d1152f88f3183b2
+[sauce-image]: https://saucelabs.com/browser-matrix/jacckson.svg
+[sauce-url]: https://saucelabs.com/beta/builds/d4283e62c1564c7a895523856f62b6c6
+[sauce-badge-image]: https://saucelabs.com/buildstatus/jacckson
