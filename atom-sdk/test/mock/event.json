@@ -1,0 +1,57 @@
+{
+  "_id": "57976ced9141ab6be21b8c02",
+  "index": 0,
+  "guid": "9fe05a21-5649-45af-9934-96b939d9c3ac",
+  "isActive": false,
+  "balance": "$1,652.33",
+  "picture": "http://placehold.it/32x32",
+  "age": 26,
+  "eyeColor": "brown",
+  "name": {
+    "first": "Estella",
+    "last": "Potts"
+  },
+  "company": "INVENTURE",
+  "email": "estella.potts@inventure.org",
+  "phone": "+1 (864) 492-2563",
+  "address": "676 Amity Street, Brownsville, North Carolina, 9887",
+  "about": "Veniam sunt excepteur eiusmod aliqua commodo Lorem in sit. Veniam eu anim incididunt sint magna. Anim magna non ex aute ad quis et ipsum. Incididunt minim officia magna magna laborum proident labore incididunt ut magna dolore labore. Voluptate voluptate ea reprehenderit sunt dolor exercitation cupidatat ut excepteur eiusmod. Nostrud laboris irure amet sit enim.",
+  "registered": "Friday, April 15, 2016 5:39 AM",
+  "latitude": "-69.768545",
+  "longitude": "-156.637875",
+  "tags": [
+    "nostrud",
+    "minim",
+    "ea",
+    "elit",
+    "cupidatat"
+  ],
+  "range": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9
+  ],
+  "friends": [
+    {
+      "id": 0,
+      "name": "Holmes Carpenter"
+    },
+    {
+      "id": 1,
+      "name": "Kaye Callahan"
+    },
+    {
+      "id": 2,
+      "name": "Wells Wynn"
+    }
+  ],
+  "greeting": "Hello, Estella! You have 5 unread messages.",
+  "favoriteFruit": "strawberry"
+}

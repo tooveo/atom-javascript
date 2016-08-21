@@ -1,119 +1,161 @@
 "use strict";
+window.ironSourceAtomInit = function () {
 
-(function(){
-  
   var options = {
     endpoint: "https://track.atom-data.io/",
     auth: ""
   };
   var stream = "",
-      httpMethod = "POST";
+    httpMethod = "POST";
 
   var atom = new IronSourceAtom(options);
-  var tracker = new Tracker(options);
+  var tracker = new IronSourceAtom.Tracker(options);
 
-  var sendEventBtn  = document.getElementById("track-event"),
-      sendEventsBtn  = document.getElementById("track-events"),
-      addData = document.getElementById("add-data"),
-      trackerAdd = document.getElementById("tracker-btn"),
-      trackerFlush = document.getElementById("tracker-flush");
+  var sendEventBtn = document.getElementById("put-event"),
+    sendEventsBtn = document.getElementById("put-events"),
+    addData = document.getElementById("add-data"),
+    trackerAdd = document.getElementById("tracker-btn"),
+    trackerFlush = document.getElementById("tracker-flush"),
+    trackerClear = document.getElementById("tracker-clear");
 
-  
   var count = document.getElementById("events-count"),
-      authKey = document.getElementById("auth-key"),
-      optionsDisplay = document.getElementById("options-display"),
-      responseDisplay = document.getElementById("response-display"),
-      requestDisplay = document.getElementById("request-display"),
-      dataInput = document.getElementById("input-data"),
-      methodInput = document.getElementsByName("method"),
-      streamInput = document.getElementById("stream"),
-      trackerStream = document.getElementById("tracker-stream"),
-      trackerData = document.getElementById("tracker-data"),
-      trackerBatch = document.getElementById("tracker-batch"),
-      trackerResult = document.getElementById("tracker-result"),
-      codeDisplay = document.getElementById("bulk");
-  
+    authKey = document.getElementById("auth-key"),
+    optionsDisplay = document.getElementById("options-display"),
+    responseDisplay = document.getElementById("response-display"),
+    requestDisplay = document.getElementById("request-display"),
+    dataInput = document.getElementById("input-data"),
+    methodInput = document.getElementsByName("method"),
+    streamInput = document.getElementById("stream"),
+    trackerStream = document.getElementById("tracker-stream"),
+    trackerData = document.getElementById("tracker-data"),
+    trackerBatch = document.getElementById("tracker-batch"),
+    trackerResult = document.getElementById("tracker-result"),
+    codeDisplay = document.getElementById("bulk"),
+    generateTrackerData = document.getElementById('generate-tracker-data'),
+    generateData = document.getElementById("generate-data");
+
   var data = [];
 
   updateOptionsDisplay();
 
-  for(var i=0; i < methodInput.length; i++){
-    methodInput[i].addEventListener("click", function() {
+  for (var i = 0; i < methodInput.length; i++) {
+    methodInput[i].addEventListener("click", function () {
       httpMethod = this.value;
       updateOptionsDisplay();
     });
   }
 
-  streamInput.addEventListener("blur", function() {
+  streamInput.addEventListener("blur", function () {
     if (this.value != "") {
       stream = this.value;
       updateOptionsDisplay();
     }
   });
 
-  authKey.addEventListener('blur', function() {
+  authKey.addEventListener('blur', function () {
     options.auth = authKey.value;
     atom = new IronSourceAtom(options);
-    tracker = new Tracker(options);
+    tracker = new IronSourceAtom.Tracker(options);
   });
 
-  // Add putEvent(params, callback) params {object}, callback {function}
-  sendEventBtn.addEventListener("click", function() {
-    displayRequest(
-      { data: "{string_value: track, id: 1}",
-        table: stream,
-        method: httpMethod
-      });
-    
-    atom.putEvent({ data: {"string_value": "track", "bool_value": false},
+  // putEvent
+  sendEventBtn.addEventListener("click", function () {
+    var number = Math.random() * 3000 + 1;
+    data = {
+      event_name: "JS-SDK-PUT-EVENT-TEST",
+      string_value: String(number),
+      int_value: Math.round(number),
+      float_value: number,
+      ts: new Date()
+    };
+
+    displayRequest({
+      data: data,
+      table: stream,
+      method: httpMethod
+    });
+
+    atom.putEvent({
+        data: data,
         stream: stream,
         method: httpMethod
       },
-      function(err, data, status) {
-        if (err) displayError(err);
-        else displayResponse(data);
+      function (err, data, status) {
+        err ? displayError(err) : displayResponse(data);
+        data = [];
       });
+
+    atom.health(function (err, data, status) {
+      console.log("Health Check:", data, status);
+    });
+
   });
 
-  // Add putEvent(params, callback) params {object}, callback {function}
-  sendEventsBtn.addEventListener("click", function() {
+
+  // putEvents
+  sendEventsBtn.addEventListener("click", function () {
     displayRequest(
-      { data: data,
+      {
+        data: data,
         stream: stream,
         method: httpMethod
       });
-    
-    atom.putEvents({ data: data,
+
+    atom.putEvents({
+        data: data,
         stream: stream,
         method: httpMethod
       },
-      function(err, data, status){
+      function (err, res, status) {
         if (err) {
-          displayError(err);      
+          displayError(err);
         }
         else {
-          displayResponse(data);
+          displayResponse(res);
+          // init data
           data = [];
           count.innerHTML = data.length;
           codeDisplay.innerHTML = "[]";
         }
       });
   });
-  
-  addData.addEventListener("click", function() {
+
+  addData.addEventListener("click", function () {
     if (dataInput.value == "") return;
-    
+    if (!(data instanceof Array)) {
+      data = [];
+    }
     data.push(dataInput.value);
     dataInput.value = "";
     count.innerHTML = data.length;
     codeDisplay.innerHTML = "[" + data.join(',\n') + "]";
   });
 
+  generateData.addEventListener("click", function () {
+    if (!(data instanceof Array)) {
+      data = [];
+    }
+    for (var i = 0; i < 10; i++) {
+      var number = Math.random() * (3000 - 3) + 3;
+      var genData = {
+        event_name: "JS-SDK-PUT-EVENTS-TEST",
+        string_value: String(number),
+        int_value: Math.round(number),
+        float_value: number,
+        ts: new Date()
+      };
+      data.push(genData);
+    }
+
+    dataInput.value = "";
+    count.innerHTML = data.length;
+    codeDisplay.innerHTML = JSON.stringify(data).replace(/},{/g, "},\n{");
+  });
 
   function updateOptionsDisplay() {
     optionsDisplay.innerHTML = '{ <br>' +
       '  streamName: "' + stream + '",<br>' +
-      '  method: "' + httpMethod +'"<br>}';
+      '  method: "' + httpMethod + '"<br>}';
   }
 
   function displayResponse(res) {
@@ -124,27 +166,56 @@
     responseDisplay.innerHTML = JSON.stringify(e);
   }
 
-  function displayRequest (data) {
-    if (httpMethod == "GET")  {
+  function displayRequest(data) {
+    if (httpMethod == "GET") {
       data = btoa(data);
-    } 
+    }
     requestDisplay.innerHTML = JSON.stringify(data);
   }
 
+
   // Tracker
-  trackerAdd.addEventListener("click", function() {
-    tracker.track(trackerStream.value, trackerData.value, function(err, data){
-      var res = err || data;
-      trackerResult.innerHTML = JSON.stringify(res);
-    });
-    clearTrackerInputs();
+  trackerAdd.addEventListener("click", function () {
+    try {
+      tracker.track(trackerStream.value, trackerData.value);
+    } catch (e) {
+      trackerResult.innerHTML = e;
+      return;
+    }
     updateBatch();
   });
 
-  trackerFlush.addEventListener("click", function() {
-    tracker.flush();
-    clearTrackerInputs();
+
+  generateTrackerData.addEventListener("click", function () {
+    for (var i = 0; i < 10; i++) {
+      var number = Math.random() * (3000 - 3) + 3;
+      var genData = {
+        event_name: "JS-SDK-TRACKER",
+        string_value: String(number),
+        int_value: Math.round(number),
+        float_value: number,
+        ts: new Date()
+      };
+      try {
+        tracker.track(trackerStream.value, genData);
+      } catch(e) {
+        trackerResult.innerHTML = e;
+        return;
+      }
+    }
     updateBatch();
+  });
+
+
+  trackerFlush.addEventListener("click", function () {
+    tracker.flush(null, function (results) {
+      trackerResult.innerHTML = JSON.stringify(results);
+      updateBatch();
+    });
+  });
+
+  trackerClear.addEventListener("click", function () {
+    clearTrackerInputs();
   });
 
   function updateBatch() {
@@ -156,5 +227,4 @@
     trackerStream.value = "";
     trackerData.value = "";
   }
-
-})();
+};

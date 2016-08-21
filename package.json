@@ -1,6 +1,6 @@
 {
   "name": "atom-sdk-js",
-  "version": "1.1.0",
+  "version": "1.5.0",
   "description": "IronSource Atom JS SDK",
   "main": "dist/sdk.js",
   "scripts": {
@@ -36,7 +36,7 @@
     "karma-sauce-launcher": "^1.0.0",
     "karma-sinon-chai": "^1.2.0",
     "lolex": "^1.4.0",
-    "mocha": "^2.4.5",
+    "mocha": "^2.5.3",
     "mocha-lcov-reporter": "^1.2.0",
     "sinon": "^1.17.3",
     "sinon-chai": "^2.8.0",
