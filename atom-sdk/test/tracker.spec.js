@@ -139,12 +139,12 @@ describe('Tracker class and methods', function () {
       tracker.atom = new ISAtomMock(tracker.params);
 
       tracker.track("test", "test");
-      var flush = sinon.spy(tracker.atom, 'putEvents');
+      var putEvents = sinon.spy(tracker.atom, 'putEvents');
 
       tracker.flush('test', function (results) {
         expect(results[0]).to.be.eql({err: null, data: '{ "Status": "OK" }', status: 200});
-        flush.restore();
-        sinon.assert.calledThrice(flush);
+        putEvents.restore();
+        sinon.assert.calledThrice(putEvents);
         done();
       });
     });

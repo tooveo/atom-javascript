@@ -129,7 +129,7 @@ Request.prototype.get = function (callback) {
 Request.prototype.health = function (callback) {
   var xhr = this.xhr;
 
-  xhr.open("GET", this.params.endpoint, true);
+  xhr.open("GET", this.params.endpoint + 'health', true);
 
   xhr.onreadystatechange = function () {
     if (xhr.readyState === XMLHttpRequest.DONE) {

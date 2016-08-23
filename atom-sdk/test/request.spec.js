@@ -88,7 +88,7 @@ describe('Request class test', function () {
     });
 
     it('should check health method', function (done) {
-      params.endpoint = '/health';
+      params.endpoint = '/health/';
       var req = new Request(params);
       req.health(function (err, data, status) {
         expect(status).to.be.eql(200);
@@ -183,7 +183,7 @@ function _setupServer(sinon, before, after) {
 
     server.respondWith(/auth-error(\?data=.*)?/, [401, {'Content-Type': 'text/plain'}, 'Auth Error: "testStream"']);
 
-    server.respondWith("/health", [200, {'Content-Type': 'text/plain'}, "up"]);
+    server.respondWith("/health/health", [200, {'Content-Type': 'text/plain'}, "up"]);
 
     server.respondWith(/no-connection(\?data=.*)?/, [0, {'Content-Type': 'text/plain'}, "ERROR: No connection to server"]);
 

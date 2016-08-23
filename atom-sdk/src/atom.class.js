@@ -141,8 +141,6 @@ IronSourceAtom.prototype.putEvents = function (params, callback) {
 
 IronSourceAtom.prototype.health = function (callback) {
   var params = this.options;
-  params.data = 'health';
-
   var req = new Request(params);
   return req.health(callback);
 };

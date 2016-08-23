@@ -13,7 +13,7 @@ window.ironSourceAtomInit = function () {
 
   var sendEventBtn = document.getElementById("put-event"),
     sendEventsBtn = document.getElementById("put-events"),
-    addData = document.getElementById("add-data"),
+    putEventsAddData = document.getElementById("putevents-add-data"),
     trackerAdd = document.getElementById("tracker-btn"),
     trackerFlush = document.getElementById("tracker-flush"),
     trackerClear = document.getElementById("tracker-clear");
@@ -118,9 +118,15 @@ window.ironSourceAtomInit = function () {
           codeDisplay.innerHTML = "[]";
         }
       });
+
+    atom.health(function (err, data, status) {
+      console.log("Health Check:", data, status);
+    });
+
   });
 
-  addData.addEventListener("click", function () {
+  // putEvents
+  putEventsAddData.addEventListener("click", function () {
     if (dataInput.value == "") return;
     if (!(data instanceof Array)) {
       data = [];
@@ -198,7 +204,7 @@ window.ironSourceAtomInit = function () {
       };
       try {
         tracker.track(trackerStream.value, genData);
-      } catch(e) {
+      } catch (e) {
         trackerResult.innerHTML = e;
         return;
       }
@@ -219,8 +225,12 @@ window.ironSourceAtomInit = function () {
   });
 
   function updateBatch() {
-    var batch = tracker.accumulated;
-    trackerBatch.innerHTML = JSON.stringify(batch);
+    var output = '';
+    for (stream in tracker.accumulated) {
+      var data = tracker.accumulated[stream];
+      output += 'Stream ' + stream + ': \n' + data.join(',\n') + '\n';
+    }
+    trackerBatch.innerHTML = output;
   }
 
   function clearTrackerInputs() {
