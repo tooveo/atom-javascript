@@ -13,7 +13,6 @@ atom-javascript is the official [ironSource.atom](http://www.ironsrc.com/data-fl
 - [Documentation](https://ironsource.github.io/atom-javascript/)
 - [Installation](#installation)
 - [Usage](#usage)
-- [Sending an event](#Using-the-API-layer-to-send-events)
 - [Changelog](#changelog)
 - [Example](#example)
 
@@ -61,7 +60,7 @@ See the example for more info.
 
 <script type="text/javascript">
   window.IronSourceAtomInit = function() {
-      // Your code here ...
+       // Your code here ...
   }
  </script>
 ```
@@ -75,17 +74,17 @@ The tracker is used for sending events to Atom based on several conditions
 
 ```js
 var options = {
-    endpoint: "https://track.atom-data.io/",
-    auth: "YOUR_HMAC_AUTH_KEY", // Optional, depends on your stream config
-    flushInterval: 10, // Optional, Tracker flush interval in seconds (default: 30)
-    bulkLen: 50, // Optional, Number of events per bulk (batch) (default: 20) 
-    bulkSize: 20 // Optional, Size of each bulk in KB (default: 40KB)
+  endpoint: "https://track.atom-data.io/",
+  auth: "YOUR_HMAC_AUTH_KEY", // Optional, depends on your stream config
+  flushInterval: 10, // Optional, Tracker flush interval in seconds (default: 30)
+  bulkLen: 50, // Optional, Number of events per bulk (batch) (default: 20) 
+  bulkSize: 20 // Optional, Size of each bulk in KB (default: 40KB)
 }
  
 var tracker = new IronSourceAtom.Tracker(options); // Init a new tracker
-var stream = "MY_STREAM_NAME", // Your target stream name
-var data = {id: 1, string_col: "String"} // Data that matches your DB structure
-tracker.track(stream, data); // Start tracking and empty on the described above conditions 
+var stream = "MY_STREAM_NAME"; // Your target stream name
+var data = {id: 1, string_col: "String"}; // Data that matches your DB structure
+tracker.track(stream, data); // Start tracking and empty the backlog on the described above conditions 
  
 // To Flush all events:
 tracker.flush(null, function (results) {
@@ -107,22 +106,23 @@ Sending a single event:
 var stream = "MY.ATOM.STREAM";
 var number = Math.random() * 3000 + 1;
 var data = {
-    event_name: "JS-SDK-PUT-EVENT-TEST",
-    string_value: String(number),
-    int_value: Math.round(number),
-    float_value: number,
-    ts: new Date()
+  event_name: "JS-SDK-PUT-EVENT-TEST",
+  string_value: String(number),
+  int_value: Math.round(number),
+  float_value: number,
+  ts: new Date()
 };
  
 var atom = new IronSourceAtom();
 var params = { 
-               data: data, 
-               stream: stream,
-               method: 'GET' // default is POST
-              };
+  data: data, 
+  stream: stream,
+  method: 'GET' // default is POST
+};
+
 atom.putEvent(params,
 function (err, data, status) {
-    console.log(err,data,status);
+  console.log(err,data,status);
 });
 ```
 
@@ -131,10 +131,11 @@ OR if you want to send a bulk(batch) of events:
 ```js
 var stream = "MY.ATOM.STREAM";
 var data = [
-    {"event_name":"JS-SDK-PUT-EVENTS-TEST","string_value":"67.217","int_value":67},
-    {"event_name":"JS-SDK-PUT-EVENTS-TEST","string_value":"2046.43","int_value":20}
+  {"event_name":"JS-SDK-PUT-EVENTS-TEST","string_value":"67.217","int_value":67},
+  {"event_name":"JS-SDK-PUT-EVENTS-TEST","string_value":"2046.43","int_value":20}
 ];
 var atom = new IronSourceAtom();
+
 atom.putEvents({ data: data, stream: stream },
 function (err, data, status) {
     console.log(err,data,status);
@@ -144,7 +145,7 @@ function (err, data, status) {
 ## Changelog
 
 ### v1.5.0
-Note: this version if fully compatable with the old ones except for the "Request" function which shouldn't be used
+Note: this version if fully compatible with the old ones except for the "Request" function which shouldn't be used
 directly on any case.
 - Refactor Tracker
     - Adding exponential backoff mechanism

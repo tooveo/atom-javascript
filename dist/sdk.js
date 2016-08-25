@@ -45,7 +45,7 @@ window.IronSourceAtom = IronSourceAtom;
  * @param {Object} params - parameters that the function can take
  * @param {String} params.stream - atom stream name
  * @param {(String|Object)} params.data - data (stringified data or object)
- * @param {String} [params.method=POST] - HTTP method
+ * @param {String} [params.method=POST] - HTTP method (POST or GET)
  * @param {String} [params.endpoint] - Atom API endpoint
  * @param {String} [params.auth] - Atom stream HMAC auth key
  * @param {atomCallback} callback - The callback that handles the response.
@@ -62,7 +62,14 @@ window.IronSourceAtom = IronSourceAtom;
  * };
  *
  * var atom = new IronSourceAtom();
- * atom.putEvent({ data: data, stream: stream },
+ * var params = {
+ *    data: data,
+ *    stream: stream,
+ *    method: 'GET' // default is POST
+ * };
+ *
+ *
+ * atom.putEvent(params,
  *  function (err, data, status) {
  *  .....
  * });
@@ -91,7 +98,7 @@ IronSourceAtom.prototype.putEvent = function (params, callback) {
  * @param {Object} params - parameters that the function can take
  * @param {String} params.stream - atom stream name
  * @param {Array} params.data - Multiple events in an an array
- * @param {String} [params.method=POST] - HTTP method
+ * @param {String} [params.method=POST] - HTTP method (bulk events are sent by POST only)
  * @param {atomCallback} callback - The callback that handles the response.
  *
  * @example Request-Example:
