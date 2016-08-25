@@ -115,7 +115,12 @@ var data = {
 };
  
 var atom = new IronSourceAtom();
-atom.putEvent({ data: data, stream: stream },
+var params = { 
+               data: data, 
+               stream: stream,
+               method: 'GET' // default is POST
+              };
+atom.putEvent(params,
 function (err, data, status) {
     console.log(err,data,status);
 });
@@ -167,7 +172,7 @@ directly on any case.
 ## Example
 You can use our [example][example-url] for sending data to Atom:
 
-<img src="https://cloud.githubusercontent.com/assets/19283325/16585493/ce347b24-42c9-11e6-8930-765605663eca.png" alt="Example" width=1200px height=900px/>
+<img src="https://cloud.githubusercontent.com/assets/7361100/17974132/81fa6808-6aed-11e6-9545-58f404912e15.png" alt="Example" width=1600px>
 
 ## License
 [MIT](LICENSE)

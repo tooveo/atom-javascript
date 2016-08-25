@@ -215,7 +215,11 @@ window.ironSourceAtomInit = function () {
 
   trackerFlush.addEventListener("click", function () {
     tracker.flush(null, function (results) {
-      trackerResult.innerHTML = JSON.stringify(results);
+      var output = '[\n';
+      results.forEach(function (result) {
+        output += JSON.stringify(result) + '\n';
+      });
+      trackerResult.innerHTML = output + ']';
       updateBatch();
     });
   });
