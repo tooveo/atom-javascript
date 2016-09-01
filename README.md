@@ -13,7 +13,7 @@ atom-javascript is the official [ironSource.atom](http://www.ironsrc.com/data-fl
 - [Documentation](https://ironsource.github.io/atom-javascript/)
 - [Installation](#installation)
 - [Usage](#usage)
-- [Changelog](#changelog)
+- [Change Log](#change-log)
 - [Example](#example)
 
 
@@ -142,7 +142,7 @@ function (err, data, status) {
 });
 ```
 
-## Changelog
+## Change Log
 
 ### v1.5.0
 Note: this version if fully compatible with the old ones except for the "Request" function which shouldn't be used
