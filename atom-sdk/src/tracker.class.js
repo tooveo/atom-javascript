@@ -45,7 +45,7 @@ window.IronSourceAtom.Tracker = Tracker;
 
 /**
  * Start tracking events to ironSource Atom
- * @param {String} stream - atom stream name
+ * @param {String} stream - Atom stream name
  * @param {String|Object} data - data to be tracked to atom.
  *
  * @example

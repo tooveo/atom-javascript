@@ -20,8 +20,8 @@ module.exports = function(config) {
     'SL_IE10': {
       base: 'SauceLabs',
       browserName: 'internet explorer',
-      platform: 'Windows 2012',
-      version: '10'
+      platform: 'Windows Server 2003 R2',
+      version: '8'
     },
     'SL_ANDROID5.1': {
       base: 'SauceLabs',

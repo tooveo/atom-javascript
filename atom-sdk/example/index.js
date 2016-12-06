@@ -66,7 +66,7 @@ window.ironSourceAtomInit = function () {
       string_value: String(number),
       int_value: Math.round(number),
       float_value: number,
-      ts: new Date()
+      ts: +new Date()
     };
 
     displayRequest({
@@ -148,7 +148,7 @@ window.ironSourceAtomInit = function () {
         string_value: String(number),
         int_value: Math.round(number),
         float_value: number,
-        ts: new Date()
+        ts: +new Date()
       };
       data.push(genData);
     }
@@ -200,7 +200,7 @@ window.ironSourceAtomInit = function () {
         string_value: String(number),
         int_value: Math.round(number),
         float_value: number,
-        ts: new Date()
+        ts: +new Date()
       };
       try {
         tracker.track(trackerStream.value, genData);
