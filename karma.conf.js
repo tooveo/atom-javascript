@@ -85,6 +85,7 @@ module.exports = function (config) {
     browserNoActivityTimeout: 60000,
     customLaunchers: customLaunchers,
     browsers: Object.keys(customLaunchers),
-    singleRun: true
+    singleRun: true,
+    concurrency: 2
   })
 };
