@@ -67,16 +67,25 @@
     <section class="row">
         <div class="col-md-4">
             <h2>Test putEvent method</h2>
-            <button id="put-event" class="btn btn-primary">Send</button>
+            <input id="put-event-input-data" class="form-control" type="text" placeholder="Enter data to send">
+            <div class="row" style="margin: 15px -15px;">
+                <div class="col-md-12">
+                    <button id="put-event-generate-data" class="btn btn-primary">Generate Data & Send</button>
+                    <button id="put-event" class="btn btn-primary">Send</button>
+                </div>
+            </div>
+
         </div>
     </section>
+
+
     <section class="row">
         <div class="col-md-9">
             <h2>Test putEvents method</h2>
 
             <div class="row">
                 <div class="col-md-4">
-                    <input id="input-data" class="form-control" type="text" placeholder="Enter data to send">
+                    <input id="put-events-input-data" class="form-control" type="text" placeholder="Enter data to send">
                 </div>
                 <div class="col-md-4">
                     <span id="events-count" class="badge" style="margin: 7px 0 7px -15px;">0</span>

@@ -144,6 +144,10 @@ function (err, data, status) {
 
 ## Change Log
 
+### v1.5.1
+- Adding non-ascii string support + ie9 support (replaced btoa with custom base64)
+- Changing the SauceLabs tests to support more + older browsers
+
 ### v1.5.0
 Note: this version if fully compatible with the old ones except for the "Request" function which shouldn't be used
 directly on any case.

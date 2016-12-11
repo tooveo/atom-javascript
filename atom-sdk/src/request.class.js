@@ -95,8 +95,9 @@ Request.prototype.get = function (callback) {
   });
 
   try {
-    base64Data = btoa(data);
+    base64Data = Base64.encode(data);
   } catch (e) {
+    throw new Error("Can't encode Base64 data: " + e);
   }
 
   xhr.open("GET", this.params.endpoint + '?data=' + base64Data, true);

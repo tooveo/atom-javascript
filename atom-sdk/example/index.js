@@ -1,5 +1,5 @@
 "use strict";
-window.ironSourceAtomInit = function () {
+
 
   var options = {
     endpoint: "https://track.atom-data.io/",
@@ -11,8 +11,9 @@ window.ironSourceAtomInit = function () {
   var atom = new IronSourceAtom(options);
   var tracker = new IronSourceAtom.Tracker(options);
 
-  var sendEventBtn = document.getElementById("put-event"),
-    sendEventsBtn = document.getElementById("put-events"),
+  var putEventGenAndSend = document.getElementById("put-event-generate-data"),
+    putEventSendBtn = document.getElementById("put-event"),
+    putEventsButtn = document.getElementById("put-events"),
     putEventsAddData = document.getElementById("putevents-add-data"),
     trackerAdd = document.getElementById("tracker-btn"),
     trackerFlush = document.getElementById("tracker-flush"),
@@ -23,7 +24,8 @@ window.ironSourceAtomInit = function () {
     optionsDisplay = document.getElementById("options-display"),
     responseDisplay = document.getElementById("response-display"),
     requestDisplay = document.getElementById("request-display"),
-    dataInput = document.getElementById("input-data"),
+    putEventsInputData = document.getElementById("put-events-input-data"),
+    putEventInputData = document.getElementById("put-event-input-data"),
     methodInput = document.getElementsByName("method"),
     streamInput = document.getElementById("stream"),
     trackerStream = document.getElementById("tracker-stream"),
@@ -59,7 +61,29 @@ window.ironSourceAtomInit = function () {
   });
 
   // putEvent
-  sendEventBtn.addEventListener("click", function () {
+  putEventSendBtn.addEventListener("click", function () {
+    data = putEventInputData.value;
+    console.log("putEvent " + putEventInputData.value);
+
+    displayRequest({
+      data: putEventInputData.value,
+      table: stream,
+      method: httpMethod
+    });
+
+    atom.putEvent({
+        data: data,
+        stream: stream,
+        method: httpMethod
+      },
+      function (err, data, status) {
+        err ? displayError(err) : displayResponse(data);
+        data = "";
+      });
+  });
+
+
+  putEventGenAndSend.addEventListener("click", function () {
     var number = Math.random() * 3000 + 1;
     data = {
       event_name: "JS-SDK-PUT-EVENT-TEST",
@@ -91,9 +115,7 @@ window.ironSourceAtomInit = function () {
 
   });
 
-
-  // putEvents
-  sendEventsBtn.addEventListener("click", function () {
+  putEventsButtn.addEventListener("click", function () {
     displayRequest(
       {
         data: data,
@@ -127,12 +149,12 @@ window.ironSourceAtomInit = function () {
 
   // putEvents
   putEventsAddData.addEventListener("click", function () {
-    if (dataInput.value == "") return;
+    if (putEventsInputData.value == "") return;
     if (!(data instanceof Array)) {
       data = [];
     }
-    data.push(dataInput.value);
-    dataInput.value = "";
+    data.push(putEventsInputData.value);
+    putEventsInputData.value = "";
     count.innerHTML = data.length;
     codeDisplay.innerHTML = "[" + data.join(',\n') + "]";
   });
@@ -153,7 +175,7 @@ window.ironSourceAtomInit = function () {
       data.push(genData);
     }
 
-    dataInput.value = "";
+    putEventsInputData.value = "";
     count.innerHTML = data.length;
     codeDisplay.innerHTML = JSON.stringify(data).replace(/},{/g, "},\n{");
   });
@@ -174,7 +196,7 @@ window.ironSourceAtomInit = function () {
 
   function displayRequest(data) {
     if (httpMethod == "GET") {
-      data = btoa(data);
+      data = "Raw data: " + JSON.stringify(data) + ", Base64 data: " + btoa(data);
     }
     requestDisplay.innerHTML = JSON.stringify(data);
   }
@@ -241,4 +263,3 @@ window.ironSourceAtomInit = function () {
     trackerStream.value = "";
     trackerData.value = "";
   }
-};

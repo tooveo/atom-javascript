@@ -47,6 +47,20 @@ describe('Request class test', function () {
       });
     });
 
+    it('should generate a valid GET request with non unicode chars', function (done) {
+      var req = new Request({
+        stream: "stream",
+        data: "וואו עברית וואו",
+        endpoint: '/get'
+      });
+      req.get(function (err, data, status) {
+        data = data.split("=")[1];
+        expect(data).to.eql("eyJ0YWJsZSI6InN0cmVhbSIsImRhdGEiOiLXldeV15DXlSDXoteR16jXmdeqINeV15XXkNeVIiwiYXV0aCI6IiJ9");
+        expect(status).to.be.eql(200);
+        done();
+      });
+    });
+
     it('should handle POST request auth error', function (done) {
       params.endpoint = '/auth-error';
       var req = new Request(params);
@@ -174,6 +188,8 @@ function _setupServer(sinon, before, after) {
 
   before(function () {
 
+    // For ie9
+    sinon.useFakeXDomainRequest = sinon.useFakeXMLHttpRequest;
     // Creates a new server. This function also calls sinon.useFakeXMLHttpRequest().
     server = sinon.fakeServer.create({
       autoRespond: true
