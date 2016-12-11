@@ -12,8 +12,7 @@ module.exports = function (config) {
     'SL_SAFARI10': {base: 'SauceLabs', browserName: 'safari', platform: 'OS X 10.11', version: '10.0'},
     // Explorer
     'SL_IE9': {base: 'SauceLabs', browserName: 'internet explorer', platform: 'Windows 7', version: '9'},
-    'SL_IE10': {base: 'SauceLabs', browserName: 'internet explorer', platform: 'Windows 2012', version: '10'},
-    'SL_IE11': {base: 'SauceLabs', browserName: 'internet explorer', platform: 'Windows 8.1', version: '11'},
+    'SL_IE11': {base: 'SauceLabs', browserName: 'internet explorer', platform: 'Windows 7', version: '11'},
     // Edge
     'SL_EDGE': {base: 'SauceLabs', browserName: 'MicrosoftEdge', platform: 'Windows 10', version: '13.10586'},
     // Android
@@ -70,7 +69,7 @@ module.exports = function (config) {
     autoWatch: false,
     sauceLabs: {
       testName: 'IronSource Atom js',
-      retryLimit: 2,
+      retryLimit: 3,
       recordVideo: false,
       recordScreenshots: false,
       build: process.env.TRAVIS_BUILD_NUMBER,
