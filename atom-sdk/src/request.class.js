@@ -97,6 +97,7 @@ Request.prototype.get = function (callback) {
   try {
     base64Data = Base64.encode(data);
   } catch (e) {
+    /* istanbul ignore next */
     throw new Error("Can't encode Base64 data: " + e);
   }
 
