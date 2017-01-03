@@ -1,9 +1,15 @@
 "use strict";
 
+// For using loading, uncomment in here
+// window.ironSourceAtomInit = function () {
 
   var options = {
     endpoint: "https://track.atom-data.io/",
-    auth: ""
+    // endpoint: "http://10.0.0.7:3000/",
+    auth: "",
+    flushInterval: 10,
+    bulkSize: 40,
+    bulkLen: 20
   };
   var stream = "",
     httpMethod = "POST";
@@ -60,7 +66,7 @@
     tracker = new IronSourceAtom.Tracker(options);
   });
 
-  // putEvent
+// putEvent
   putEventSendBtn.addEventListener("click", function () {
     data = putEventInputData.value;
     console.log("putEvent " + putEventInputData.value);
@@ -147,7 +153,7 @@
 
   });
 
-  // putEvents
+// putEvents
   putEventsAddData.addEventListener("click", function () {
     if (putEventsInputData.value == "") return;
     if (!(data instanceof Array)) {
@@ -202,7 +208,7 @@
   }
 
 
-  // Tracker
+// Tracker
   trackerAdd.addEventListener("click", function () {
     try {
       tracker.track(trackerStream.value, trackerData.value);
@@ -263,3 +269,5 @@
     trackerStream.value = "";
     trackerData.value = "";
   }
+
+// };

@@ -6,16 +6,14 @@
 [![Sauce Build Status][sauce-badge-image]][sauce-url]
 ## Browsers support
 [![Sauce Test Status][sauce-image]][sauce-url]
-
 atom-javascript is the official [ironSource.atom](http://www.ironsrc.com/data-flow-management) SDK for Web Browsers.
 
 - [Signup](https://atom.ironsrc.com/#/signup)
-- [Documentation](https://ironsource.github.io/atom-javascript/)
+- [Documentation][docs-url]
 - [Installation](#installation)
 - [Usage](#usage)
 - [Change Log](#change-log)
 - [Example](#example)
-
 
 ## Installation
 
@@ -148,6 +146,7 @@ function (err, data, status) {
 - Adding non-ascii string support + ie9 support (replaced btoa with custom base64)
 - Changing the SauceLabs tests to support more + older browsers
 - Changing tracker defaults
+- Fixing a bug in Explorer9 with CORS and XDomainRequest
 
 ### v1.5.0
 Note: this version if fully compatible with the old ones except for the "Request" function which shouldn't be used
