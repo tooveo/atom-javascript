@@ -13,7 +13,9 @@ describe('Request class test', function () {
 
     var params = {
       stream: "tableName",
-      data: "analyticsData"
+      data: "analyticsData",
+      sdkVersion: "1.5.1",
+      sdkType: "atom-js"
     };
 
     it('should send a valid POST request', function (done) {
@@ -178,6 +180,7 @@ describe('Request class test', function () {
         new Request({endpoint: '/endpoint', data: obj})
       };
       expect(testFunc).to.throw('data is invalid - can\'t be stringified');
+      expect(0==1);
     });
   });
 
@@ -189,7 +192,7 @@ function _setupServer(sinon, before, after) {
   before(function () {
 
     // For ie9
-    sinon.useFakeXDomainRequest = sinon.useFakeXMLHttpRequest;
+    // sinon.useFakeXDomainRequest = sinon.useFakeXMLHttpRequest;
     // Creates a new server. This function also calls sinon.useFakeXMLHttpRequest().
     server = sinon.fakeServer.create({
       autoRespond: true

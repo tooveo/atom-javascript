@@ -8,7 +8,7 @@ var sinon = require('sinon');
 
 describe('Atom class test', function () {
 
-  var SDK_VERSION = "1.5.0";
+  var SDK_VERSION = "1.5.1";
   var SDK_TYPE = "atom-js";
   var API_VERSION = 'V1';
   var END_POINT = 'https://track.atom-data.io/';
@@ -28,16 +28,20 @@ describe('Atom class test', function () {
     });
 
     it('should generate new IronSourceAtom object with custom values', function () {
-      var opt = {
+      var options = {
         endpoint: "/some-url",
         auth: "aM<dy2gchHsad07*hdACY",
         apiVersion: API_VERSION,
-        sdkVersion: SDK_VERSION,
-        sdkType: SDK_TYPE
+        sdkVersion: "1.2.0",
+        sdkType: "atom-js-session",
       };
-      var atom = new ISAtom(opt);
-
-      expect(atom.options).to.eql(opt);
+      var atom = new ISAtom(options);
+      var expectedOption = (function (options) {
+        options.sdkVersion = SDK_VERSION + "+" + options.sdkVersion;
+        options.sdkType = SDK_TYPE + "+" + options.sdkType;
+        return options;
+      })(options);
+      expect(atom.options).to.eql(expectedOption);
     });
   });
 
@@ -53,7 +57,7 @@ describe('Atom class test', function () {
       });
 
       sinon.stub(Request.prototype, "health", function (callback) {
-        var res = new Response(null, 'ok', '200');
+        var res = new Response(null, 'ok', 200);
         return callback(null, res.data(), res.status);
       });
 
@@ -152,7 +156,7 @@ describe('Atom class test', function () {
       atom.health(function (err, data, status) {
         expect(err).to.be.null;
         expect(data).to.be.eql('ok');
-        expect(status).to.be.eql('200');
+        expect(status).to.be.eql(200);
       });
     });
 

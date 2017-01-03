@@ -17,14 +17,14 @@ function IronSourceAtom(options) {
   options = options || {};
   var END_POINT = "https://track.atom-data.io/";
   var API_VERSION = "V1"; // The atom API endpoint version (don't change it)
-  var SDK_VERSION = "1.5.0";
+  var SDK_VERSION = "1.5.1";
   var SDK_TYPE = "atom-js";
   this.options = {
     endpoint: options.endpoint || END_POINT,
     apiVersion: API_VERSION,
     auth: options.auth || "",
-    sdkVersion: SDK_VERSION,
-    sdkType: SDK_TYPE
+    sdkVersion: options.sdkVersion ? SDK_VERSION + "+" + options.sdkVersion : SDK_VERSION,
+    sdkType: options.sdkType ? SDK_TYPE + "+" + options.sdkType : SDK_TYPE
   };
 }
 
