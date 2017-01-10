@@ -49,12 +49,10 @@ describe('Atom class test', function () {
 
     beforeEach(function () {
       sinon.stub(Request.prototype, "get", function () {
-        console.log(this.params);
         return this.params;
       });
 
       sinon.stub(Request.prototype, "post", function () {
-        console.log(this.params);
         return this.params;
       });
 

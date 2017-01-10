@@ -30,7 +30,7 @@ function Request(params) {
   };
 
   // Shitty old explorer 9 browser, no support for headers at XDomainRequest
-  if ('XDomainRequest' in window && window.XDomainRequest !== null) {
+  if ('XDomainRequest' in window && window.XDomainRequest !== null && this._isIE() && this._isIE() < 10) {
     // IE9 CORS support only same protocol end to end (HTTP->HTTP, HTTPS->HTTPS)
     this.params.endpoint = this.params.endpoint.replace(/^(http|https):/, location.protocol);
     this.xhr = new XDomainRequest();
@@ -40,6 +40,16 @@ function Request(params) {
     this.oldBrowser = false;
   }
 }
+/**
+ * IE9 check, this function is here since IE10 has an unusable XDomainRequest (wtf?)
+ * Return the version of the browser if it is an IE browser, else returns false
+ * @private
+ */
+Request.prototype._isIE = function () {
+  var myNav = navigator.userAgent.toLowerCase();
+  console.log("EXPLORER VERSION: " + myNav);
+  return (myNav.indexOf('msie') != -1) ? parseInt(myNav.split('msie')[1]) : false;
+};
 
 /**
  * Perform an HTTP POST to the Atom endpoint.
