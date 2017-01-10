@@ -185,7 +185,7 @@ function Request(params) {
     try {
       this.params.data = JSON.stringify(this.params.data);
     } catch (e) {
-      throw new Error("data is invalid - can't be stringified") // todo return 400
+      throw new Error("data is invalid - can't be stringified");
     }
   }
 

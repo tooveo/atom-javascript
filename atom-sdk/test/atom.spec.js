@@ -49,10 +49,12 @@ describe('Atom class test', function () {
 
     beforeEach(function () {
       sinon.stub(Request.prototype, "get", function () {
+        console.log(this.params);
         return this.params;
       });
 
       sinon.stub(Request.prototype, "post", function () {
+        console.log(this.params);
         return this.params;
       });
 
@@ -81,7 +83,7 @@ describe('Atom class test', function () {
         auth: "auth-key",
         sdkVersion: SDK_VERSION,
         sdkType: SDK_TYPE,
-        endpoint: END_POINT
+        endpoint: sinon.xhr.supportsCORS ? END_POINT : END_POINT.replace(/^(http|https):/, location.protocol)
       });
 
       atom = new ISAtom(options);
@@ -99,7 +101,7 @@ describe('Atom class test', function () {
         sdkVersion: SDK_VERSION,
         sdkType: SDK_TYPE,
         method: 'GET',
-        endpoint: END_POINT
+        endpoint: sinon.xhr.supportsCORS ? END_POINT : END_POINT.replace(/^(http|https):/, location.protocol)
       });
     });
 
@@ -122,7 +124,7 @@ describe('Atom class test', function () {
         auth: "auth-key",
         sdkVersion: SDK_VERSION,
         sdkType: SDK_TYPE,
-        endpoint: END_POINT + 'bulk'
+        endpoint: (sinon.xhr.supportsCORS ? END_POINT : END_POINT.replace(/^(http|https):/, location.protocol)) + "bulk"
       });
     });
 
