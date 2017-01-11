@@ -18,9 +18,9 @@ function Tracker(params) {
   this.retryTimeout = 1000;
   params = params || {};
   this.params = params;
-  this.params.flushInterval = params.flushInterval ? params.flushInterval * 1000 : 30000;
-  this.params.bulkLen = params.bulkLen ? params.bulkLen : 20;
-  this.params.bulkSize = params.bulkSize ? params.bulkSize * 1024 : 40 * 1024;
+  this.params.flushInterval = params.flushInterval ? params.flushInterval * 1000 : 10000;
+  this.params.bulkLen = params.bulkLen ? params.bulkLen : 3;
+  this.params.bulkSize = params.bulkSize ? params.bulkSize * 1024 : 10 * 1024;
   this.params.auth = params.auth ? params.auth : ''; // Default auth for all streams
 
   // Dict of accumulated records: (stream -> [data array])
@@ -45,7 +45,7 @@ window.IronSourceAtom.Tracker = Tracker;
 
 /**
  * Start tracking events to ironSource Atom
- * @param {String} stream - atom stream name
+ * @param {String} stream - Atom stream name
  * @param {String|Object} data - data to be tracked to atom.
  *
  * @example

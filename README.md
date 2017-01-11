@@ -6,16 +6,14 @@
 [![Sauce Build Status][sauce-badge-image]][sauce-url]
 ## Browsers support
 [![Sauce Test Status][sauce-image]][sauce-url]
-
 atom-javascript is the official [ironSource.atom](http://www.ironsrc.com/data-flow-management) SDK for Web Browsers.
 
 - [Signup](https://atom.ironsrc.com/#/signup)
-- [Documentation](https://ironsource.github.io/atom-javascript/)
+- [Documentation][docs-url]
 - [Installation](#installation)
 - [Usage](#usage)
 - [Change Log](#change-log)
 - [Example](#example)
-
 
 ## Installation
 
@@ -68,17 +66,17 @@ See the example for more info.
 ## Usage
 ### High Level API - "Tracker"
 The tracker is used for sending events to Atom based on several conditions
-- Every 30 seconds (default)
-- Number of accumulated events has reached 20 (default)
-- Size of accumulated events has reached 40KB (default)
+- Every 10 seconds (default)
+- Number of accumulated events has reached 3 (default)
+- Size of accumulated events has reached 10KB (default)
 
 ```js
 var options = {
   endpoint: "https://track.atom-data.io/",
   auth: "YOUR_HMAC_AUTH_KEY", // Optional, depends on your stream config
-  flushInterval: 10, // Optional, Tracker flush interval in seconds (default: 30)
-  bulkLen: 50, // Optional, Number of events per bulk (batch) (default: 20) 
-  bulkSize: 20 // Optional, Size of each bulk in KB (default: 40KB)
+  flushInterval: 10, // Optional, Tracker flush interval in seconds (default: 10)
+  bulkLen: 50, // Optional, Number of events per bulk (batch) (default: 3) 
+  bulkSize: 20 // Optional, Size of each bulk in KB (default: 10KB)
 }
  
 var tracker = new IronSourceAtom.Tracker(options); // Init a new tracker
@@ -143,6 +141,12 @@ function (err, data, status) {
 ```
 
 ## Change Log
+
+### v1.5.1
+- Adding non-ascii string support + ie9 support (replaced btoa with custom base64)
+- Changing the SauceLabs tests to support more + older browsers
+- Changing tracker defaults
+- Fixing a bug in Explorer9 with CORS and XDomainRequest
 
 ### v1.5.0
 Note: this version if fully compatible with the old ones except for the "Request" function which shouldn't be used

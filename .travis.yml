@@ -1,9 +1,9 @@
-langulage: node_js
+language: node_js
 script:
 - npm test
 node_js:
 - 4.4.4
 before_install:
-- npm i && npm i -g apidoc
+- npm i
 after_script:
-- cat ./coverage/Chrome*/lcov.info | ./node_modules/.bin/coveralls --verbose
+- npm run coverage

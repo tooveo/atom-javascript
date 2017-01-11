@@ -19,14 +19,14 @@ function IronSourceAtom(options) {
   options = options || {};
   var END_POINT = "https://track.atom-data.io/";
   var API_VERSION = "V1"; // The atom API endpoint version (don't change it)
-  var SDK_VERSION = "1.5.0";
+  var SDK_VERSION = "1.5.1";
   var SDK_TYPE = "atom-js";
   this.options = {
     endpoint: options.endpoint || END_POINT,
     apiVersion: API_VERSION,
     auth: options.auth || "",
-    sdkVersion: SDK_VERSION,
-    sdkType: SDK_TYPE
+    sdkVersion: options.sdkVersion ? SDK_VERSION + "+" + options.sdkVersion : SDK_VERSION,
+    sdkType: options.sdkType ? SDK_TYPE + "+" + options.sdkType : SDK_TYPE
   };
 }
 
@@ -185,7 +185,7 @@ function Request(params) {
     try {
       this.params.data = JSON.stringify(this.params.data);
     } catch (e) {
-      throw new Error("data is invalid - can't be stringified")
+      throw new Error("data is invalid - can't be stringified");
     }
   }
 
@@ -195,8 +195,29 @@ function Request(params) {
     sdkVersion: this.params.sdkVersion
   };
 
-  this.xhr = XMLHttpRequest ? new XMLHttpRequest() : new ActiveXObject("Microsoft.XMLHTTP");
+  // Shitty old explorer 9 browser, no support for headers at XDomainRequest
+  /* istanbul ignore if  */
+  if ('XDomainRequest' in window && window.XDomainRequest !== null && this._isIE() && this._isIE() < 10) {
+    // IE9 CORS support only same protocol end to end (HTTP->HTTP, HTTPS->HTTPS)
+    this.params.endpoint = this.params.endpoint.replace(/^(http|https):/, location.protocol);
+    this.xhr = new XDomainRequest();
+    this.oldBrowser = true;
+  } else {
+    this.xhr = new XMLHttpRequest();
+    this.oldBrowser = false;
+  }
 }
+/**
+ * IE9 check, this function is here since IE10 has an unusable XDomainRequest (wtf?)
+ * Return the version of the browser if it is an IE browser, else returns false
+ * @private
+ */
+/* istanbul ignore next */
+Request.prototype._isIE = function () {
+  var myNav = navigator.userAgent.toLowerCase();
+  console.log("EXPLORER VERSION: " + myNav);
+  return (myNav.indexOf('msie') != -1) ? parseInt(myNav.split('msie')[1]) : false;
+};
 
 /**
  * Perform an HTTP POST to the Atom endpoint.
@@ -209,7 +230,6 @@ Request.prototype.post = function (callback) {
     return callback("Stream and Data fields are required", null, 400);
   }
 
-  var xhr = this.xhr;
   var payload = JSON.stringify({
     data: this.params.data,
     table: this.params.stream,
@@ -217,27 +237,8 @@ Request.prototype.post = function (callback) {
     auth: !!this.params.auth ? CryptoJS.HmacSHA256(this.params.data, this.params.auth).toString(CryptoJS.enc.Hex) : ""
   });
 
-  xhr.open("POST", this.params.endpoint, true);
-  xhr.setRequestHeader("Content-type", this.headers.contentType);
-  xhr.setRequestHeader("x-ironsource-atom-sdk-type", this.headers.sdkType);
-  xhr.setRequestHeader("x-ironsource-atom-sdk-version", this.headers.sdkVersion);
+  this._sendRequest(payload, "POST", callback);
 
-  xhr.onreadystatechange = function (event) {
-    if (xhr.readyState === XMLHttpRequest.DONE) {
-      var res;
-      if (xhr.status == 200) {
-        res = new Response(null, xhr.response, xhr.status);
-        callback(null, res.data(), xhr.status);
-      } else if (xhr.status >= 400 && xhr.status < 600) {
-        res = new Response(xhr.response, null, xhr.status);
-        callback(res.err(), null, xhr.status);
-      } else if (xhr.status == 0) {
-        callback("No connection to server", null, 500);
-      }
-    }
-  };
-
-  xhr.send(payload);
 };
 
 /**
@@ -251,8 +252,7 @@ Request.prototype.get = function (callback) {
     return callback("Stream and Data fields are required", null, null);
   }
 
-  var xhr = this.xhr;
-  var base64Data;
+  var base64Payload;
   var data = JSON.stringify({
     table: this.params.stream,
     data: this.params.data,
@@ -261,31 +261,14 @@ Request.prototype.get = function (callback) {
   });
 
   try {
-    base64Data = btoa(data);
+    base64Payload = Base64.encode(data);
   } catch (e) {
+    /* istanbul ignore next */
+    throw new Error("Can't encode Base64 data: " + e);
   }
 
-  xhr.open("GET", this.params.endpoint + '?data=' + base64Data, true);
-  xhr.setRequestHeader("Content-type", this.headers.contentType);
-  xhr.setRequestHeader("x-ironsource-atom-sdk-type", this.headers.sdkType);
-  xhr.setRequestHeader("x-ironsource-atom-sdk-version", this.headers.sdkVersion);
+  this._sendRequest(base64Payload, "GET", callback);
 
-  xhr.onreadystatechange = function () {
-    if (xhr.readyState === XMLHttpRequest.DONE) {
-      var res;
-      if (xhr.status == 200) {
-        res = new Response(null, xhr.response, xhr.status);
-        callback(null, res.data(), xhr.status);
-      } else if (xhr.status >= 400 && xhr.status < 600) {
-        res = new Response(xhr.response, null, xhr.status);
-        callback(res.err(), null, xhr.status);
-      } else if (xhr.status == 0) {
-        callback("No connection to server", null, 500);
-      }
-    }
-  };
-
-  xhr.send();
 };
 
 /**
@@ -293,28 +276,83 @@ Request.prototype.get = function (callback) {
  * @param {atomCallback} callback - The callback that handles the response.
  */
 Request.prototype.health = function (callback) {
-  var xhr = this.xhr;
-
-  xhr.open("GET", this.params.endpoint + 'health', true);
-
-  xhr.onreadystatechange = function () {
-    if (xhr.readyState === XMLHttpRequest.DONE) {
-      var res;
-      if (xhr.status == 200) {
-        res = new Response(null, xhr.response, xhr.status);
-        !!callback && callback(null, res.data(), xhr.status);
-      } else {
-        /* istanbul ignore next */
-        res = new Response(xhr.response, null, xhr.status);
-        /* istanbul ignore next */
-        !!callback && callback(res.err(), null, xhr.status);
-      }
-    }
-  };
-
-  xhr.send();
+  this._sendRequest('health', 'GET', callback);
 };
 
+
+Request.prototype._sendRequest = function (payload, method, callback) {
+  var xhr = this.xhr;
+  var getURL = payload == "health" ? this.params.endpoint + 'health' : this.params.endpoint + '?data=' + payload;
+
+  // IE9 support with XDomainRequest - request must be HTTP/HTTPS from origin to dest.
+  /* istanbul ignore if  */
+  if (this.oldBrowser) {
+    var response;
+    xhr.open(method, this.params.endpoint);
+    xhr.onload = function () {
+      console.log("[ONLOAD]: " + xhr.responseText);
+      response = new Response(null, xhr.responseText, 200);
+      callback(null, response.data(), response.status);
+    };
+
+    xhr.onprogress = function () {
+    }; // prevent aborting (bug in IE9)
+
+    xhr.ontimeout = function () {
+      console.log("[TIMEOUT]: GOT 500");
+      response = new Response("No connection to server", null, 500);
+      callback(response.err(), null, response.status);
+    };
+
+    xhr.onerror = function () {
+      // There is no way to get the error code in IE9 so we return 500 in order to retry
+      console.log("[ERROR]: GOT 500");
+      response = new Response("Service Unavailable", null, 500);
+      callback(response.err(), null, response.status);
+    };
+
+    if (method === 'POST') {
+      xhr.open("POST", this.params.endpoint);
+      xhr.send(payload);
+    } else {
+      xhr.open("GET", getURL);
+      xhr.send();
+    }
+
+  } else {
+    // Better browsers that use XMLHTTPRequest func and support headers
+    xhr.onreadystatechange = function () {
+      if (xhr.readyState === XMLHttpRequest.DONE) {
+        if (xhr.status == 200) {
+          response = new Response(null, xhr.response, xhr.status);
+          callback(null, response.data(), response.status);
+        } else if (xhr.status >= 400 && xhr.status < 600) {
+          response = new Response(xhr.response, null, xhr.status);
+          callback(response.err(), null, response.status);
+        } else if (xhr.status == 0) {
+          response = new Response("No connection to server", null, 500);
+          callback(response.err(), null, 500);
+        }
+      }
+    };
+
+    if (method === 'POST') {
+      xhr.open("POST", this.params.endpoint, true);
+      this._setRequestHeaders();
+      xhr.send(payload);
+    } else {
+      xhr.open("GET", getURL, true);
+      this._setRequestHeaders();
+      xhr.send();
+    }
+  }
+};
+
+Request.prototype._setRequestHeaders = function () {
+  this.xhr.setRequestHeader("Content-type", this.headers.contentType);
+  this.xhr.setRequestHeader("x-ironsource-atom-sdk-type", this.headers.sdkType);
+  this.xhr.setRequestHeader("x-ironsource-atom-sdk-version", this.headers.sdkVersion);
+};
 
 /**
  *
@@ -381,9 +419,9 @@ function Tracker(params) {
   this.retryTimeout = 1000;
   params = params || {};
   this.params = params;
-  this.params.flushInterval = params.flushInterval ? params.flushInterval * 1000 : 30000;
-  this.params.bulkLen = params.bulkLen ? params.bulkLen : 20;
-  this.params.bulkSize = params.bulkSize ? params.bulkSize * 1024 : 40 * 1024;
+  this.params.flushInterval = params.flushInterval ? params.flushInterval * 1000 : 10000;
+  this.params.bulkLen = params.bulkLen ? params.bulkLen : 3;
+  this.params.bulkSize = params.bulkSize ? params.bulkSize * 1024 : 10 * 1024;
   this.params.auth = params.auth ? params.auth : ''; // Default auth for all streams
 
   // Dict of accumulated records: (stream -> [data array])
@@ -408,7 +446,7 @@ window.IronSourceAtom.Tracker = Tracker;
 
 /**
  * Start tracking events to ironSource Atom
- * @param {String} stream - atom stream name
+ * @param {String} stream - Atom stream name
  * @param {String|Object} data - data to be tracked to atom.
  *
  * @example
@@ -580,4 +618,6 @@ function taskMap(tasks, callback) {
     _handleTask(tasks[i], i)
   }
 }
+
+var Base64 = {_keyStr:"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=",encode:function(e){var t="";var n,r,i,s,o,u,a;var f=0;e=Base64._utf8_encode(e);while(f<e.length){n=e.charCodeAt(f++);r=e.charCodeAt(f++);i=e.charCodeAt(f++);s=n>>2;o=(n&3)<<4|r>>4;u=(r&15)<<2|i>>6;a=i&63;if(isNaN(r)){u=a=64}else if(isNaN(i)){a=64}t=t+this._keyStr.charAt(s)+this._keyStr.charAt(o)+this._keyStr.charAt(u)+this._keyStr.charAt(a)}return t},decode:function(e){var t="";var n,r,i;var s,o,u,a;var f=0;e=e.replace(/[^A-Za-z0-9+/=]/g,"");while(f<e.length){s=this._keyStr.indexOf(e.charAt(f++));o=this._keyStr.indexOf(e.charAt(f++));u=this._keyStr.indexOf(e.charAt(f++));a=this._keyStr.indexOf(e.charAt(f++));n=s<<2|o>>4;r=(o&15)<<4|u>>2;i=(u&3)<<6|a;t=t+String.fromCharCode(n);if(u!=64){t=t+String.fromCharCode(r)}if(a!=64){t=t+String.fromCharCode(i)}}t=Base64._utf8_decode(t);return t},_utf8_encode:function(e){e=e.replace(/rn/g,"n");var t="";for(var n=0;n<e.length;n++){var r=e.charCodeAt(n);if(r<128){t+=String.fromCharCode(r)}else if(r>127&&r<2048){t+=String.fromCharCode(r>>6|192);t+=String.fromCharCode(r&63|128)}else{t+=String.fromCharCode(r>>12|224);t+=String.fromCharCode(r>>6&63|128);t+=String.fromCharCode(r&63|128)}}return t},_utf8_decode:function(e){var t="";var n=0;var c3=0;var c2=0;var r=0;while(n<e.length){r=e.charCodeAt(n);if(r<128){t+=String.fromCharCode(r);n++}else if(r>191&&r<224){c2=e.charCodeAt(n+1);t+=String.fromCharCode((r&31)<<6|c2&63);n+=2}else{c2=e.charCodeAt(n+1);c3=e.charCodeAt(n+2);t+=String.fromCharCode((r&15)<<12|(c2&63)<<6|c3&63);n+=3}}return t}};
 }(window, document));

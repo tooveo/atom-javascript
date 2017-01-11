@@ -16,9 +16,9 @@ describe('Tracker class and methods', function () {
       var tracker = new Tracker();
 
       expect(tracker.params).to.be.eql({
-        flushInterval: 30000,
-        bulkLen: 20,
-        bulkSize: 40 * 1024,
+        flushInterval: 10000,
+        bulkLen: 3,
+        bulkSize: 10 * 1024,
         auth: ''
       });
 

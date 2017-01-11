@@ -13,7 +13,9 @@ describe('Request class test', function () {
 
     var params = {
       stream: "tableName",
-      data: "analyticsData"
+      data: "analyticsData",
+      sdkVersion: "1.5.1",
+      sdkType: "atom-js"
     };
 
     it('should send a valid POST request', function (done) {
@@ -47,12 +49,32 @@ describe('Request class test', function () {
       });
     });
 
+    it('should generate a valid GET request with non unicode chars', function (done) {
+      var req = new Request({
+        stream: "stream",
+        data: "וואו עברית וואו",
+        endpoint: '/get'
+      });
+      req.get(function (err, data, status) {
+        data = data.split("=")[1];
+        expect(data).to.eql("eyJ0YWJsZSI6InN0cmVhbSIsImRhdGEiOiLXldeV15DXlSDXoteR16jXmdeqINeV15XXkNeVIiwiYXV0aCI6IiJ9");
+        expect(status).to.be.eql(200);
+        done();
+      });
+    });
+
     it('should handle POST request auth error', function (done) {
       params.endpoint = '/auth-error';
       var req = new Request(params);
       req.post(function (err, data, status) {
-        expect(err).to.be.eql('Auth Error: "testStream"');
-        expect(status).to.be.eql(401);
+        if (!sinon.xhr.supportsCORS) {
+          expect(err).to.be.eql('Service Unavailable');
+          expect(status).to.be.eql(500);
+        } else {
+          expect(err).to.be.eql('Auth Error: "testStream"');
+          expect(status).to.be.eql(401);
+        }
+
         done();
       });
     });
@@ -61,8 +83,13 @@ describe('Request class test', function () {
       params.endpoint = '/auth-error';
       var req = new Request(params);
       req.get(function (err, data, status) {
-        expect(err).to.be.eql('Auth Error: "testStream"');
-        expect(status).to.be.eql(401);
+        if (!sinon.xhr.supportsCORS) {
+          expect(err).to.be.eql('Service Unavailable');
+          expect(status).to.be.eql(500);
+        } else {
+          expect(err).to.be.eql('Auth Error: "testStream"');
+          expect(status).to.be.eql(401);
+        }
         done();
       });
     });
@@ -71,8 +98,13 @@ describe('Request class test', function () {
       params.endpoint = '/server-error';
       var req = new Request(params);
       req.post(function (err, data, status) {
-        expect(err).to.be.eql('Service Unavailable');
-        expect(status).to.be.eql(503);
+        if (!sinon.xhr.supportsCORS) {
+          expect(err).to.be.eql('Service Unavailable');
+          expect(status).to.be.eql(500);
+        } else {
+          expect(err).to.be.eql('Service Unavailable');
+          expect(status).to.be.eql(503);
+        }
         done();
       });
     });
@@ -81,8 +113,13 @@ describe('Request class test', function () {
       params.endpoint = '/server-error';
       var req = new Request(params);
       req.get(function (err, data, status) {
-        expect(err).to.be.eql('Service Unavailable');
-        expect(status).to.be.eql(503);
+        if (!sinon.xhr.supportsCORS) {
+          expect(err).to.be.eql('Service Unavailable');
+          expect(status).to.be.eql(500);
+        } else {
+          expect(err).to.be.eql('Service Unavailable');
+          expect(status).to.be.eql(503);
+        }
         done();
       });
     });
@@ -120,9 +157,15 @@ describe('Request class test', function () {
       params.endpoint = '/no-connection';
       var req = new Request(params);
       req.post(function (err, data, status) {
-        expect(status).to.be.eql(500);
-        expect(data).to.be.null;
-        expect(err).to.be.eql("No connection to server");
+        if (!sinon.xhr.supportsCORS) {
+          expect(err).to.be.eql('Service Unavailable');
+          expect(data).to.be.null;
+          expect(status).to.be.eql(500);
+        } else {
+          expect(status).to.be.eql(500);
+          expect(data).to.be.null;
+          expect(err).to.be.eql("No connection to server");
+        }
         done();
       })
     });
@@ -131,9 +174,15 @@ describe('Request class test', function () {
       params.endpoint = '/no-connection';
       var req = new Request(params);
       req.get(function (err, data, status) {
-        expect(status).to.be.eql(500);
-        expect(data).to.be.null;
-        expect(err).to.be.eql("No connection to server");
+        if (!sinon.xhr.supportsCORS) {
+          expect(err).to.be.eql('Service Unavailable');
+          expect(data).to.be.null;
+          expect(status).to.be.eql(500);
+        } else {
+          expect(status).to.be.eql(500);
+          expect(data).to.be.null;
+          expect(err).to.be.eql("No connection to server");
+        }
         done();
       })
     });
@@ -164,6 +213,7 @@ describe('Request class test', function () {
         new Request({endpoint: '/endpoint', data: obj})
       };
       expect(testFunc).to.throw('data is invalid - can\'t be stringified');
+      expect(0 == 1);
     });
   });
 
@@ -174,6 +224,8 @@ function _setupServer(sinon, before, after) {
 
   before(function () {
 
+    // For ie9
+    // sinon.useFakeXDomainRequest = sinon.useFakeXMLHttpRequest;
     // Creates a new server. This function also calls sinon.useFakeXMLHttpRequest().
     server = sinon.fakeServer.create({
       autoRespond: true
