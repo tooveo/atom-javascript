@@ -30,6 +30,7 @@ function Request(params) {
   };
 
   // Shitty old explorer 9 browser, no support for headers at XDomainRequest
+  /* istanbul ignore if  */
   if ('XDomainRequest' in window && window.XDomainRequest !== null && this._isIE() && this._isIE() < 10) {
     // IE9 CORS support only same protocol end to end (HTTP->HTTP, HTTPS->HTTPS)
     this.params.endpoint = this.params.endpoint.replace(/^(http|https):/, location.protocol);
@@ -45,6 +46,7 @@ function Request(params) {
  * Return the version of the browser if it is an IE browser, else returns false
  * @private
  */
+/* istanbul ignore next */
 Request.prototype._isIE = function () {
   var myNav = navigator.userAgent.toLowerCase();
   console.log("EXPLORER VERSION: " + myNav);
@@ -117,6 +119,7 @@ Request.prototype._sendRequest = function (payload, method, callback) {
   var getURL = payload == "health" ? this.params.endpoint + 'health' : this.params.endpoint + '?data=' + payload;
 
   // IE9 support with XDomainRequest - request must be HTTP/HTTPS from origin to dest.
+  /* istanbul ignore if  */
   if (this.oldBrowser) {
     var response;
     xhr.open(method, this.params.endpoint);

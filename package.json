@@ -6,7 +6,7 @@
   "scripts": {
     "test": "karma start",
     "test-local": "karma start karma-local.config.js",
-    "coverage": "cat ./coverage/lcov.info | ./node_modules/.bin/coveralls --verbose"
+    "coverage": "cat ./coverage/Chrome*/lcov.info | ./node_modules/.bin/coveralls --verbose"
   },
   "repository": {
     "type": "git",
