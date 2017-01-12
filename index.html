@@ -48,15 +48,14 @@
 <a href="https://coveralls.io/github/ironSource/atom-javascript?branch=master"><img src="https://coveralls.io/repos/github/ironSource/atom-javascript/badge.svg?branch=master" alt="Coverage Status"></a>
 <a href="https://travis-ci.org/ironSource/atom-javascript"><img src="https://travis-ci.org/ironSource/atom-javascript.svg?branch=master" alt="Build status"></a>
 <a href="https://saucelabs.com/beta/builds/d4283e62c1564c7a895523856f62b6c6"><img src="https://saucelabs.com/buildstatus/jacckson" alt="Sauce Build Status"></a></p>
-<h2>Browsers support</h2><p><a href="https://saucelabs.com/beta/builds/d4283e62c1564c7a895523856f62b6c6"><img src="https://saucelabs.com/browser-matrix/jacckson.svg" alt="Sauce Test Status"></a></p>
-<p>atom-javascript is the official <a href="http://www.ironsrc.com/data-flow-management">ironSource.atom</a> SDK for Web Browsers.</p>
+<h2>Browsers support</h2><p><a href="https://saucelabs.com/beta/builds/d4283e62c1564c7a895523856f62b6c6"><img src="https://saucelabs.com/browser-matrix/jacckson.svg" alt="Sauce Test Status"></a>
+atom-javascript is the official <a href="http://www.ironsrc.com/data-flow-management">ironSource.atom</a> SDK for Web Browsers.</p>
 <ul>
 <li><a href="https://atom.ironsrc.com/#/signup">Signup</a></li>
 <li><a href="https://ironsource.github.io/atom-javascript/">Documentation</a></li>
 <li><a href="#installation">Installation</a></li>
 <li><a href="#usage">Usage</a></li>
-<li><a href="#Using-the-API-layer-to-send-events">Sending an event</a></li>
-<li><a href="#changelog">Changelog</a></li>
+<li><a href="#change-log">Change Log</a></li>
 <li><a href="#example">Example</a></li>
 </ul>
 <h2>Installation</h2><h3>Installation with Bower</h3><pre class="prettyprint source lang-sh"><code>$ bower install --save atom-sdk-js</code></pre><pre class="prettyprint source lang-html"><code>&lt;script src=&quot;bower_components/atom-sdk-js/dist/sdk.min.js&quot;>&lt;/script></code></pre><h3>Installation with Atom CDN</h3><pre class="prettyprint source lang-html"><code>To install a certain version just do:
@@ -84,26 +83,26 @@ See the example for more info.
 
 &lt;script type=&quot;text/javascript&quot;>
   window.IronSourceAtomInit = function() {
-      // Your code here ...
+       // Your code here ...
   }
  &lt;/script></code></pre><h2>Usage</h2><h3>High Level API - &quot;Tracker&quot;</h3><p>The tracker is used for sending events to Atom based on several conditions</p>
 <ul>
-<li>Every 30 seconds (default)</li>
-<li>Number of accumulated events has reached 20 (default)</li>
-<li>Size of accumulated events has reached 40KB (default)</li>
+<li>Every 10 seconds (default)</li>
+<li>Number of accumulated events has reached 3 (default)</li>
+<li>Size of accumulated events has reached 10KB (default)</li>
 </ul>
 <pre class="prettyprint source lang-js"><code>var options = {
-    endpoint: &quot;https://track.atom-data.io/&quot;,
-    auth: &quot;YOUR_HMAC_AUTH_KEY&quot;, // Optional, depends on your stream config
-    flushInterval: 10, // Optional, Tracker flush interval in seconds (default: 30)
-    bulkLen: 50, // Optional, Number of events per bulk (batch) (default: 20) 
-    bulkSize: 20 // Optional, Size of each bulk in KB (default: 40KB)
+  endpoint: &quot;https://track.atom-data.io/&quot;,
+  auth: &quot;YOUR_HMAC_AUTH_KEY&quot;, // Optional, depends on your stream config
+  flushInterval: 10, // Optional, Tracker flush interval in seconds (default: 10)
+  bulkLen: 50, // Optional, Number of events per bulk (batch) (default: 3) 
+  bulkSize: 20 // Optional, Size of each bulk in KB (default: 10KB)
 }
 
 var tracker = new IronSourceAtom.Tracker(options); // Init a new tracker
-var stream = &quot;MY_STREAM_NAME&quot;, // Your target stream name
-var data = {id: 1, string_col: &quot;String&quot;} // Data that matches your DB structure
-tracker.track(stream, data); // Start tracking and empty on the described above conditions 
+var stream = &quot;MY_STREAM_NAME&quot;; // Your target stream name
+var data = {id: 1, string_col: &quot;String&quot;}; // Data that matches your DB structure
+tracker.track(stream, data); // Start tracking and empty the backlog on the described above conditions 
 
 // To Flush all events:
 tracker.flush(null, function (results) {
@@ -120,33 +119,41 @@ tracker.flush(stream);</code></pre><h3>Low Level API</h3><p>Sending a single eve
 <pre class="prettyprint source lang-js"><code>var stream = &quot;MY.ATOM.STREAM&quot;;
 var number = Math.random() * 3000 + 1;
 var data = {
-    event_name: &quot;JS-SDK-PUT-EVENT-TEST&quot;,
-    string_value: String(number),
-    int_value: Math.round(number),
-    float_value: number,
-    ts: new Date()
+  event_name: &quot;JS-SDK-PUT-EVENT-TEST&quot;,
+  string_value: String(number),
+  int_value: Math.round(number),
+  float_value: number,
+  ts: new Date()
 };
 
 var atom = new IronSourceAtom();
 var params = { 
-               data: data, 
-               stream: stream,
-               method: 'GET' // default is POST
-              };
+  data: data, 
+  stream: stream,
+  method: 'GET' // default is POST
+};
+
 atom.putEvent(params,
 function (err, data, status) {
-    console.log(err,data,status);
+  console.log(err,data,status);
 });</code></pre><p>OR if you want to send a bulk(batch) of events:</p>
 <pre class="prettyprint source lang-js"><code>var stream = &quot;MY.ATOM.STREAM&quot;;
 var data = [
-    {&quot;event_name&quot;:&quot;JS-SDK-PUT-EVENTS-TEST&quot;,&quot;string_value&quot;:&quot;67.217&quot;,&quot;int_value&quot;:67},
-    {&quot;event_name&quot;:&quot;JS-SDK-PUT-EVENTS-TEST&quot;,&quot;string_value&quot;:&quot;2046.43&quot;,&quot;int_value&quot;:20}
+  {&quot;event_name&quot;:&quot;JS-SDK-PUT-EVENTS-TEST&quot;,&quot;string_value&quot;:&quot;67.217&quot;,&quot;int_value&quot;:67},
+  {&quot;event_name&quot;:&quot;JS-SDK-PUT-EVENTS-TEST&quot;,&quot;string_value&quot;:&quot;2046.43&quot;,&quot;int_value&quot;:20}
 ];
 var atom = new IronSourceAtom();
+
 atom.putEvents({ data: data, stream: stream },
 function (err, data, status) {
     console.log(err,data,status);
-});</code></pre><h2>Changelog</h2><h3>v1.5.0</h3><p>Note: this version if fully compatable with the old ones except for the &quot;Request&quot; function which shouldn't be used
+});</code></pre><h2>Change Log</h2><h3>v1.5.1</h3><ul>
+<li>Adding non-ascii string support + ie9 support (replaced btoa with custom base64)</li>
+<li>Changing the SauceLabs tests to support more + older browsers</li>
+<li>Changing tracker defaults</li>
+<li>Fixing a bug in Explorer9 with CORS and XDomainRequest</li>
+</ul>
+<h3>v1.5.0</h3><p>Note: this version if fully compatible with the old ones except for the &quot;Request&quot; function which shouldn't be used
 directly on any case.</p>
 <ul>
 <li>Refactor Tracker<ul>
@@ -193,7 +200,7 @@ directly on any case.</p>
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.0</a> on Thu Aug 25 2016 18:27:30 GMT+0300 (IDT)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a> on Thu Jan 12 2017 13:54:56 GMT+0200 (IST)
 </footer>
 
 <script> prettyPrint(); </script>
