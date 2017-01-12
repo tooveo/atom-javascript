@@ -49,7 +49,6 @@ function Request(params) {
 /* istanbul ignore next */
 Request.prototype._isIE = function () {
   var myNav = navigator.userAgent.toLowerCase();
-  console.log("EXPLORER VERSION: " + myNav);
   return (myNav.indexOf('msie') != -1) ? parseInt(myNav.split('msie')[1]) : false;
 };
 
@@ -124,7 +123,6 @@ Request.prototype._sendRequest = function (payload, method, callback) {
     var response;
     xhr.open(method, this.params.endpoint);
     xhr.onload = function () {
-      console.log("[ONLOAD]: " + xhr.responseText);
       response = new Response(null, xhr.responseText, 200);
       callback(null, response.data(), response.status);
     };
@@ -133,14 +131,12 @@ Request.prototype._sendRequest = function (payload, method, callback) {
     }; // prevent aborting (bug in IE9)
 
     xhr.ontimeout = function () {
-      console.log("[TIMEOUT]: GOT 500");
       response = new Response("No connection to server", null, 500);
       callback(response.err(), null, response.status);
     };
 
     xhr.onerror = function () {
       // There is no way to get the error code in IE9 so we return 500 in order to retry
-      console.log("[ERROR]: GOT 500");
       response = new Response("Service Unavailable", null, 500);
       callback(response.err(), null, response.status);
     };

@@ -1,11 +1,14 @@
 # ironSource.atom SDK for JavaScript
+
 [![License][license-image]][license-url]
 [![Docs][docs-image]][docs-url]
-[![Coverage Status][coveralls-image]][coveralls-url]
 [![Build status][travis-image]][travis-url]
+[![Coverage Status][coveralls-image]][coveralls-url]
 [![Sauce Build Status][sauce-badge-image]][sauce-url]
+
 ## Browsers support
 [![Sauce Test Status][sauce-image]][sauce-url]
+
 atom-javascript is the official [ironSource.atom](http://www.ironsrc.com/data-flow-management) SDK for Web Browsers.
 
 - [Signup](https://atom.ironsrc.com/#/signup)
@@ -27,13 +30,16 @@ $ bower install --save atom-sdk-js
 ```
 ### Installation with Atom CDN
 ```html
+For the latest version (we will always deploy the latest version there, so at your own risk):
+<script src="https://js-sdk.atom-data.io/latest/sdk.min.js"></script>
+
 To install a certain version just do:
 <script src="https://js-sdk.atom-data.io/{VERSION_NUMBER_HERE}/sdk.min.js"></script>
 
 For example:
-<script src="https://js-sdk.atom-data.io/1.5.0/sdk.min.js"></script>
+<script src="https://js-sdk.atom-data.io/1.5.1/sdk.min.js"></script>
 OR
-<script src="https://js-sdk.atom-data.io/1.5.0/sdk.js"></script>
+<script src="https://js-sdk.atom-data.io/1.5.1/sdk.js"></script>
 
 
 The CDN supports both HTTP and HTTPS 
@@ -48,14 +54,15 @@ The CDN supports both HTTP and HTTPS
       isa.type = 'text/javascript';
       isa.async = true;
       isa.src = 'bower_components/atom-sdk-js/dist/sdk.min.js';
-      // OR: isa.src = 'http://js-sdk.atom-data.io/1.5.0/sdk.min.js';
+      // OR: isa.src = 'http://js-sdk.atom-data.io/1.5.1/sdk.min.js';
       (document.getElementsByTagName('head')[0]||document.getElementsByTagName('body')[0]).appendChild(isa);
   })();
 </script>
+```
+In case you use the async loading, your tracking code must be placed inside the following init function  
+See the [example](#example) for more info.
 
-In case you use the async loading, your tracking code must be placed inside the following init function
-See the example for more info.
-
+```html
 <script type="text/javascript">
   window.IronSourceAtomInit = function() {
        // Your code here ...
@@ -64,11 +71,25 @@ See the example for more info.
 ```
 
 ## Usage
-### High Level API - "Tracker"
-The tracker is used for sending events to Atom based on several conditions
+
+You may use the SDK in two different ways:
+
+1. High level "Tracker" - contains in-memory storage and tracks events based on certain parameters.
+2. Low level - contains 2 methods: putEvent() and putEvents() to send 1 event or a batch respectively.
+
+### High Level SDK - "Tracker"
+
+The Tracker process:
+
+You can use track() method in order to track the events to an Atom Stream.
+The tracker accumulates events and flushes them when it meets one of the following conditions:
+
 - Every 10 seconds (default)
 - Number of accumulated events has reached 3 (default)
 - Size of accumulated events has reached 10KB (default)
+
+In case of failure the tracker will preform an exponential backoff with jitter.
+The tracker stores events in memory.
 
 ```js
 var options = {
@@ -98,7 +119,12 @@ tracker.flush();
 tracker.flush(stream);
 ```
  
-### Low Level API
+### Low Level (Basic) SDK
+
+The Low Level SDK has 2 methods:  
+- putEvent - Sends a single event to Atom  
+- putEvents - Sends a bulk (batch) of events to Atom.
+
 Sending a single event:
 ```js
 var stream = "MY.ATOM.STREAM";
@@ -143,10 +169,10 @@ function (err, data, status) {
 ## Change Log
 
 ### v1.5.1
-- Adding non-ascii string support + ie9 support (replaced btoa with custom base64)
-- Changing the SauceLabs tests to support more + older browsers
-- Changing tracker defaults
-- Fixing a bug in Explorer9 with CORS and XDomainRequest
+- Added non-ascii string support on HTTP GET (replaced btoa with custom base64)
+- Changed the SauceLabs tests to support more + older browsers
+- Changed tracker defaults (check the [usage](#usage) section)
+- Added support for IE9
 
 ### v1.5.0
 Note: this version if fully compatible with the old ones except for the "Request" function which shouldn't be used
@@ -192,5 +218,5 @@ You can use our [example][example-url] for sending data to Atom:
 [docs-image]: https://img.shields.io/badge/docs-latest-blue.svg
 [docs-url]: https://ironsource.github.io/atom-javascript/
 [sauce-image]: https://saucelabs.com/browser-matrix/jacckson.svg
-[sauce-url]: https://saucelabs.com/beta/builds/d4283e62c1564c7a895523856f62b6c6
+[sauce-url]: https://saucelabs.com/beta/builds/d5143b2da29343219244f658ac6dd3f9
 [sauce-badge-image]: https://saucelabs.com/buildstatus/jacckson
