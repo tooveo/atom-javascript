@@ -122,7 +122,7 @@ tracker.flush(stream);
 ### Low Level (Basic) SDK
 
 The Low Level SDK has 2 methods:  
-- putEvent - Sends a single event to Atom  
+- putEvent - Sends a single event to Atom.
 - putEvents - Sends a bulk (batch) of events to Atom.
 
 Sending a single event:
